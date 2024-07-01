@@ -38,7 +38,7 @@ namespace Order_Management.app.database.models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<CustomerAddress> customerAddresses { get; set; }
+        public ICollection<CustomerAddress> CustomerAddresses { get; set; }
         public Address()
         {
             Id = Guid.NewGuid();

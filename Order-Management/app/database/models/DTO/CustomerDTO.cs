@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Order_Management.app.database.models
+namespace Order_Management.app.database.models.DTO
 {
-    public class Customer
+    public class CustomerDTO
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [StringLength(36)]
-      
+        
         public string ReferenceId { get; set; }
 
         [StringLength(128)]
@@ -24,7 +24,7 @@ namespace Order_Management.app.database.models
         public string PhoneCode { get; set; }
 
         [StringLength(64)]
-       
+        
         public string Phone { get; set; }
 
         [StringLength(512)]
@@ -51,13 +51,5 @@ namespace Order_Management.app.database.models
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedAt { get; set; }
-
-        public ICollection<CustomerAddress> CustomerAddresses { get; set; }
-        public Customer()
-        {
-            Id = Guid.NewGuid();
-            CreatedAt = DateTime.UtcNow;
-        }
-
     }
 }
