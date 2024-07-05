@@ -55,6 +55,10 @@ namespace Order_Management.Data
 
                 entity.Property(e => e.ZipCode)
                     .HasMaxLength(64);
+
+                entity.HasMany(c => c.CustomerAddresses)
+                    .WithOne(ca => ca.Address)
+                    .HasForeignKey(ca => ca.AddressId);
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -66,7 +70,8 @@ namespace Order_Management.Data
                     .IsRequired();
 
                 entity.Property(e => e.ReferenceId)
-                    .HasMaxLength(36);
+                    .HasColumnType("char(36)")
+                    .IsRequired();
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(128);
@@ -89,6 +94,7 @@ namespace Order_Management.Data
                 entity.Property(e => e.DefaultShippingAddressId)
                     .HasColumnType("char(36)");
 
+
                 entity.Property(e => e.DefaultBillingAddressId)
                     .HasColumnType("char(36)");
 
@@ -107,17 +113,26 @@ namespace Order_Management.Data
             {
                 entity.ToTable("customer_addresses");
 
-                entity.HasKey(ca => new { ca.CustomerId, ca.AddressId });
+                entity.HasKey(e => e.Id); // Assuming Id is defined as primary key
 
-                entity.HasOne(ca => ca.Customer)
-                    .WithMany(c => c.CustomerAddresses)
-                    .HasForeignKey(ca => ca.CustomerId);
+                entity.Property(e => e.Id)
+                    .HasColumnType("char(36)")
+                    .IsRequired();
 
-                entity.HasOne(ca => ca.Address)
-                    .WithMany(a => a.CustomerAddresses)
-                    .HasForeignKey(ca => ca.AddressId);
+                entity.Property(e => e.CustomerId)
+                    .HasColumnType("char(36)");
+
+                entity.Property(e => e.AddressId)
+                    .HasColumnType("char(36)");
+
+                entity.Property(e => e.AddressType)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasConversion<string>(); // Ensure enum is stored as string
+
+                entity.Property(e => e.IsFavorite);
+
             });
-
             OnModelCreatingPartial(modelBuilder);
         }
 

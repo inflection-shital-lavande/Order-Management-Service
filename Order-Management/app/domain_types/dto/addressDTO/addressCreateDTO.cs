@@ -1,14 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Order_Management.app.database.models.DTO
+namespace Order_Management.app.domain_types.dto
 {
-    public partial class AddressDTO
+    public class addressCreateDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [Required]
         [MaxLength(512)]
         public string? AddressLine1 { get; set; }
@@ -29,12 +24,5 @@ namespace Order_Management.app.database.models.DTO
         public string? ZipCode { get; set; }
 
         public string? CreatedBy { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
-
-       
-       
     }
 }

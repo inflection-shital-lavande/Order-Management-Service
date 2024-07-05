@@ -11,28 +11,28 @@ namespace Order_Management.app.database.models
 
         [StringLength(36)]
       
-        public string ReferenceId { get; set; }
+        public Guid? ReferenceId { get; set; }
 
         [StringLength(128)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [StringLength(512)]
        
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [StringLength(8)]
-        public string PhoneCode { get; set; }
+        public string? PhoneCode { get; set; }
 
         [StringLength(64)]
        
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [StringLength(512)]
-        public string ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
 
         [StringLength(64)]
         
-        public string TaxNumber { get; set; }
+        public string? TaxNumber { get; set; }
 
         [StringLength(36)]
         public Guid? DefaultShippingAddressId { get; set; }
@@ -47,7 +47,7 @@ namespace Order_Management.app.database.models
         public virtual Address DefaultBillingAddress { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedAt { get; set; }

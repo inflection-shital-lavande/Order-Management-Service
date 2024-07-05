@@ -12,14 +12,14 @@ namespace Order_Management.app.database.models
         public Guid Id { get; set; }
 
         [StringLength(36)]
-        public Guid CustomerId { get; set; }
+        public Guid? CustomerId { get; set; }
 
         [StringLength(36)]
-        public Guid AddressId { get; set; }
+        public Guid? AddressId { get; set; }
 
         public AddressTypes AddressType { get; set; } = AddressTypes.SHIPPING;
 
-        public bool IsFavorite { get; set; } = false;
+        public bool? IsFavorite { get; set; } = false;
 
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }

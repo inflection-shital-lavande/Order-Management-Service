@@ -39,30 +39,16 @@ namespace Order_Management.app.database.models
         public string OrderId { get; set; }
 
         [MaxLength(36)]
-        public string CartId { get; set; }
+        public Guid CartId { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }
 
-        
 
-        public OrderLineItem(Guid id, string name, int quantity, double unitPrice, double discount, double tax, double itemSubTotal,
-                             string orderId, string catalogId = null, string discountSchemeId = null, string cartId = null)
-        {
-            Id = id;
-            Name = name;
-            CatalogId = catalogId;
-            Quantity = quantity;
-            UnitPrice = unitPrice;
-            Discount = discount;
-            DiscountSchemeId = discountSchemeId;
-            Tax = tax;
-            ItemSubTotal = itemSubTotal;
-            OrderId = orderId;
-            CartId = cartId;
-        }
+
+        public ICollection<Cart> Carts { get; set; }
 
     }
    }
