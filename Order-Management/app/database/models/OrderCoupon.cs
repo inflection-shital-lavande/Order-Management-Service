@@ -14,10 +14,10 @@ namespace Order_Management.app.database.models
         public string Code { get; set; }
 
         [Required]
-        public Guid CouponId { get; set; }
+        public Guid? CouponId { get; set; }
 
         [Required]
-        public Guid OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
         [Required]
         public double DiscountValue { get; set; } = 0.0;

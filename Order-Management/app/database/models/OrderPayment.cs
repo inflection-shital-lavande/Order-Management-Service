@@ -11,13 +11,13 @@ namespace Order_Management.app.database.models
 
         [Required]
         [MaxLength(36)]
-        public string OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
         [MaxLength(36)]
-        public string PaymentTransactionId { get; set; }
+        public Guid? PaymentTransactionId { get; set; }
 
         [MaxLength(36)]
-        public string RefundTransactionId { get; set; }
+        public Guid? RefundTransactionId { get; set; }
 
         // Navigation properties
         [ForeignKey("OrderId")]
@@ -36,12 +36,6 @@ namespace Order_Management.app.database.models
 
         
 
-        public OrderPayment(Guid id, string orderId, string paymentTransactionId = null, string refundTransactionId = null)
-        {
-            Id = id;
-            OrderId = orderId;
-            PaymentTransactionId = paymentTransactionId;
-            RefundTransactionId = refundTransactionId;
-        }
+       
     }
     }

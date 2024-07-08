@@ -11,7 +11,7 @@ namespace Order_Management.app.database.models
 
         [StringLength(36)]
         //[Index(IsUnique = true)]
-        public string ReferenceId { get; set; }
+        public Guid? ReferenceId { get; set; }
 
         [StringLength(512)]
         public string Name { get; set; }

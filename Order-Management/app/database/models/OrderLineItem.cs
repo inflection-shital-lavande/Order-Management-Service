@@ -14,7 +14,7 @@ namespace Order_Management.app.database.models
         public string Name { get; set; }
 
         [MaxLength(36)]
-        public string CatalogId { get; set; }
+        public Guid? CatalogId { get; set; }
 
         [Required]
         public int Quantity { get; set; } = 0;
@@ -26,7 +26,7 @@ namespace Order_Management.app.database.models
         public double Discount { get; set; } = 0.0;
 
         [MaxLength(36)]
-        public string DiscountSchemeId { get; set; }
+        public Guid? DiscountSchemeId { get; set; }
 
         [Required]
         public double Tax { get; set; } = 0.0;
@@ -36,10 +36,10 @@ namespace Order_Management.app.database.models
 
         [Required]
         [MaxLength(36)]
-        public string OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
         [MaxLength(36)]
-        public Guid CartId { get; set; }
+        public Guid? CartId { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

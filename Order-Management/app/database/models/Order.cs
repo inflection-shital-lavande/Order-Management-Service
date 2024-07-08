@@ -13,7 +13,7 @@ namespace Order_Management.app.database.models
 
         [Required]
         [MaxLength(36)]
-        public string DisplayCode { get; set; }
+        public Guid? DisplayCode { get; set; }
 
         [Required]
         public OrderStatusTypes OrderStatus { get; set; } = OrderStatusTypes.DRAFT;

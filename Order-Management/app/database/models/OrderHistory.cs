@@ -12,7 +12,7 @@ namespace Order_Management.app.database.models
 
         [Required]
         [MaxLength(36)]
-        public string OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
         [Required]
         public OrderStatusTypes PreviousStatus { get; set; }
@@ -21,22 +21,14 @@ namespace Order_Management.app.database.models
         public OrderStatusTypes Status { get; set; }
 
         [MaxLength(36)]
-        public string UpdatedByUserId { get; set; }
+        public Guid? UpdatedByUserId { get; set; }
 
         [Required]
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
 
 
-        public OrderHistory(Guid id, string orderId, OrderStatusTypes status, OrderStatusTypes previousStatus, string updatedByUserId = null)
-        {
-            Id = id;
-            OrderId = orderId;
-            Status = status;
-            PreviousStatus = previousStatus;
-            UpdatedByUserId = updatedByUserId;
-        }
-
+      
       }
 
     }
