@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Order_Management.app.database.models;
 using Order_Management.app.domain_types.dto;
 using Order_Management.app.domain_types.dto.cutomerModelDTO;
@@ -52,7 +53,17 @@ namespace Order_Management.app.database.service
             if (!string.IsNullOrEmpty(filter.Email))
                 query = query.Where(c => c.Email.Contains(filter.Email));
 
-            // Apply other filters as needed
+            if (!string.IsNullOrEmpty(filter.PhoneCode))
+                query = query.Where(c => c.PhoneCode.Contains(filter.PhoneCode));
+
+            if (!string.IsNullOrEmpty(filter.Phone))
+                query = query.Where(c => c.Phone.Contains(filter.Phone));
+
+            if (!string.IsNullOrEmpty(filter.TaxNumber))
+                query = query.Where(c => c.TaxNumber.Contains(filter.TaxNumber));
+
+          
+
 
             var customers = await query.ToListAsync();
             return customers.Select(c => MapToCustomerResponseDto(c));
@@ -92,7 +103,7 @@ namespace Order_Management.app.database.service
             customer.Phone = customerDto.Phone;
             customer.ProfilePicture = customerDto.ProfilePicture;
             customer.TaxNumber = customerDto.TaxNumber;
-            customer.UpdatedAt = DateTime.UtcNow;
+            
 
             await _context.SaveChangesAsync();
 
@@ -150,7 +161,7 @@ namespace Order_Management.app.database.service
                 { "State", address.State },
                 { "Country", address.Country },
                 { "ZipCode", address.ZipCode }
-                // Add more properties as needed
+                
             };
         }
     }

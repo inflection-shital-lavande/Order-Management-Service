@@ -8,25 +8,26 @@ using System.Threading.Tasks;
 using Order_Management.app.database.service;
 using Order_Management.app.domain_types.dto.cutomerModelDTO;
 using Order_Management.app.domain_types.dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Order_Management.app.api
 {
     public static class CustomerEndpoints
     {
+        
         public static void MapCustomerEndpoints(this WebApplication app)
         {
-            app.MapGet("/OrderManagementService/Customer", async (IServiceProvider serviceProvider) =>
+            app.MapGet("/OrderManagementService/Customer", async (ICustomerService customerService) =>
             {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    var customerService = scope.ServiceProvider.GetRequiredService<ICustomerService>();
+                
+                   
                     var customers = await customerService.GetAllCustomersAsync();
                     return Results.Ok(new
                     {
                         Message = "Customers retrieved successfully",
                         Data = customers
                     });
-                }
+                
             });
 
             app.MapGet("/OrderManagementService/Customer/{id:guid}", async (ICustomerService customerService, Guid id) =>

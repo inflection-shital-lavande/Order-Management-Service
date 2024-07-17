@@ -2,6 +2,7 @@
 using Order_Management.app.database.models;
 using Order_Management.app.domain_types.dto;
 using Order_Management.app.domain_types.dto.cutomerModelDTO;
+using Order_Management.Auth;
 namespace Order_Management.app.Config
 {
     public class MappingProfile : Profile
@@ -21,6 +22,9 @@ namespace Order_Management.app.Config
             CreateMap<Customer, customerSearchResultsDTO>().ReverseMap();
 
             CreateMap<CustomerAddress, customerAddressCreateDTO>().ReverseMap();
+
+            //authentication
+            CreateMap<RegisterDTO, User>();
         }
     }
 }

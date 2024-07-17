@@ -1,6 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Order_Management.app.database.models;
 using Order_Management.app.domain_types.dto;
+using Order_Management.Auth;
 using Order_Management.Data;
 
 namespace Order_Management.app.database.service
@@ -9,110 +14,76 @@ namespace Order_Management.app.database.service
     public class AddressService : IAddressService
     {
         private readonly OrderManagementContext _context;
+        private readonly IMapper _mapper;
 
-        public AddressService(OrderManagementContext context)
+        public AddressService(OrderManagementContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<addressResponseDTO> GetAddressByIdAsync(Guid id)
+        public async Task<addressResponseDTO> GetAddressByIdAsync(Guid id) =>
+            _mapper.Map<addressResponseDTO>(await _context.Addresses.FindAsync(id));
+
+        public async Task<List<addressResponseDTO>> GetAll() =>
+
+           _mapper.Map<List<addressResponseDTO>>(await _context.Addresses.ToListAsync());
+
+
+        public async Task<Response> CreateAddressAsync(addressCreateDTO addressCreateDTO)
         {
-            var address = await _context.Addresses.FindAsync(id);
-            return MapToAddressResponseDto(address);
+            _context.Addresses.Add(_mapper.Map<Address>(addressCreateDTO));
+            await _context.SaveChangesAsync();
+            return new Response(true, "saved");
+        }
+        public async Task<Response> UpdateAddressAsync(Guid id, addressUpdateDTO request)
+        {
+            _context.Addresses.Update(_mapper.Map<Address>(request));
+            await _context.SaveChangesAsync();
+            return new Response(true, "Update");
         }
 
-        public async Task<IEnumerable<addressResponseDTO>> GetAllAddressesAsync()
+        public async Task<Response> DeleteAddressAsync(Guid id)
         {
-            var addresses = await _context.Addresses.ToListAsync();
-            return addresses.Select(a => MapToAddressResponseDto(a));
+            _context.Addresses.Remove(await _context.Addresses.FindAsync(id));
+            await _context.SaveChangesAsync();
+            return new Response(true, "Delete");
         }
 
-        public async Task<IEnumerable<addressResponseDTO>> SearchAddressesAsync(addressSearchFilterDTO filter)
+
+        public async Task<List<addressSearchResultsDTO>> SearchAddressesAsync(addressSearchFilterDTO filter)
         {
+
             var query = _context.Addresses.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter.AddressLine1))
                 query = query.Where(a => a.AddressLine1.Contains(filter.AddressLine1));
 
+            if (!string.IsNullOrEmpty(filter.AddressLine2))
+                query = query.Where(a => a.AddressLine2.Contains(filter.AddressLine2));
+
+
             if (!string.IsNullOrEmpty(filter.City))
                 query = query.Where(a => a.City.Contains(filter.City));
 
-            // Apply other filters as needed
 
-            var addresses = await query.ToListAsync();
-            return addresses.Select(a => MapToAddressResponseDto(a));
-        }
+            if (!string.IsNullOrEmpty(filter.State))
+                query = query.Where(a => a.State.Contains(filter.State));
 
-        public async Task<addressResponseDTO> CreateAddressAsync(addressCreateDTO addressDto)
-        {
-            var address = new Address
-            {
-                AddressLine1 = addressDto.AddressLine1,
-                AddressLine2 = addressDto.AddressLine2,
-                City = addressDto.City,
-                State = addressDto.State,
-                Country = addressDto.Country,
-                ZipCode = addressDto.ZipCode,
-                CreatedBy = addressDto.CreatedBy
-            };
+            if (!string.IsNullOrEmpty(filter.Country))
+                query = query.Where(a => a.Country.Contains(filter.Country));
 
-            _context.Addresses.Add(address);
-            await _context.SaveChangesAsync();
+            if (!string.IsNullOrEmpty(filter.ZipCode))
+                query = query.Where(a => a.ZipCode.Contains(filter.ZipCode));
 
-            return MapToAddressResponseDto(address);
-        }
 
-        public async Task<addressResponseDTO> UpdateAddressAsync(Guid id, addressUpdateDTO addressDto)
-        {
-            var address = await _context.Addresses.FindAsync(id);
 
-            if (address == null)
-                throw new Exception($"Address with ID {id} not found");
 
-            address.AddressLine1 = addressDto.AddressLine1;
-            address.AddressLine2 = addressDto.AddressLine2;
-            address.City = addressDto.City;
-            address.State = addressDto.State;
-            address.Country = addressDto.Country;
-            address.ZipCode = addressDto.ZipCode;
-            address.UpdatedAt = DateTime.UtcNow;
+            var results = await query
+                .Select(a => _mapper.Map<addressSearchResultsDTO>(a))
+                .ToListAsync();
 
-            await _context.SaveChangesAsync();
-
-            return MapToAddressResponseDto(address);
-        }
-
-        public async Task<bool> DeleteAddressAsync(Guid id)
-        {
-            var address = await _context.Addresses.FindAsync(id);
-
-            if (address == null)
-                throw new Exception($"Address with ID {id} not found");
-
-            _context.Addresses.Remove(address);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        private addressResponseDTO MapToAddressResponseDto(Address address)
-        {
-            if (address == null)
-                return null;
-
-            return new addressResponseDTO
-            {
-                Id = address.Id,
-                AddressLine1 = address.AddressLine1,
-                AddressLine2 = address.AddressLine2,
-                City = address.City,
-                State = address.State,
-                Country = address.Country,
-                ZipCode = address.ZipCode,
-                CreatedAt = address.CreatedAt,
-                UpdatedAt = address.UpdatedAt
-            };
+            return results;
         }
     }
-
 }

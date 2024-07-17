@@ -13,47 +13,47 @@ namespace Order_Management.app.database.models
         public Guid Id { get; set; }
 
         [StringLength(64)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [StringLength(1024)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [StringLength(64)]
         //[Index(IsUnique = true)]
-        public string CouponCode { get; set; }
+        public string? CouponCode { get; set; }
 
         [StringLength(64)]
-        public string CouponType { get; set; }
+        public string? CouponType { get; set; }
 
-        public float Discount { get; set; } = 0.00f;
+        public float? Discount { get; set; } = 0.00f;
 
         public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
 
-        public float DiscountPercentage { get; set; } = 0.00f;
+        public float? DiscountPercentage { get; set; } = 0.00f;
 
-        public float DiscountMaxAmount { get; set; } = 0.00f;
+        public float? DiscountMaxAmount { get; set; } = 0.00f;
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
 
-        public int MaxUsage { get; set; } = 10000;
+        public int? MaxUsage { get; set; } = 10000;
 
-        public int MaxUsagePerUser { get; set; } = 1;
+        public int? MaxUsagePerUser { get; set; } = 1;
 
-        public int MaxUsagePerOrder { get; set; } = 1;
+        public int? MaxUsagePerOrder { get; set; } = 1;
 
-        public float MinOrderAmount { get; set; } = 0.00f;
+        public float? MinOrderAmount { get; set; } = 0.00f;
 
-        public bool IsActive { get; set; } = true;
+        public bool? IsActive { get; set; } = true;
 
-        public bool IsDeleted { get; set; } = false;
+        public bool? IsDeleted { get; set; } = false;
 
         [StringLength(36)]
-        public string CreatedBy { get; set; }
+        public Guid? CreatedBy { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedAt { get; set; }

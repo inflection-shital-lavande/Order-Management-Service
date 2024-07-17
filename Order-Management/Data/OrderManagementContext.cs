@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Order_Management.app.database.models;
+using Order_Management.Auth;
+
 
 namespace Order_Management.Data
 {
@@ -14,10 +16,11 @@ namespace Order_Management.Data
         {
         }
 
-        public virtual DbSet<Address> Addresses { get; set; }
+        public  DbSet<Address> Addresses { get; set; } 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
-
+        
+        public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>(entity =>
@@ -56,9 +59,7 @@ namespace Order_Management.Data
                 entity.Property(e => e.ZipCode)
                     .HasMaxLength(64);
 
-                entity.HasMany(c => c.CustomerAddresses)
-                    .WithOne(ca => ca.Address)
-                    .HasForeignKey(ca => ca.AddressId);
+               
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -104,35 +105,57 @@ namespace Order_Management.Data
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime");
 
-                entity.HasMany(c => c.CustomerAddresses)
-                    .WithOne(ca => ca.Customer)
-                    .HasForeignKey(ca => ca.CustomerId);
+               
             });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+
+                
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int")
+                    .IsRequired();
+
+                entity.Property(e => e.Name)
+                    .HasColumnType("nvarchar(MAX)")
+                    .IsRequired();
+
+                entity.Property(e => e.Email)
+                    .HasColumnType("nvarchar(MAX)");
+
+                entity.Property(e => e.Password)
+                    .HasColumnType("nvarchar(MAX)");
+            });
+
 
             modelBuilder.Entity<CustomerAddress>(entity =>
             {
                 entity.ToTable("customer_addresses");
 
-                entity.HasKey(e => e.Id); // Assuming Id is defined as primary key
+                entity.HasKey(ca => new { ca.CustomerId, ca.AddressId });
 
-                entity.Property(e => e.Id)
+                entity.Property(ca => ca.Id)
                     .HasColumnType("char(36)")
                     .IsRequired();
 
-                entity.Property(e => e.CustomerId)
-                    .HasColumnType("char(36)");
-
-                entity.Property(e => e.AddressId)
-                    .HasColumnType("char(36)");
-
-                entity.Property(e => e.AddressType)
+                entity.Property(ca => ca.AddressType)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasConversion<string>(); // Ensure enum is stored as string
+                    .HasConversion<string>();
 
-                entity.Property(e => e.IsFavorite);
+                entity.Property(ca => ca.IsFavorite);
 
+                entity.HasOne(ca => ca.Customer)
+                    .WithMany(c => c.CustomerAddresses)
+                    .HasForeignKey(ca => ca.CustomerId);
+
+                entity.HasOne(ca => ca.Address)
+                    .WithMany(a => a.CustomerAddresses)
+                    .HasForeignKey(ca => ca.AddressId);
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

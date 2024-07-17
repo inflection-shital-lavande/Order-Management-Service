@@ -7,28 +7,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Order_Management.app.database.service;
 using Order_Management.app.domain_types.dto;
+using Microsoft.AspNetCore.Authorization;
+using Order_Management.app.database.models;
 
 namespace Order_Management.app.api
 {
     public static class AddressEndpoints
     {
+        
         public static void MapAddressEndpoints(this WebApplication app)
         {
-            app.MapGet("/OrderManagementService/Address", async (IServiceProvider serviceProvider) =>
+            app.MapGet("/api/Address", async (IAddressService addressService) =>
             {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    var addressService = scope.ServiceProvider.GetRequiredService<IAddressService>();
-                    var addresses = await addressService.GetAllAddressesAsync();
+               
+                    var addresses = await addressService.GetAll();
                     return Results.Ok(new
                     {
                         Message = "Addresses retrieved successfully",
                         Data = addresses
                     });
-                }
-            });
+                
+            }).RequireAuthorization();
 
-            app.MapGet("/OrderManagementService/Address/{id:guid}", async (IAddressService addressService, Guid id) =>
+            app.MapGet("/api/Address/{id:guid}", async (IAddressService addressService, Guid id) =>
             {
                 var address = await addressService.GetAddressByIdAsync(id);
                 if (address == null)
@@ -41,20 +42,20 @@ namespace Order_Management.app.api
                     Message = "Address retrieved successfully",
                     Data = address
                 });
-            });
+            }).RequireAuthorization();
 
-            app.MapPost("/OrderManagementService/AddAddress", async (IAddressService addressService, addressCreateDTO addrDTO) =>
+            app.MapPost("/api/AddAddress", async (IAddressService addressService, addressCreateDTO addrDTO) =>
             {
                 var createdAddress = await addressService.CreateAddressAsync(addrDTO);
 
-                return Results.Created($"/OrderManagementService/Address/{createdAddress.Id}", new
+                return Results.Created($"/OrderManagementService/Address/{createdAddress}", new
                 {
                     Message = "Address created successfully",
                     Data = createdAddress
                 });
-            });
+            }).RequireAuthorization();
 
-            app.MapPut("/OrderManagementService/UpdateAddress/{id:guid}", async (IAddressService addressService, Guid id, addressUpdateDTO addrDTO) =>
+            app.MapPut("/api/UpdateAddress/{id:guid}", async (IAddressService addressService, Guid id, addressUpdateDTO addrDTO) =>
             {
                 var updatedAddress = await addressService.UpdateAddressAsync(id, addrDTO);
                 if (updatedAddress == null)
@@ -63,20 +64,20 @@ namespace Order_Management.app.api
                 }
 
                 return Results.Ok(new { Message = "Address updated successfully" });
-            });
+            }).RequireAuthorization();
 
-            app.MapDelete("/OrderManagementService/Address/{id:guid}", async (IAddressService addressService, Guid id) =>
+            app.MapDelete("/GetAddress/{id:guid}", async (IAddressService addressService, Guid id) =>
             {
-                var deleteResult = await addressService.DeleteAddressAsync(id);
-                if (!deleteResult)
+
+                var addresses = await addressService.DeleteAddressAsync(id);
+                return Results.Ok(new
                 {
-                    return Results.NotFound(new { Message = "Address not found" });
-                }
+                    Message = "Addresses deleted successfully",
+                    Data = addresses
+                });
+            }).RequireAuthorization();
 
-                return Results.Ok(new { Message = "Address deleted successfully" });
-            });
-
-            app.MapGet("/OrderManagementService/SearchAddress", async (IAddressService addressService,
+            app.MapGet("/api/SearchAddress", async (IAddressService addressService,
                                                                        [FromQuery] string? AddressLine1,
                                                                        [FromQuery] string? City,
                                                                        [FromQuery] string? State,
@@ -99,7 +100,7 @@ namespace Order_Management.app.api
                     Message = "Addresses retrieved successfully with filters",
                     Data = addresses
                 });
-            });
+            }).RequireAuthorization();
         }
     }
 }

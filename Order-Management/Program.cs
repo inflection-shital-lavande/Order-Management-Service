@@ -6,6 +6,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Order_Management.app.api;
 using Order_Management.app.database.service;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using OrderManagementService.app.api.Authen;
+using Order_Management.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,13 +24,65 @@ builder.Services.AddDbContext<OrderManagementContext>(options =>
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+//builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 //add services
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//authentication
 
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountRepo, AccountRepo>();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddSwaggerGen(Swagger =>
+{
+    Swagger.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "asp.net 8 web api ",
+        Description = "authentication"
+    });
+    Swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+    Swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference =new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },Array.Empty<string>()
+        }
+
+});
+});
 
 
 var app = builder.Build();
@@ -36,13 +96,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var mapper = app.Services.GetRequiredService<IMapper>();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 
 // Register endpoints
+app.MapAuthEndpoints();
 app.MapAddressEndpoints();
-app.MapCustomerEndpoints();
 
+
+app.MapCustomerEndpoints();
 
 app.Run();
 
@@ -187,6 +251,6 @@ app.MapDelete("/OrderManagementService/Address/{id:guid}", async (OrderManagemen
 
 
 app.Run();
-
+/
 
 */
