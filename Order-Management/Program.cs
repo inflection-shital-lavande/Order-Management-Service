@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OrderManagementService.app.api.Authen;
 using Order_Management.Auth;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -97,8 +98,19 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    await next.Invoke();
+    if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
+    {
+        context.Response.ContentType = "application/json";
+        var response = new { Message = "Unauthorized access. Please provide valid credentials." };
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    }
+});
+
+app.UseAuthorization();
 
 
 // Register endpoints
