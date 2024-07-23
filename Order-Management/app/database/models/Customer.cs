@@ -53,6 +53,8 @@ namespace Order_Management.app.database.models
         public DateTime? UpdatedAt { get; set; }
 
         public ICollection<CustomerAddress> CustomerAddresses { get; set; }
+       // public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        ///public ICollection<Order> Orders { get; set; }
         public Customer()
         {
             Id = Guid.NewGuid();

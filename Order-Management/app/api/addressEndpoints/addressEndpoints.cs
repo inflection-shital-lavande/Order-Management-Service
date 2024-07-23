@@ -17,7 +17,7 @@ namespace Order_Management.app.api
         
         public static void MapAddressEndpoints(this WebApplication app)
         {
-            app.MapGet("/api/Address", async (IAddressService addressService) =>
+            app.MapGet("/OrderManagementService/GetAllAddress", async (IAddressService addressService) =>
             {
                
                     var addresses = await addressService.GetAll();
@@ -29,7 +29,7 @@ namespace Order_Management.app.api
                 
             }).RequireAuthorization();
 
-            app.MapGet("/api/Address/{id:guid}", async (IAddressService addressService, Guid id) =>
+            app.MapGet("/OrderManagementService/GetAddress/{id:guid}", async (IAddressService addressService, Guid id) =>
             {
                 var address = await addressService.GetAddressByIdAsync(id);
                 if (address == null)
@@ -44,7 +44,7 @@ namespace Order_Management.app.api
                 });
             }).RequireAuthorization();
 
-            app.MapPost("/api/AddAddress", async (IAddressService addressService, addressCreateDTO addrDTO) =>
+            app.MapPost("/OrderManagementService/AddAddress", async (IAddressService addressService, addressCreateDTO addrDTO) =>
             {
                 var createdAddress = await addressService.CreateAddressAsync(addrDTO);
 
@@ -55,7 +55,7 @@ namespace Order_Management.app.api
                 });
             }).RequireAuthorization();
 
-            app.MapPut("/api/UpdateAddress/{id:guid}", async (IAddressService addressService, Guid id, addressUpdateDTO addrDTO) =>
+            app.MapPut("/OrderManagementService/UpdateAddress/{id:guid}", async (IAddressService addressService, Guid id, addressUpdateDTO addrDTO) =>
             {
                 var updatedAddress = await addressService.UpdateAddressAsync(id, addrDTO);
                 if (updatedAddress == null)
@@ -66,7 +66,7 @@ namespace Order_Management.app.api
                 return Results.Ok(new { Message = "Address updated successfully" });
             }).RequireAuthorization();
 
-            app.MapDelete("/GetAddress/{id:guid}", async (IAddressService addressService, Guid id) =>
+            app.MapDelete("/OrderManagementService/DeleteAddress/{id:guid}", async (IAddressService addressService, Guid id) =>
             {
 
                 var addresses = await addressService.DeleteAddressAsync(id);
@@ -77,7 +77,7 @@ namespace Order_Management.app.api
                 });
             }).RequireAuthorization();
 
-            app.MapGet("/api/SearchAddress", async (IAddressService addressService,
+            app.MapGet("/OrderManagementService/SearchAddress", async (IAddressService addressService,
                                                                        [FromQuery] string? AddressLine1,
                                                                        [FromQuery] string? City,
                                                                        [FromQuery] string? State,

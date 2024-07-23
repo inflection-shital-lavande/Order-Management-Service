@@ -35,7 +35,7 @@ namespace Order_Management.app.database.models
         public DateTime? UpdatedAt { get; set; }
 
         
-
+     
        
     }
     }

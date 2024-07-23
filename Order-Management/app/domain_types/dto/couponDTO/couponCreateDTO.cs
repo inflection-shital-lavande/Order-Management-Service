@@ -1,17 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Xml;
-using Order_Management.app.domain_types;
+﻿using Order_Management.app.database.models;
 using Order_Management.app.domain_types.enums;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace Order_Management.app.database.models
+namespace Order_Management.app.domain_types.dto.couponDTO
 {
-    public class Coupon
+    public class couponCreateDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
+        
         [StringLength(64)]
         public string? Name { get; set; }
 
@@ -19,7 +16,7 @@ namespace Order_Management.app.database.models
         public string? Description { get; set; }
 
         [StringLength(64)]
-        
+
         public string? CouponCode { get; set; }
 
         [StringLength(64)]
@@ -52,20 +49,10 @@ namespace Order_Management.app.database.models
         [StringLength(36)]
         public Guid? CreatedBy { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? CreatedAt { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get; set; }
-
-        public ICollection<OrderCoupon> OrderCoupons { get; set; }
-        public Coupon()
-        {
-            Id = Guid.NewGuid();
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
+       
+       
+       
 
     }
+}
 
-    }

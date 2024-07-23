@@ -17,7 +17,7 @@ namespace Order_Management.app.api
         
         public static void MapCustomerEndpoints(this WebApplication app)
         {
-            app.MapGet("/OrderManagementService/Customer", async (ICustomerService customerService) =>
+            app.MapGet("/OrderManagementService/GetAllCustomer", async (ICustomerService customerService) =>
             {
                 
                    
@@ -28,9 +28,9 @@ namespace Order_Management.app.api
                         Data = customers
                     });
                 
-            });
+            }).RequireAuthorization();
 
-            app.MapGet("/OrderManagementService/Customer/{id:guid}", async (ICustomerService customerService, Guid id) =>
+            app.MapGet("/OrderManagementService/GetCustomer/{id:guid}", async (ICustomerService customerService, Guid id) =>
             {
                 var customer = await customerService.GetCustomerByIdAsync(id);
                 if (customer == null)
@@ -43,18 +43,18 @@ namespace Order_Management.app.api
                     Message = "Customer retrieved successfully",
                     Data = customer
                 });
-            });
+            }).RequireAuthorization();
 
             app.MapPost("/OrderManagementService/AddCustomer", async (ICustomerService customerService, customerCreateDTO customerDto) =>
             {
                 var createdCustomer = await customerService.CreateCustomerAsync(customerDto);
 
-                return Results.Created($"/OrderManagementService/Customer/{createdCustomer.Id}", new
+                return Results.Created($"/OrderManagementService/Customer/{createdCustomer}", new
                 {
                     Message = "Customer created successfully",
                     Data = createdCustomer
                 });
-            });
+            }).RequireAuthorization();
 
             app.MapPut("/OrderManagementService/UpdateCustomer/{id:guid}", async (ICustomerService customerService, Guid id, customerUpdateDTO customerDto) =>
             {
@@ -65,18 +65,18 @@ namespace Order_Management.app.api
                 }
 
                 return Results.Ok(new { Message = "Customer updated successfully" });
-            });
+            }).RequireAuthorization();
 
-            app.MapDelete("/OrderManagementService/Customer/{id:guid}", async (ICustomerService customerService, Guid id) =>
+            app.MapDelete("/OrderManagementService/DeleteCustomer/{id:guid}", async (ICustomerService customerService, Guid id) =>
             {
                 var deleteResult = await customerService.DeleteCustomerAsync(id);
-                if (!deleteResult)
-                {
-                    return Results.NotFound(new { Message = "Customer not found" });
-                }
+                
 
-                return Results.Ok(new { Message = "Customer deleted successfully" });
-            });
+                return Results.Ok(new { Message = "Customer deleted successfully" ,Data=deleteResult});
+            }).RequireAuthorization();
+
+
+           
 
             app.MapGet("/OrderManagementService/SearchCustomer", async (ICustomerService customerService,
                                                                        [FromQuery] string? Name,
@@ -107,7 +107,7 @@ namespace Order_Management.app.api
                     Message = "Customers retrieved successfully with filters",
                     Data = customers
                 });
-            });
+            }).RequireAuthorization();
         }
     }
 }

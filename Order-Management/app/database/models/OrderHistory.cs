@@ -26,7 +26,7 @@ namespace Order_Management.app.database.models
         [Required]
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-
+        
 
       
       }

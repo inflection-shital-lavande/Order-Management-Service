@@ -53,6 +53,12 @@ namespace Order_Management.app.database.models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<OrderCoupon> orderCoupons { get; set; }
+        public ICollection<OrderCoupon> OrderCoupons { get; set; }
+       
+        public ICollection<OrderPayment> CustomerAddresses { get; set; }
+        public ICollection<OrderHistory> OrderHistorys { get; set; }
+        public ICollection<OrderLineItem> OrderLineItems { get; set; }
+
+
     }
-   }
+}

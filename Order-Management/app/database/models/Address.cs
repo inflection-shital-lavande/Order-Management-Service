@@ -38,8 +38,12 @@ namespace Order_Management.app.database.models
 
         public DateTime? UpdatedAt { get; set; }
 
-        
+       
         public ICollection<CustomerAddress> CustomerAddresses { get; set; }
+       
+        /*public ICollection<Merchant> Merchants { get; set; }*/
+       // public ICollection<Order> Orders { get; set; }  
+
         public Address()
         {
             Id = Guid.NewGuid();
@@ -47,7 +51,6 @@ namespace Order_Management.app.database.models
             UpdatedAt = DateTime.UtcNow;
         }
 
-        
     }
 
 }

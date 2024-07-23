@@ -33,6 +33,8 @@ namespace Order_Management.app.database.models
         public DateTime? UpdatedAt { get; set; }
 
         public DateTime? DeletedAt { get; set; }
+        public ICollection<Order> Orders { get; set; }
+        public ICollection<OrderLineItem> OrderLineItems { get; set; }
 
         public Cart()
         {

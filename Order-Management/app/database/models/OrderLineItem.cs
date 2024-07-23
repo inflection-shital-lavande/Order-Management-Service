@@ -47,7 +47,7 @@ namespace Order_Management.app.database.models
         public DateTime? UpdatedAt { get; set; }
 
 
-
+        public ICollection<Order> Orders { get; set; }
         public ICollection<Cart> Carts { get; set; }
 
     }

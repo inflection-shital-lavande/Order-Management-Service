@@ -21,6 +21,7 @@ namespace Order_Management.Data
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         
         public DbSet<User> Users { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>(entity =>
@@ -60,6 +61,80 @@ namespace Order_Management.Data
                     .HasMaxLength(64);
 
                
+            });
+
+            modelBuilder.Entity<Coupon>(entity =>
+            {
+                entity.ToTable("coupons");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("char(36)")
+                    .IsRequired();
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1024);
+
+                entity.Property(e => e.CouponCode)
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.CouponType)
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Discount)
+                     .HasColumnType("float");
+
+                entity.Property(e => e.DiscountType)
+                    .HasColumnType("nvarchar")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DiscountPercentage)
+                    .HasColumnType("float");
+
+                entity.Property(e => e.DiscountMaxAmount)
+                    .HasColumnType("float");
+
+                entity.Property(e => e.StartDate)
+                  .HasColumnType("datetime");
+
+                entity.Property(e => e.EndDate)
+                  .HasColumnType("datetime");
+
+                entity.Property(e => e.MaxUsage)
+                  .HasColumnType("int");
+
+                entity.Property(e => e.MaxUsagePerUser)
+                 .HasColumnType("int");
+
+                entity.Property(e => e.MaxUsagePerOrder)
+                 .HasColumnType("int");
+
+                entity.Property(e => e.MinOrderAmount)
+                 .HasColumnType("float");
+
+                entity.Property(e => e.IsActive)
+               .HasColumnType("bit");
+
+                entity.Property(e => e.IsDeleted)
+               .HasColumnType("bit");
+
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedBy)
+                     .HasColumnType("char(36)")
+                    .IsUnicode(false);
+
+                
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime");
+
+                
+
+
             });
 
             modelBuilder.Entity<Customer>(entity =>

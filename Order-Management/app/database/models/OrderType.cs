@@ -21,7 +21,8 @@ namespace Order_Management.app.database.models
 
         public DateTime? UpdatedAt { get; set; }
 
-        
+
+        public ICollection<Order> Orders { get; set; }
 
         public OrderType(Guid id, string name, string description)
         {

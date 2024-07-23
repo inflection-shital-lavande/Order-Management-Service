@@ -11,11 +11,10 @@ namespace Order_Management.app.database.models
         public Guid Id { get; set; }
 
         [MaxLength(36)]
-        //[Index(IsUnique = true)]
+        
         public Guid? DisplayCode { get; set; }
 
-        [MaxLength(64)]
-        //[Index(IsUnique = true)]
+        [MaxLength(64)]       
         public string InvoiceNumber { get; set; }
 
         [MaxLength(36)]
@@ -63,9 +62,7 @@ namespace Order_Management.app.database.models
 
         public DateTime? UpdatedAt { get; set; }
 
-        
-
-        
+        public ICollection<OrderPayment> OrderPayments { get; set; }
 
     }
     }

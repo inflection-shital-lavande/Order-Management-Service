@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OrderManagementService.app.api.Authen;
 using Order_Management.Auth;
 using System.Text.Json;
+using Order_Management.app.api.couponsEndpoints;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,11 +30,14 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //add services
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
-//authentication
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAuthorization();
@@ -59,7 +63,7 @@ builder.Services.AddSwaggerGen(Swagger =>
     {
         Version = "v1",
         Title = "asp.net 8 web api ",
-        Description = "authentication"
+       // Description = "authentication"
     });
     Swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -105,7 +109,7 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
     {
         context.Response.ContentType = "application/json";
-        var response = new { Message = "Unauthorized access. Please provide valid credentials." };
+        var response = new { Message = "Unauthorized access." };
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 });
@@ -116,7 +120,7 @@ app.UseAuthorization();
 // Register endpoints
 app.MapAuthEndpoints();
 app.MapAddressEndpoints();
-
+app.MapCouponsEndpoints();
 
 app.MapCustomerEndpoints();
 

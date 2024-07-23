@@ -9,8 +9,7 @@ namespace OrderManagementService.app.api.Authen
         public static void MapAuthEndpoints(this WebApplication app)
         {
 
-            //authentication 
-
+           
             app.MapPost("/register", async (RegisterDTO register, IAccountService accountService) =>
             {
                 return Results.Ok(await accountService.Register(register));
