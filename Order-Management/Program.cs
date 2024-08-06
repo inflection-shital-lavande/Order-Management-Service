@@ -1,21 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-using Order_Management.app.Config;
-using Order_Management.app.database.models;
-using Order_Management.Data;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Order_Management.app.api;
-using Order_Management.app.database.service;
+
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using OrderManagementService.app.api.Authen;
 using Order_Management.Auth;
 using System.Text.Json;
-using Order_Management.app.api.couponsEndpoints;
+using Order_Management.database;
+using Order_Management.Config;
+using Order_Management.services.interfaces;
+using Order_Management.services.implementetions;
+using Order_Management.src.api;
+using FluentValidation;
+using Order_Management.database.dto;
+using static Order_Management.src.api.address.AddressValidation;
+using static Order_Management.src.api.auth.AuthenticationValidation;
+using static Order_Management.src.api.coupons.CouponsValidation;
+using static Order_Management.src.api.customer.CustomerValidation;
+using order_management.common;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +93,25 @@ builder.Services.AddSwaggerGen(Swagger =>
 });
 
 
+//FluentValidation
+//Address
+builder.Services.AddScoped<IValidator<AddressCreateDTO>, AddAddressDTOValidator>();
+builder.Services.AddScoped<IValidator<AddressUpdateDTO>, UpdateAddressDTOValidator>();
+
+builder.Services.AddScoped<IValidator<CouponCreateDTO>, AddCouponsDTOValidator>();
+builder.Services.AddScoped<IValidator<CouponUpdateDTO>, UpdateCouponDTOValidator>();
+
+builder.Services.AddScoped<IValidator<CustomerCreateDTO>, AddCustomerDTOValidator>();
+builder.Services.AddScoped<IValidator<CustomerUpdateDTO>, UpdateCustomerDTOValidator>();
+
+
+//Auth
+builder.Services.AddScoped<IValidator<RegisterDTO>, RegisterDTOValidator>();
+builder.Services.AddScoped<IValidator<LoginDTO>, LoginDTOValidator>();
+
+//
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -109,20 +131,27 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
     {
         context.Response.ContentType = "application/json";
-        var response = new { Message = "Unauthorized access." };
+        var response = new { Status = "Error", Message = "Required Authentication.", HttpCode = 401, };
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 });
 
+
+
+
+
 app.UseAuthorization();
 
+// Create an instance of AddressRoutes
+var addressRoutes = new AddressRoutes();
 
+// Map address routes
+addressRoutes.MapAddressRoutes(app);
 // Register endpoints
-app.MapAuthEndpoints();
-app.MapAddressEndpoints();
-app.MapCouponsEndpoints();
+app.MapAuthRoutes();
 
-app.MapCustomerEndpoints();
+app.MapCouponsRoutes();
+app.MapCustomerRoutes();
 
 app.Run();
 
