@@ -1,14 +1,13 @@
-﻿namespace Order_Management.domain_types.enums
+﻿namespace order_management.domain_types.enums;
+
+public enum PaymentStatusTypes
 {
-    public enum PaymentStatusTypes
-    {
-        Initiated,
-        InProgress,
-        Succeeded,
-        Failed,
-        Cancelled,
-        Refunded,
-        Expired,
-        UNKNOWN
-    }
+    Initiated,
+    InProgress,
+    Succeeded,
+    Failed,
+    Cancelled,
+    Refunded,
+    Expired,
+    UNKNOWN
 }

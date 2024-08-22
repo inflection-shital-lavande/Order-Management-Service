@@ -1,17 +1,19 @@
-﻿using Order_Management.api;
+﻿using order_management.api;
 
-namespace Order_Management.src.api
+namespace order_management.src.api;
+
+public  class CustomerRoutes
 {
-    public static class CustomerRoutes
+    public  void MapCustomerRoutes( WebApplication app)
     {
-        public static void MapCustomerRoutes(this WebApplication app)
-        {
-            app.MapGet("/OrderManagementService/GetAllCustomer", CustomerController.GetAllCustomers).RequireAuthorization();
-            app.MapGet("/OrderManagementService/GetCustomer/{id:guid}", CustomerController.GetCustomerById).RequireAuthorization();
-            app.MapPost("/OrderManagementService/AddCustomer", CustomerController.AddCustomer).RequireAuthorization();
-            app.MapPut("/OrderManagementService/UpdateCustomer/{id:guid}", CustomerController.UpdateCustomer).RequireAuthorization();
-            app.MapDelete("/OrderManagementService/DeleteCustomer/{id:guid}", CustomerController.DeleteCustomer).RequireAuthorization();
-            app.MapGet("/OrderManagementService/SearchCustomer", CustomerController.SearchCustomers).RequireAuthorization();
-        }
+        var customerController = new CustomerController();
+        var router = app.MapGroup("/api/customers");
+
+        router.MapGet("/", customerController.GetAll).RequireAuthorization();
+        router.MapGet("/{id:guid}", customerController.GetById).RequireAuthorization();
+        router.MapPost("/", customerController.Create).RequireAuthorization();
+        router.MapPut("/{id:guid}", customerController.Update).RequireAuthorization();
+        router.MapDelete("/{id:guid}", customerController.Delete).RequireAuthorization();
+        router.MapGet("/Search", customerController.Search).RequireAuthorization();
     }
 }

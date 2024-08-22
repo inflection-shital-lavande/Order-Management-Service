@@ -1,55 +1,89 @@
 ﻿
-using Order_Management.domain_types.enums;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using order_management.domain_types.enums;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Order_Management.database.dto
+namespace order_management.database.dto;
+
+public class CouponResponseModel
 {
-    public class CouponResponseDTO
-    {
-        public Guid Id { get; set; }
 
-        [StringLength(64)]
-        public string? Name { get; set; }
+    public Guid Id { get; set; }
 
-        [StringLength(1024)]
-        public string? Description { get; set; }
+    [StringLength(64)]
+    [Display(Description = "Name of the coupon")]
 
-        [StringLength(64)]
+    public string? Name { get; set; }
 
-        public string? CouponCode { get; set; }
+    [StringLength(1024)]
+    [Display(Description = "Description of coupon")]
 
-        [StringLength(64)]
-        public string? CouponType { get; set; }
+    public string? Description { get; set; }
 
-        public float? Discount { get; set; } = 0.00f;
+    [StringLength(64)]
+    [Display(Description = "Code of coupon")]
 
-        public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
 
-        public float? DiscountPercentage { get; set; } = 0.00f;
+    public string? CouponCode { get; set; }
 
-        public float? DiscountMaxAmount { get; set; } = 0.00f;
+    [StringLength(64)]
+    [Display(Description = "Type of coupon")]
 
-        public DateTime? StartDate { get; set; }
+    public string? CouponType { get; set; }
+    [Display(Description = "Coupon discount")]
 
-        public DateTime? EndDate { get; set; }
+    public float? Discount { get; set; } = 0.00f;
+    [Display(Description = "Type of discount")]
 
-        public int? MaxUsage { get; set; } = 10000;
+    public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
+    [Display(Description = "Percentage of discount")]
 
-        public int? MaxUsagePerUser { get; set; } = 1;
+    public float? DiscountPercentage { get; set; } = 0.00f;
+    [Display(Description = "Max amount of discount")]
 
-        public int? MaxUsagePerOrder { get; set; } = 1;
+    public float? DiscountMaxAmount { get; set; } = 0.00f;
+    [Display(Description = "Start date of coupon discount")]
 
-        public float? MinOrderAmount { get; set; } = 0.00f;
+    public DateTime? StartDate { get; set; }
+    [Display(Description = "End date of coupon discount")]
 
-        public bool? IsActive { get; set; } = true;
+    public DateTime? EndDate { get; set; }
+    [Display(Description = "Max usage of coupon")]
 
-        public bool? IsDeleted { get; set; } = false;
+    public int? MaxUsage { get; set; } = 10000;
+    [Display(Description = "Max usage of coupon per user")]
 
-        [StringLength(36)]
-        public Guid? CreatedBy { get; set; }
-        public DateTime? CreatedAt { get; set; }
+    public int? MaxUsagePerUser { get; set; } = 1;
+    [Display(Description = "Max usage of coupon per order")]
 
-        public DateTime? UpdatedAt { get; set; }
-    }
+    public int? MaxUsagePerOrder { get; set; } = 1;
+    [Display(Description = "Minimum order amount to use this coupon")]
+
+    public float? MinOrderAmount { get; set; } = 0.00f;
+    [Display(Description = "Coupon is active or not")]
+
+    public bool? IsActive { get; set; } = true;
+    [Display(Description = "Coupon is deleted or not")]
+
+    public bool? IsDeleted { get; set; } = false;
+
+    [StringLength(36)]
+    [Display(Description = "Id of coupon creator")]
+
+    public Guid? CreatedBy { get; set; }
+    [Display(Description = "Created at")]
+
+    public DateTime? CreatedAt { get; set; }
+    [Display(Description = "Updated at")]
+    public DateTime? UpdatedAt { get; set; }
+
+
 }
+
+
+
+    
+   
+    
+   

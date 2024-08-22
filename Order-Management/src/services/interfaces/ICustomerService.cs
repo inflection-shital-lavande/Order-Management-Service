@@ -1,16 +1,28 @@
-﻿using Order_Management.Auth;
-using Order_Management.database.dto;
+﻿using order_management.auth;
+using order_management.database.dto;
+using order_management.database.models;
+using Order_Management.src.database.dto.order_line_item;
 
-namespace Order_Management.services.interfaces
+namespace order_management.services.interfaces;
+
+public interface ICustomerService
 {
-    public interface ICustomerService
-    {
 
-        Task<CustomerResponseDTO> GetCustomerByIdAsync(Guid id);
-        Task<List<CustomerResponseDTO>> GetAllCustomersAsync();
-        Task<List<CustomerSearchResultsDTO>> SearchCustomersAsync(CustomerSearchFilterDTO filter);
-        Task<Response> CreateCustomerAsync(CustomerCreateDTO customerDto);
-        Task<Response> UpdateCustomerAsync(Guid id, CustomerUpdateDTO customerDto);
-        Task<Response> DeleteCustomerAsync(Guid id);
-    }
+     Task<List<CustomerResponseModel>> GetAll();
+    //Task<IEnumerable<Customer>> GetAll();
+
+    Task<CustomerResponseModel> GetById(Guid id);
+
+    Task<CustomerResponseModel> Create(CustomerCreateModel customerCreate);
+    Task<CustomerResponseModel> Update(Guid id, CustomerUpdateModel customerUpdate);
+    Task<bool> Delete(Guid id);
+    Task<CustomerSearchResultsModel> Search(CustomerSearchFilterModel filter);
+
+
+    
+
 }
+
+
+
+

@@ -1,7 +1,9 @@
-﻿namespace Order_Management.database.dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace order_management.database.dto;
+
+public class AddressSearchResultsModel
 {
-    public class AddressSearchResultsDTO
-    {
-        public List<AddressResponseDTO> Items { get; set; }
-    }
+    [Display(Description = "List of addresses matching the search criteria.")]
+    public List<AddressResponseModel> Items { get; set; }
 }

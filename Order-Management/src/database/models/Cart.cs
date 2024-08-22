@@ -2,47 +2,46 @@
 using System.ComponentModel.DataAnnotations;
 using System.Xml;
 
-namespace Order_Management.database.models
+namespace order_management.database.models;
+
+public class Cart
 {
-    public class Cart
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
 
-        [StringLength(36)]
-        public Guid? CustomerId { get; set; }
+    [StringLength(36)]
+    public Guid? CustomerId { get; set; }
 
-        public int? TotalItemsCount { get; set; } = 0;
+    public int? TotalItemsCount { get; set; } = 0;
 
-        public float? TotalTax { get; set; } = 0.0f;
+    public float? TotalTax { get; set; } = 0.0f;
 
-        public float? TotalDiscount { get; set; } = 0.0f;
+    public float? TotalDiscount { get; set; } = 0.0f;
 
-        public float? TotalAmount { get; set; } = 0.0f;
+    public float? TotalAmount { get; set; } = 0.0f;
 
-        public DateTime? CartToOrderTimestamp { get; set; }
+    public DateTime? CartToOrderTimestamp { get; set; }
 
-        [StringLength(36)]
-        public Guid? AssociatedOrderId { get; set; }
+    [StringLength(36)]
+    public Guid? AssociatedOrderId { get; set; }
 
-       // [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? CreatedAt { get; set; }
+   // [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime? CreatedAt { get; set; }
 
-       // [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get; set; }
+   // [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime? UpdatedAt { get; set; }
 
-        public DateTime? DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
-        //one to many  cart and order 
-        public ICollection<Order> Orders { get; set; }
+    //one to many  cart and order 
+    public ICollection<Order> Orders { get; set; }
 
-        //one to many cart and orderlineitem
-        public ICollection<OrderLineItem> OrderLineItems { get; set; }
+    //one to many cart and orderlineitem
+    public ICollection<OrderLineItem> OrderLineItems { get; set; }
 
-       
 
-        
-    }
+    //public ICollection<OrderLineItem> OrderLineItems { get; set; }
+    //public Order Order { get; set; }
 
 }

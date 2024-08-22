@@ -1,53 +1,56 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Order_Management.database.models
+namespace order_management.database.models;
+
+public class OrderLineItem
 {
-    public class OrderLineItem
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
 
-        [Required]
-        [MaxLength(512)]
-        public string Name { get; set; }
+    [Required]
+    [MaxLength(512)]
+    public string? Name { get; set; }
 
-        [MaxLength(36)]
-        public Guid? CatalogId { get; set; }
+    [MaxLength(36)]
+    public Guid? CatalogId { get; set; }
 
-        [Required]
-        public int Quantity { get; set; } = 0;
+    [Required]
+    public int? Quantity { get; set; } = 0;
 
-        [Required]
-        public double UnitPrice { get; set; } = 0.0;
+    [Required]
+    public double? UnitPrice { get; set; } = 0.0;
 
-        [Required]
-        public double Discount { get; set; } = 0.0;
+    [Required]
+    public double? Discount { get; set; } = 0.0;
 
-        [MaxLength(36)]
-        public Guid? DiscountSchemeId { get; set; }
+    [MaxLength(36)]
+    public Guid? DiscountSchemeId { get; set; }
 
-        [Required]
-        public double Tax { get; set; } = 0.0;
+    [Required]
+    public double? Tax { get; set; } = 0.0;
 
-        [Required]
-        public double ItemSubTotal { get; set; } = 0.0;
+    [Required]
+    public double? ItemSubTotal { get; set; } = 0.0;
 
-        [Required]
-        [MaxLength(36)]
-        public Guid? OrderId { get; set; }
+    [Required]
+    [MaxLength(36)]
+    public Guid? OrderId { get; set; }
 
-        [MaxLength(36)]
-        public Guid? CartId { get; set; }
+    [MaxLength(36)]
+    public Guid? CartId { get; set; }
 
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [Required]
+    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public virtual Cart Cart { get; set; }
+
+    public virtual Order Order { get; set; }
 
 
-       
 
-    }
-   }
+
+}
+

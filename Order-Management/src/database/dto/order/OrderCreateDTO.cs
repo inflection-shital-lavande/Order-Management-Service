@@ -1,20 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace Order_Management.src.database.dto
+namespace order_management.src.database.dto;
+
+public class OrderCreateModel
 {
-    public class OrderCreateDTO
-    {
-        public Guid? OrderType { get; set; }
+    [Description("Id of the order type")]
+    public Guid? OrderType { get; set; }
 
-        [Required]
-        public Guid CustomerId { get; set; }
+    [Required(ErrorMessage = "Customer Id is required.")]
+    [Description("Id of the customer")]
+    public Guid? CustomerId { get; set; }
 
-        public Guid? AssociatedCartId { get; set; }
+    [Description("Id of the cart")]
+    public Guid? AssociatedCartId { get; set; }
 
-        public bool? TipApplicable { get; set; } = false;
+    [Description("Tip applicable or not")]
+    public bool? TipApplicable { get; set; } = false;
 
-        [MaxLength(1024)]
-        [MinLength(5)]
-        public string Notes { get; set; }
-    }
+    [StringLength(1024, MinimumLength = 5, ErrorMessage = "Notes must be between 5 and 1024 characters.")]
+    [Description("Notes for the delivery")]
+    public string? Notes { get; set; }
 }
+
+

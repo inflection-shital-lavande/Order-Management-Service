@@ -1,52 +1,62 @@
 ﻿
-using Order_Management.domain_types.enums;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using order_management.domain_types.enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Order_Management.database.dto
+namespace order_management.database.dto;
+
+public class CouponUpdateModel
 {
-    public class CouponUpdateDTO
-    {
 
-        [StringLength(64)]
-        [Required]
-        public string? Name { get; set; }
+    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon name must be between 2 and 64 characters.")]
 
-        [StringLength(1024)]
-        public string? Description { get; set; }
+    public string? Name { get; set; }
 
-        [StringLength(64)]
+    [StringLength(1024, MinimumLength = 2, ErrorMessage = "Description must be between 2 and 1024 characters.")]
+    public string? Description { get; set; }
 
-        public string? CouponCode { get; set; }
+    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon code must be between 2 and 64 characters.")]
 
-        [StringLength(64)]
-        public string? CouponType { get; set; }
+    public string? CouponCode { get; set; }
 
-        public float? Discount { get; set; } = 0.00f;
+    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon type must be between 2 and 64 characters.")]
+    public string? CouponType { get; set; }
+    [Range(0.0, double.MaxValue, ErrorMessage = "Discount must be a non-negative value.")]
 
-        public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
+    public float? Discount { get; set; } = 0.00f;
 
-        public float? DiscountPercentage { get; set; } = 0.00f;
+    public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
+    [Range(0.0, 100.0, ErrorMessage = "Discount percentage must be between 0 and 100.")]
 
-        public float? DiscountMaxAmount { get; set; } = 0.00f;
+    public float? DiscountPercentage { get; set; } = 0.00f;
+    [Range(0.0, double.MaxValue, ErrorMessage = "Discount max amount must be a non-negative value.")]
 
-        public DateTime? StartDate { get; set; }
+    public float? DiscountMaxAmount { get; set; } = 0.00f;
 
-        public DateTime? EndDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
-        public int? MaxUsage { get; set; } = 10000;
+    public DateTime? EndDate { get; set; }
+    [Range(0, 10000, ErrorMessage = "Max usage must be between 0 and 10000.")]
 
-        public int? MaxUsagePerUser { get; set; } = 1;
+    public int? MaxUsage { get; set; } = 10000;
+    [Range(0, 10, ErrorMessage = "Max usage per user must be between 0 and 10.")]
 
-        public int? MaxUsagePerOrder { get; set; } = 1;
+    public int? MaxUsagePerUser { get; set; } = 1;
+    [Range(0, 5, ErrorMessage = "Max usage per order must be between 0 and 5.")]
 
-        public float? MinOrderAmount { get; set; } = 0.00f;
+    public int? MaxUsagePerOrder { get; set; } = 1;
+    [Range(0.0, double.MaxValue, ErrorMessage = "Minimum order amount must be a non-negative value.")]
 
-        public bool? IsActive { get; set; } = true;
+    public float? MinOrderAmount { get; set; } = 0.00f;
 
-        public bool? IsDeleted { get; set; } = false;
+    public bool? IsActive { get; set; } = true;
 
-        
+    public bool? IsDeleted { get; set; } = false;
 
-
-    }
+   
 }
+
+
+
+

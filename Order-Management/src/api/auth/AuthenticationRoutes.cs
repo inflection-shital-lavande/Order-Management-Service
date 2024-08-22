@@ -1,18 +1,20 @@
 ﻿using Microsoft.Win32;
-using OrderManagementService.api;
+using order_management.api;
 
-namespace Order_Management.src.api
+namespace order_management.src.api;
+
+public  class AuthenticationRoutes
 {
-    public static class AuthenticationRoutes
+    public  void MapAuthRoutes( WebApplication app)
     {
-        public static void MapAuthRoutes(this IEndpointRouteBuilder routes)
-        {
-            routes.MapPost("/register", AuthenticationController.Register)
-               .AllowAnonymous();
+        var authenticationController = new AuthenticationController();
+        var router = app.MapGroup("/api/auth");
 
-            routes.MapPost("/login", AuthenticationController.Login)
-               .AllowAnonymous();
-        }
+        router.MapPost("/register", authenticationController.Register)
+           .AllowAnonymous();
+
+        router.MapPost("/login", authenticationController.Login)
+           .AllowAnonymous();
     }
 }
 

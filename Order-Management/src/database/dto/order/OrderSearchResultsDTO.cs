@@ -1,7 +1,9 @@
-﻿namespace Order_Management.src.database.dto
+﻿using System.ComponentModel;
+
+namespace order_management.src.database.dto;
+
+public class OrderSearchResultsModel
 {
-    public class OrderSearchResultsDTO
-    {
-        public List<OrderResponseDTO> Items { get; set; }
-    }
+    [Description("List of orders")]
+    public List<OrderResponseModel> Items { get; set; } = new List<OrderResponseModel>();
 }

@@ -1,8 +1,7 @@
-﻿namespace Order_Management.Auth
+﻿namespace order_management.auth;
+
+public interface IAccountRepo
 {
-    public interface IAccountRepo
-    {
-        Task<Response> Register(RegisterDTO registerDTO);
-        Task<LoginResponse> Login(LoginDTO loginDTO);
-    }
+    Task<Response> Register(RegisterDTO registerDTO);
+    Task<LoginResponse> Login(LoginDTO loginDTO);
 }

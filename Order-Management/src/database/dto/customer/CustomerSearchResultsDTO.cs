@@ -1,8 +1,13 @@
-﻿namespace Order_Management.database.dto
-{
-    public class CustomerSearchResultsDTO
-    {
-        public List<CustomerResponseDTO> Items { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
-    }
+namespace order_management.database.dto;
+
+public class CustomerSearchResultsModel
+{
+    [Display(Description = "List of customers")]
+
+    public List<CustomerResponseModel> Items { get; set; }
+
 }
+
+

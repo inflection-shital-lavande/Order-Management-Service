@@ -1,90 +1,114 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-using Order_Management.Auth;
-using Order_Management.database;
-using Order_Management.database.dto;
-using Order_Management.database.models;
-using Order_Management.services.interfaces;
+using order_management.auth;
+using order_management.database;
+using order_management.database.dto;
+using order_management.database.models;
+using order_management.services.interfaces;
 
 
-namespace Order_Management.services.implementetions
+namespace order_management.services.implementetions;
+
+public class CouponService : ICouponService
 {
-    public class CouponService : ICouponService
+    private readonly OrderManagementContext _context;
+    private readonly IMapper _mapper;
+
+    public CouponService(OrderManagementContext context, IMapper mapper)
     {
-        private readonly OrderManagementContext _context;
-        private readonly IMapper _mapper;
-
-        public CouponService(OrderManagementContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
-
-
-        public async Task<Response> CreateCouponAsync(CouponCreateDTO couponCreateDTO)
-        {
-            _context.Coupons.Add(_mapper.Map<Coupon>(couponCreateDTO));
-            await _context.SaveChangesAsync();
-            return new Response(true, "saved");
-        }
-        public async Task<Response> DeleteCouponAsync(Guid id)
-        {
-            _context.Coupons.Remove(await _context.Coupons.FindAsync(id));
-            await _context.SaveChangesAsync();
-            return new Response(true, "Delete");
-        }
-
-
-        public async Task<CouponResponseDTO> GetCouponByIdAsync(Guid id) =>
-           _mapper.Map<CouponResponseDTO>(await _context.Coupons.FindAsync(id));
-
-        public async Task<List<CouponResponseDTO>> GetAll() =>
-
-           _mapper.Map<List<CouponResponseDTO>>(await _context.Coupons.ToListAsync());
-
-
-
-        public async Task<List<CouponSearchResultsDTO>> SearchCouponAsync(CouponSearchFilterDTO filter)
-        {
-
-            var query = _context.Coupons.AsQueryable();
-
-            if (!string.IsNullOrEmpty(filter.Name))
-                query = query.Where(a => a.Name.Contains(filter.Name));
-
-
-
-            var results = await query
-                .Select(a => _mapper.Map<CouponSearchResultsDTO>(a))
-                .ToListAsync();
-
-            return results;
-        }
-
-        public async Task<Response> UpdateCouponAsync(Guid id, CouponUpdateDTO couponUpdateDTO)
-        {
-            var existingCoupon = await _context.Coupons.FindAsync(id);
-            if (existingCoupon == null)
-            {
-                return new Response(false, "Coupon not found");
-            }
-
-            // Map updated values to the existing entity
-            _mapper.Map(couponUpdateDTO, existingCoupon);
-
-            // Attempt to save changes
-            try
-            {
-                _context.Coupons.Update(existingCoupon);
-                await _context.SaveChangesAsync();
-                return new Response(true, "Coupon updated successfully");
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                // Handle concurrency exception
-                return new Response(false, "The coupon was updated or deleted by another user. Please reload and try again.");
-            }
-        }
+        _context = context;
+        _mapper = mapper;
     }
+
+
+   
+    public async Task<List<CouponResponseModel>> GetAll() =>
+
+       _mapper.Map<List<CouponResponseModel>>(await _context.Coupons.ToListAsync());
+
+
+    public async Task<CouponResponseModel> GetById(Guid id)
+    {
+        var coupons = await _context.Coupons
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        return coupons != null ? _mapper.Map<CouponResponseModel>(coupons) : null;
     }
+
+
+    public async Task<CouponSearchResultsModel> Search(CouponSearchFilterModel filter)
+    {
+        
+        if (_context.Coupons == null)
+            return new CouponSearchResultsModel { Items = new List<CouponResponseModel>() };
+
+        
+        var query = _context.Coupons.AsQueryable();
+
+        
+        if (!string.IsNullOrEmpty(filter.Name))
+            query = query.Where(a => a.Name.Contains(filter.Name));
+
+        if (!string.IsNullOrEmpty(filter.CouponCode))
+            query = query.Where(a => a.CouponCode.Contains(filter.CouponCode));
+
+        
+        var coupons = await query.ToListAsync();
+
+       
+        var results = _mapper.Map<List<CouponResponseModel>>(coupons);
+
+        
+        return new CouponSearchResultsModel { Items = results };
+    }
+
+
+
+
+
+
+
+    public async Task<CouponResponseModel> Create(CouponCreateModel couponCreate)
+    {
+        var coupons = _mapper.Map<Coupon>(couponCreate);
+        coupons.CreatedAt = DateTime.UtcNow;
+        coupons.UpdatedAt = DateTime.UtcNow;
+
+        _context.Coupons.Add(coupons);
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<CouponResponseModel>(coupons);
+    }
+
+
+   
+    public async Task<CouponResponseModel> Update(Guid id, CouponUpdateModel couponUpdate)
+    {
+        var existingCoupon = await _context.Coupons.FindAsync(id);
+        if (existingCoupon == null) return null;
+
+        _mapper.Map(couponUpdate, existingCoupon);
+        existingCoupon.UpdatedAt = DateTime.UtcNow;
+
+        _context.Coupons.Update(existingCoupon);
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<CouponResponseModel>(existingCoupon);
+    }
+
+    public async Task<bool> Delete(Guid id)
+    {
+        var coupons = await _context.Coupons.FindAsync(id);
+        if (coupons == null) return false;
+
+        _context.Coupons.Remove(coupons);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+   
+
+}
+

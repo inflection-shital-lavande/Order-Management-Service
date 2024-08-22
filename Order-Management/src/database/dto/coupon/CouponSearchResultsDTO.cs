@@ -1,7 +1,10 @@
-﻿namespace Order_Management.database.dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace order_management.database.dto;
+
+public class CouponSearchResultsModel
 {
-    public class CouponSearchResultsDTO
-    {
-        public List<CouponResponseDTO> Items { get; set; }
-    }
+    [Display(Description = "List of coupons")]
+
+    public List<CouponResponseModel> Items { get; set; }
 }

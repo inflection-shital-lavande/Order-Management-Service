@@ -1,12 +1,11 @@
-﻿namespace Order_Management.Auth
+﻿namespace order_management.auth;
+
+public class AccountService(IAccountRepo account) : IAccountService
+
 {
-    public class AccountService(IAccountRepo account) : IAccountService
-
-    {
-        public async Task<LoginResponse> Login(LoginDTO loginDTO) => await account.Login(loginDTO);
+    public async Task<LoginResponse> Login(LoginDTO loginDTO) => await account.Login(loginDTO);
 
 
-        public async Task<Response> Register(RegisterDTO registerDTO) => await account.Register(registerDTO);
+    public async Task<Response> Register(RegisterDTO registerDTO) => await account.Register(registerDTO);
 
-    }
 }

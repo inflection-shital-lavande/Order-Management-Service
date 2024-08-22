@@ -1,9 +1,9 @@
-﻿using Order_Management.database.dto;
+﻿using order_management.database.dto;
 
-namespace Order_Management.src.database.dto.orderHistory
+namespace order_management.src.database.dto.orderHistory
 {
-    public class OrderHistorySearchResultsDTO
+    public class OrderHistorySearchResultsModel
     {
-        public List<OrderHistoryResponseDTO> Items { get; set; }
+        public List<OrderHistoryResponseModel> Items { get; set; }
     }
 }

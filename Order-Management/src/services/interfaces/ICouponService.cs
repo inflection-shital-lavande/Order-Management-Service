@@ -1,17 +1,22 @@
-﻿using Order_Management.Auth;
-using Order_Management.database.dto;
+﻿using order_management.auth;
+using order_management.database.dto;
+using order_management.database.models;
+using Order_Management.src.database.dto.cart;
 
-namespace Order_Management.services.interfaces
+namespace order_management.services.interfaces;
+
+public interface ICouponService
 {
-    public interface ICouponService
-    {
 
-        Task<CouponResponseDTO> GetCouponByIdAsync(Guid id);
-        Task<List<CouponResponseDTO>> GetAll();
+    Task<List<CouponResponseModel>> GetAll();
+    // Task<IEnumerable<Coupon>> GetAll();
 
-        Task<Response> CreateCouponAsync(CouponCreateDTO couponCreateDTO);
-        Task<Response> UpdateCouponAsync(Guid id, CouponUpdateDTO couponUpdateDTO);
-        Task<Response> DeleteCouponAsync(Guid id);
-        Task<List<CouponSearchResultsDTO>> SearchCouponAsync(CouponSearchFilterDTO filter);
-    }
+    Task<CouponResponseModel> GetById(Guid id);
+    Task<CouponResponseModel> Create(CouponCreateModel couponCreate);
+    Task<CouponResponseModel> Update(Guid id, CouponUpdateModel couponUpdate);
+    Task<bool> Delete(Guid id);
+    Task<CouponSearchResultsModel> Search(CouponSearchFilterModel filter);
+
 }
+
+
