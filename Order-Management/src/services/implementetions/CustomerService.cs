@@ -6,6 +6,7 @@ using order_management.services.interfaces;
 using order_management.database;
 using order_management.database.dto;
 using order_management.database.models;
+using Order_Management.src.database.dto.merchant;
 
 namespace order_management.services.implementetions;
 
@@ -79,9 +80,12 @@ public class CustomerService : ICustomerService
         return new CustomerSearchResultsModel { Items = results };
     }
 
-    public async Task<CustomerResponseModel> Create(CustomerCreateModel customerCreate)
+    
+
+
+    public async Task<CustomerResponseModel> Create(CustomerCreateModel Create)
     {
-        var customer = _mapper.Map<Customer>(customerCreate);
+        var customer = _mapper.Map<Customer>(Create);
         customer.CreatedAt = DateTime.UtcNow;
         customer.UpdatedAt = DateTime.UtcNow;
 
@@ -90,6 +94,8 @@ public class CustomerService : ICustomerService
 
         return _mapper.Map<CustomerResponseModel>(customer);
     }
+
+
     public async Task<CustomerResponseModel> Update(Guid id, CustomerUpdateModel customerUpdate)
     {
         var existingCustomer = await _context.Customers.FindAsync(id);

@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
+using order_management.database.models;
 using order_management.services.interfaces;
+using Order_Management.src.database.dto.cart;
+using Order_Management.src.services.interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace order_management.api;
@@ -16,7 +19,9 @@ public class CouponsController
     {
 
     }
-    public  async Task<IResult> GetAll(HttpContext httpContext, ICouponService _couponService)
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Coupon>))]
+
+    public async Task<IResult> GetAll(HttpContext httpContext, ICouponService _couponService)
     {
         try
         {
@@ -70,7 +75,9 @@ public class CouponsController
         }
     }
 
-    public  async Task<IResult> Update(ICouponService _couponService, Guid id, IValidator<CouponUpdateModel> _updateValidator, CouponUpdateModel couponUpdate)
+    
+
+    public async Task<IResult> Update(Guid id, CouponUpdateModel couponUpdate, HttpContext httpContext, ICouponService _couponService, IValidator<CouponUpdateModel> _updateValidator)
     {
         try
         {
@@ -85,24 +92,17 @@ public class CouponsController
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-            var validationContext = new ValidationContext(couponUpdate);
-            var vResult = new List<ValidationResult>();
-
-            var isvalid = Validator.TryValidateObject(couponUpdate, validationContext, vResult, true);
-
-            if (isvalid)
-            {
-                var updatedCoupon = await _couponService.Update(id, couponUpdate);
-                return updatedCoupon == null ? ApiResponse.NotFound("Failure", "Coupon not found") 
-                                             : ApiResponse.Success("Success", "Coupon updated successfully");
-            }
-            return Results.BadRequest(vResult);
+            var updatedCoupon = await _couponService.Update(id, couponUpdate);
+            return updatedCoupon == null ? ApiResponse.NotFound("Failure", "Coupon not found")
+                                          : ApiResponse.Success("Success", "Coupon updated successfully", updatedCoupon);
         }
         catch (Exception ex)
         {
-            return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving coupons");
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the coupons");
         }
     }
+
+
 
     public  async Task<IResult> Delete(ICouponService _couponService, Guid id, HttpContext httpContext)
     {
@@ -152,3 +152,38 @@ public class CouponsController
 
 
 
+
+
+/*  public  async Task<IResult> Update(ICouponService _couponService, Guid id, IValidator<CouponUpdateModel> _updateValidator, CouponUpdateModel couponUpdate)
+    {
+        try
+        {
+            if (couponUpdate == null)
+            {
+                return ApiResponse.BadRequest("Failure", "Invalid coupon data");
+            }
+
+            var validationResult = _updateValidator.Validate(couponUpdate);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+            }
+
+            var validationContext = new ValidationContext(couponUpdate);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(couponUpdate, validationContext, vResult, true);
+
+            if (isvalid)
+            {
+                var updatedCoupon = await _couponService.Update(id, couponUpdate);
+                return updatedCoupon == null ? ApiResponse.NotFound("Failure", "Coupon not found") 
+                                             : ApiResponse.Success("Success", "Coupon updated successfully");
+            }
+            return Results.BadRequest(vResult);
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving coupons");
+        }
+    }*/

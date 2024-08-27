@@ -7,7 +7,7 @@ namespace Order_Management.src.services.interfaces;
 public interface ICartService
 {
     Task<List<CartResponseModel>> GetAll();//IEnumerable
-    //Task<IEnumerable<Cart>> GetAll();
+   // Task<IEnumerable<Cart>> GetAll();
 
     Task<CartResponseModel> GetById(Guid id);
     Task<CartResponseModel> Create(CartCreateModel create);//CartResponseDTO

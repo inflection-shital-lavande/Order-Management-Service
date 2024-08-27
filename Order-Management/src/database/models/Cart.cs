@@ -38,10 +38,15 @@ public class Cart
     public ICollection<Order> Orders { get; set; }
 
     //one to many cart and orderlineitem
-    public ICollection<OrderLineItem> OrderLineItems { get; set; }
+    public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
 
 
     //public ICollection<OrderLineItem> OrderLineItems { get; set; }
     //public Order Order { get; set; }
-
+    public Cart()
+    {
+        Id = Guid.NewGuid();
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

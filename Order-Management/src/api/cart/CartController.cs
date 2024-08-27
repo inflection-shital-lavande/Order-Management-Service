@@ -17,7 +17,7 @@ namespace Order_Management.src.api.cart;
 
         }
 
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Cart>))]
 
         public async Task<IResult> GetAll(HttpContext httpContext, ICartService _cartService)
         {
@@ -60,7 +60,7 @@ namespace Order_Management.src.api.cart;
                 }
 
                 var createdAddress = await _cartService.Create(cart);
-                return ApiResponse.Success("Success", "Address created successfully", createdAddress);
+                return ApiResponse.Success("Success", "cart created successfully", createdAddress);
             }
             catch (Exception ex)
             {

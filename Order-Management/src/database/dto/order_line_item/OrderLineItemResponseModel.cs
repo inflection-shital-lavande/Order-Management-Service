@@ -8,38 +8,36 @@ namespace Order_Management.src.database.dto.order_line_item
 
         [Required]
         [StringLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; } = string.Empty;
 
-        [StringLength(50)]
-        public string? CatalogId { get; set; }
-
-        [Required]
-        public int Quantity { get; set; }
+        public Guid? CatalogId { get; set; }
 
         [Required]
-        public decimal UnitPrice { get; set; }
-
-        public decimal? Discount { get; set; }
-
-        [StringLength(50)]
-        public string? DiscountSchemeId { get; set; }
+        public int? Quantity { get; set; }
 
         [Required]
-        public decimal Tax { get; set; }
+        public double? UnitPrice { get; set; } = 0.0;
+
+        public double? Discount { get; set; } = 0.0;
+
+        public Guid? DiscountSchemeId { get; set; }
 
         [Required]
-        public decimal ItemSubTotal { get; set; }
+        public double? Tax { get; set; } = 0.0;
 
         [Required]
-        [StringLength(50)]
-        public string OrderId { get; set; } = string.Empty;
+        public double? ItemSubTotal { get; set; } = 0.0;
+       
 
         [Required]
-        [StringLength(50)]
-        public string CartId { get; set; } = string.Empty;
+        public Guid? OrderId { get; set; }
+        public Dictionary<string, object>? Orders { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public Guid? CartId { get; set; }
+        public Dictionary<string, object>? Carts { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -12,17 +12,17 @@ public class OrderHistoryCreateModel
     [MaxLength(36)]
     public Guid? OrderId { get; set; }
 
-    [Required]
-    public OrderStatusTypes PreviousStatus { get; set; }
+  //  [Required]
+    public OrderStatusTypes PreviousStatus { get; set; } = OrderStatusTypes.DRAFT;
 
-    [Required]
-    public OrderStatusTypes Status { get; set; }
+   // [Required]
+    public OrderStatusTypes Status { get; set; } = OrderStatusTypes.DRAFT;
 
     [MaxLength(36)]
     public Guid? UpdatedByUserId { get; set; }
 
-    [Required]
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+   // [Required]
+    public DateTime? Timestamp { get; set; } 
 }
 
 

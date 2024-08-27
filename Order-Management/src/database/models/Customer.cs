@@ -62,7 +62,7 @@ public class Customer
     //one to many customer and order `
     public ICollection<Order> Orders { get; set; }
 
-   // public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+    public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
    
    
 }

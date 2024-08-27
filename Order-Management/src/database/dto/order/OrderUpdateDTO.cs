@@ -13,14 +13,14 @@ public class OrderUpdateModel
 
     [Range(0.0, double.MaxValue, ErrorMessage = "Order discount must be a non-negative value.")]
     [Description("Discount applied to the order")]
-    public float? OrderDiscount { get; set; }
+    public double? OrderDiscount { get; set; } = 0.0;
 
     [Description("Tip applicable or not")]
     public bool? TipApplicable { get; set; }
 
     [Range(0.0, double.MaxValue, ErrorMessage = "Tip amount must be a non-negative value.")]
     [Description("Tip amount")]
-    public float? TipAmount { get; set; }
+    public double? TipAmount { get; set; } = 0.0;
 
     [StringLength(1024, MinimumLength = 5, ErrorMessage = "Notes must be between 5 and 1024 characters.")]
     [Description("Notes for the delivery")]

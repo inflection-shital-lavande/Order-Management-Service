@@ -20,7 +20,7 @@ public class AddressController
 
     [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
 
-    public async Task<IResult> GetAll(HttpContext httpContext,IAddressService _addressService)
+    public async Task<IResult> GetAll(HttpContext httpContext, IAddressService _addressService)
     {
         try
         {
@@ -32,6 +32,10 @@ public class AddressController
             return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving addresses");
         }
     }
+
+    
+
+
     public async Task<IResult> GetById(Guid id, HttpContext httpContext, IAddressService _addressService)
     {
         try

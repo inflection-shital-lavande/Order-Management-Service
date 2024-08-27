@@ -48,6 +48,7 @@ using static Order_Management.src.api.payment_transaction.Payment_Transection_Va
 using Order_Management.src.database.dto.payment_transaction;
 using Order_Management.src.api.customerAddress;
 using static Order_Management.src.api.customerAddress.CustomerAddressValidation;
+using Microsoft.AspNetCore.Builder;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,7 +80,6 @@ builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();    
 
 builder.Services.AddTransient<AddressRoutes>();
-//builder.Services.AddTransient<AddressController>();
 
 builder.Services.AddTransient<AuthenticationRoutes>();
 builder.Services.AddTransient<CouponsRoutes>();
@@ -94,6 +94,7 @@ builder.Services.AddTransient<Payment_Transaction_Routes>();
 builder.Services.AddTransient<FileUploadRoutes>();
 builder.Services.AddTransient<CustomerAddressRoutes>();
 
+//builder.Services.AddTransient<AddressController>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -223,6 +224,8 @@ app.UseAuthorization();
 
 var addressEndpoints = app.Services.GetRequiredService<AddressRoutes>();
 addressEndpoints.MapRoutes(app);
+
+
 
 var authEndpoints = app.Services.GetRequiredService<AuthenticationRoutes>();
 authEndpoints.MapAuthRoutes(app);

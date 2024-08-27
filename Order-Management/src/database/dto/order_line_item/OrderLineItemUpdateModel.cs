@@ -9,21 +9,18 @@ namespace Order_Management.src.database.dto.order_line_item
 
         public int? Quantity { get; set; }
 
-        public decimal? UnitPrice { get; set; }
+        public double? UnitPrice { get; set; }
 
-        public decimal? Discount { get; set; }
+        public double? Discount { get; set; }
 
-        [StringLength(50)]
-        public string? DiscountSchemeId { get; set; }
+        public Guid? DiscountSchemeId { get; set; }
 
-        public decimal? Tax { get; set; }
+        public double? Tax { get; set; }
 
-        public decimal? ItemSubTotal { get; set; }
+        public double? ItemSubTotal { get; set; }
 
-        [StringLength(50)]
-        public string? OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
-        [StringLength(50)]
-        public string? CartId { get; set; }
+        public Guid? CartId { get; set; }
     }
 }

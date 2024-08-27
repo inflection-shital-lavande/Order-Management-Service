@@ -46,11 +46,11 @@ public class OrderSearchFilterModel
     public Guid? OrderLineItemProductId { get; set; }
 
     [Description("Search orders with the given order status")]
-    public OrderStatusTypes? OrderStatus { get; set; }
+    public OrderStatusTypes OrderStatus { get; set; }
 
     [StringLength(64, MinimumLength = 2, ErrorMessage = "Order type must be between 2 and 64 characters.")]
     [Description("Search orders with the given order type")]
-    public string OrderType { get; set; }
+    public Guid? OrderTypeId { get; set; }
 
     [Description("Search orders created before the given date")]
     public DateTime? CreatedBefore { get; set; }

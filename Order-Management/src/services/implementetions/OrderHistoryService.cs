@@ -5,6 +5,7 @@ using Order_Management.src.database.dto.merchant;
 using order_management.src.database.dto.orderHistory;
 using Microsoft.EntityFrameworkCore;
 using order_management.src.services.interfaces;
+using order_management.database.dto;
 
 namespace order_management.src.services.implementetions;
 
@@ -19,7 +20,7 @@ public class OrderHistoryService :IOrderHistoryService
         _mapper = mapper;
     }
 
-    public async Task<List<OrderHistoryResponseModel>> GetAll() =>
+    /*public async Task<List<OrderHistoryResponseModel>> GetAll() =>
 
        _mapper.Map<List<OrderHistoryResponseModel>>(await _context.OrderHistorys.ToListAsync());
 
@@ -33,6 +34,47 @@ public class OrderHistoryService :IOrderHistoryService
 
         return address != null ? _mapper.Map<OrderHistoryResponseModel>(address) : null;
     }
+
+    */
+    public async Task<List<OrderHistoryResponseModel>> GetAll()
+    {
+        var OrderHistorys = await _context.OrderHistorys
+            .Include(c => c.Order)
+
+            .ToListAsync();
+
+        return _mapper.Map<List<OrderHistoryResponseModel>>(OrderHistorys);
+    }
+
+    //public async Task<List<OrderHistoryResponseModel>> GetAll()
+    //{
+    //    return await _context.OrderHistorys
+    //        .Include(o => o.Order)  // Include related Order entity
+    //        .Select(o => new OrderHistoryResponseModel
+    //        {
+    //            Id = o.Id,
+    //            OrderId = o.OrderId,  // Nullable field
+    //            PreviousStatus = o.PreviousStatus,
+    //            Status = o.Status,
+    //            UpdatedByUserId = o.UpdatedByUserId,  // Nullable field
+    //            Timestamp = o.Timestamp , // Nullable field
+                
+    //        })
+    //        .ToListAsync();
+    //}
+
+
+    public async Task<OrderHistoryResponseModel> GetById(Guid id)
+    {
+        var OrderHistorys = await _context.OrderHistorys
+            .AsNoTracking()
+            .Include(c => c.Order)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        return OrderHistorys != null ? _mapper.Map<OrderHistoryResponseModel>(OrderHistorys) : null;
+    }
+
+
 
 
     public async Task<OrderHistorySearchResultsModel> Search(OrderHistorySearchFilterModel filter)

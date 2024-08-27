@@ -1,6 +1,7 @@
 ﻿using order_management.auth;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.src.database.dto;
 using Order_Management.src.database.dto.orderType;
 

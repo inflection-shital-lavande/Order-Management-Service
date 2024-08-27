@@ -5,6 +5,8 @@ using order_management.database.dto;
 using order_management.database.models;
 using order_management.services.implementetions;
 using order_management.services.interfaces;
+using Order_Management.src.database.dto.merchant;
+using Order_Management.src.services.interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 using System.Reflection.Emit;
@@ -13,7 +15,12 @@ namespace order_management.api;
 
 public  class CustomerController
 {
-    
+    public CustomerController()
+    {
+
+    }
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Customer>))]
+
     public async Task<IResult> GetAll(HttpContext httpContext, ICustomerService _customerService)
     {
         try
@@ -22,7 +29,7 @@ public  class CustomerController
             var customers = await _customerService.GetAll();
            return ApiResponse.Success("Success", "Customers retrieved successfully", customers);
     }
-    catch (Exception ex)
+       catch (Exception ex)
         {
             return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving customers");
         }
@@ -42,23 +49,25 @@ public  class CustomerController
         }
     }
 
-    public async Task<IResult> Create(CustomerCreateModel customerCreate, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
+    
+
+    public async Task<IResult> Create(CustomerCreateModel Create, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
     {
         try
         {
-            if (customerCreate == null)
+            if (Create == null)
             {
                 return ApiResponse.BadRequest("Failure", "Invalid customer data");
             }
 
-            var validationResult = _createValidator.Validate(customerCreate);
+            var validationResult = _createValidator.Validate(Create);
             if (!validationResult.IsValid)
             {
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-            var customer = await _customerService.Create(customerCreate);
-            return ApiResponse.Success("Success", "Customer created successfully", customer);
+            var merchant = await _customerService.Create(Create);
+            return ApiResponse.Success("Success", "Customer created successfully", merchant);
         }
         catch (Exception ex)
         {
@@ -66,10 +75,13 @@ public  class CustomerController
         }
     }
 
-   
+
+
 
     
-    public async Task<IResult> Update(ICustomerService _customerService, Guid id, IValidator<CustomerUpdateModel> _updateValidator, CustomerUpdateModel customerUpdate)
+
+
+    public async Task<IResult> Update(Guid id, CustomerUpdateModel customerUpdate, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerUpdateModel> _updateValidator)
     {
         try
         {
@@ -84,26 +96,16 @@ public  class CustomerController
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-            var validationContext = new ValidationContext(customerUpdate);
-            var vResult = new List<ValidationResult>();
-
-            var isvalid = Validator.TryValidateObject(customerUpdate, validationContext, vResult, true);
-
-            if (isvalid)
-            {
-                var customer = await _customerService.Update(id, customerUpdate);
-                return customer == null ? ApiResponse.NotFound("Failure", "Customer not found")
-                                             : ApiResponse.Success("Success", "Customer updated successfully");
-            }
-            return Results.BadRequest(vResult);
+            var updateCustomer = await _customerService.Update(id, customerUpdate);
+            return updateCustomer == null ? ApiResponse.NotFound("Failure", "Customer not found")
+                                          : ApiResponse.Success("Success", "Customer updated successfully", updateCustomer);
         }
         catch (Exception ex)
         {
-            return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving customers");
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the customers");
         }
     }
-    
-    
+
     public async Task<IResult> Delete(ICustomerService _customerService, Guid id, HttpContext httpContext)
     {
         try
@@ -157,3 +159,37 @@ public  class CustomerController
     
 }
 
+/*  public async Task<IResult> Update(ICustomerService _customerService, Guid id, IValidator<CustomerUpdateModel> _updateValidator, CustomerUpdateModel customerUpdate)
+    {
+        try
+        {
+            if (customerUpdate == null)
+            {
+                return ApiResponse.BadRequest("Failure", "Invalid customer data");
+            }
+
+            var validationResult = _updateValidator.Validate(customerUpdate);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+            }
+
+            var validationContext = new ValidationContext(customerUpdate);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(customerUpdate, validationContext, vResult, true);
+
+            if (isvalid)
+            {
+                var customer = await _customerService.Update(id, customerUpdate);
+                return customer == null ? ApiResponse.NotFound("Failure", "Customer not found")
+                                             : ApiResponse.Success("Success", "Customer updated successfully");
+            }
+            return Results.BadRequest(vResult);
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving customers");
+        }
+    }
+    */

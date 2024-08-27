@@ -5,6 +5,7 @@ using order_management.database.dto;
 using order_management.database.models;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.merchant;
+using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
 
 namespace Order_Management.src.api.merchant;
@@ -17,7 +18,7 @@ namespace Order_Management.src.api.merchant;
 
         }
 
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Merchant>))]
 
         public async Task<IResult> GetAll(HttpContext httpContext, IMerchantService _merchantService)
         {
@@ -44,30 +45,34 @@ namespace Order_Management.src.api.merchant;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the merchant");
             }
         }
-        public async Task<IResult> Create(MerchantCreateModel merchant, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantCreateModel> _createValidator)
-        {
-            try
-            {
-                if (merchant == null)
-                {
-                    return ApiResponse.BadRequest("Failure", "Invalid merchant data");
-                }
+     public async Task<IResult> Create(MerchantCreateModel Create, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantCreateModel> _createValidator)
+     {
+         try
+         {
+             if (Create == null)
+             {
+                 return ApiResponse.BadRequest("Failure", "Invalid merchant data");
+             }
 
-                var validationResult = _createValidator.Validate(merchant);
-                if (!validationResult.IsValid)
-                {
-                    return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-                }
+             var validationResult = _createValidator.Validate(Create);
+             if (!validationResult.IsValid)
+             {
+                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+             }
 
-                var createdMerchant = await _merchantService.Create(merchant);
-                return ApiResponse.Success("Success", "merchant created successfully", createdMerchant);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the merchant");
-            }
-        }
-        public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantUpdateModel> _updateValidator)
+             var merchant = await _merchantService.Create(Create);
+             return ApiResponse.Success("Success", "merchant created successfully", merchant);
+         }
+         catch (Exception ex)
+         {
+             return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the merchant");
+         }
+     }
+    
+
+  
+
+public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantUpdateModel> _updateValidator)
         {
             try
             {
@@ -126,3 +131,7 @@ namespace Order_Management.src.api.merchant;
             }
         }
     }
+
+
+
+

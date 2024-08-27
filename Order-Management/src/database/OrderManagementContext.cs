@@ -83,9 +83,9 @@ public  class OrderManagementContext : DbContext
             entity.Property(e => e.ZipCode)
                 .HasMaxLength(64);
 
-           // //One-to-many relationship with Merchant
+            //One-to-many relationship with Merchant
             entity.HasMany(e => e.Merchants)
-           .WithOne(e => e.Address)
+           .WithOne(e => e.Addressess)
            .HasForeignKey(e => e.AddressId)
            .OnDelete(DeleteBehavior.SetNull);
 
@@ -103,15 +103,19 @@ public  class OrderManagementContext : DbContext
                 .HasColumnType("char(36)");
 
             entity.Property(e => e.TotalItemsCount)
+                .HasColumnType("int")
                 .HasDefaultValue(0);
 
             entity.Property(e => e.TotalTax)
+                .HasColumnType("float")
                 .HasDefaultValue(0.0f);
 
             entity.Property(e => e.TotalDiscount)
+                .HasColumnType("float")
                 .HasDefaultValue(0.0f);
 
             entity.Property(e => e.TotalAmount)
+                .HasColumnType("float")
                 .HasDefaultValue(0.0f);
 
             entity.Property(e => e.CartToOrderTimestamp)
@@ -137,7 +141,7 @@ public  class OrderManagementContext : DbContext
 
             // One-to-many relationship with OrderLineItem
             entity.HasMany(e => e.OrderLineItems)
-                .WithOne(e => e.Cart)
+                .WithOne(e => e.Carts)
                 .HasForeignKey(e => e.CartId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
@@ -194,10 +198,10 @@ public  class OrderManagementContext : DbContext
              .HasColumnType("float");
 
             entity.Property(e => e.IsActive)
-           .HasColumnType("bit");
+             .HasColumnType("bit");
 
             entity.Property(e => e.IsDeleted)
-           .HasColumnType("bit");
+             .HasColumnType("bit");
 
 
             entity.Property(e => e.CreatedAt)
@@ -289,6 +293,7 @@ public  class OrderManagementContext : DbContext
                 .WithMany(e => e.CustomerAddresses)
                 .HasForeignKey(e => e.AddressId);
         });
+
         modelBuilder.Entity<Merchant>(entity =>
         {
             entity.ToTable("merchants");
@@ -333,9 +338,13 @@ public  class OrderManagementContext : DbContext
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-           
-
             
+            entity.HasOne(e => e.Addressess)
+                .WithMany(c => c.Merchants)
+                .HasForeignKey(e => e.AddressId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -374,41 +383,56 @@ public  class OrderManagementContext : DbContext
                 .IsRequired();
 
             entity.Property(e => e.DisplayCode)
-                .HasMaxLength(36)
-                .IsRequired();
+                .HasColumnType("nvarchar")
+                .HasMaxLength(64)
+                //.IsRequired()
+                ;
 
             entity.Property(e => e.OrderStatus)
+                .HasDefaultValue(OrderStatusTypes.DRAFT)
+                .HasColumnType("nvarchar")
+                .HasMaxLength(64)
                 .IsRequired();
 
             entity.Property(e => e.InvoiceNumber)
-                .HasMaxLength(64)
+            .HasColumnType("nvarchar")
+                .HasMaxLength(64)              
                 .IsRequired();
 
             entity.Property(e => e.AssociatedCartId)
                 .HasColumnType("char(36)");
 
             entity.Property(e => e.TotalItemsCount)
+                .HasColumnType("int")
                 .HasDefaultValue(0);
 
             entity.Property(e => e.OrderDiscount)
+            .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.TipApplicable)
+            .HasColumnType("bit")
                 .HasDefaultValue(false);
 
             entity.Property(e => e.TipAmount)
+            .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.TotalTax)
+            .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.TotalDiscount)
+            .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.TotalAmount)
+            .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.Notes)
+                        .HasColumnType("nvarchar")
+
                 .HasMaxLength(1024);
 
             entity.Property(e => e.CustomerId)
@@ -457,7 +481,7 @@ public  class OrderManagementContext : DbContext
 
             // One Order to Many OrderLineItems
             entity.HasMany(e => e.OrderLineItems)
-                .WithOne(i => i.Order)
+                .WithOne(i => i.Orders)
                 .HasForeignKey(i => i.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -480,7 +504,9 @@ public  class OrderManagementContext : DbContext
         {
             entity.ToTable("order_coupons");
 
-            entity.HasKey(oc => oc.Id);
+            entity.Property(e => e.Id)
+               .HasColumnType("char(36)")
+               .IsRequired();
 
             entity.Property(oc => oc.Code)
                 .HasMaxLength(64)
@@ -522,71 +548,108 @@ public  class OrderManagementContext : DbContext
         {
             entity.ToTable("order_histories");
 
-            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+               .HasColumnType("char(36)")
+               //.IsRequired()
+               .HasMaxLength(36);
 
             entity.Property(e => e.OrderId)
                 .IsRequired()
+                .HasColumnType("char(36)")
                 .HasMaxLength(36);
 
             entity.Property(e => e.PreviousStatus)
-                .IsRequired();
+                .HasColumnType("nvarchar")
+                .HasMaxLength(64)
+                .HasDefaultValue(OrderStatusTypes.DRAFT)
+                //.IsRequired()
+                ;
 
             entity.Property(e => e.Status)
-                .IsRequired();
+                .HasColumnType("nvarchar")
+                .HasMaxLength(64)
+                .HasDefaultValue(OrderStatusTypes.DRAFT)
+                //.IsRequired()
+                ;
 
             entity.Property(e => e.UpdatedByUserId)
+             .HasColumnType("char(36)")
                 .HasMaxLength(36);
 
             entity.Property(e => e.Timestamp)
-                .IsRequired()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("datetime")
+               // .IsRequired()
+                ;
+
+          
+
         });
 
         modelBuilder.Entity<OrderLineItem>(entity =>
         {
             entity.ToTable("order_line_items");
 
-            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+                .HasColumnType("char(36)")
+                .IsRequired();
 
             entity.Property(e => e.Name)
                 .HasMaxLength(512)
+                .HasColumnType("nvarchar")
                 .IsRequired();
 
+            entity.Property(e => e.CatalogId)
+              .HasColumnType("char(36)")
+              ;
+
             entity.Property(e => e.Quantity)
-                .IsRequired()
+                 .HasColumnType("int")
                 .HasDefaultValue(0);
 
             entity.Property(e => e.UnitPrice)
-                .IsRequired()
+              .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.Discount)
-                .IsRequired()
+                .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
+            entity.Property(e => e.DiscountSchemeId)
+                .HasColumnType("char(36)")
+                .IsRequired();
+
             entity.Property(e => e.Tax)
-                .IsRequired()
+               .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
             entity.Property(e => e.ItemSubTotal)
-                .IsRequired()
+               .HasColumnType("float")
                 .HasDefaultValue(0.0);
 
+            entity.Property(e => e.OrderId)
+                .HasColumnType("char(36)")
+                .IsRequired();
+
+            entity.Property(e => e.CartId)
+                .HasColumnType("char(36)")
+                .IsRequired();
+
             entity.Property(e => e.CreatedAt)
-                .IsRequired()
+            .HasColumnType("datetime")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             // Configure one-to-many relationship with Cart
-            entity.HasOne(e => e.Cart)
+            entity.HasOne(e => e.Carts)
                 .WithMany(c => c.OrderLineItems)
                 .HasForeignKey(e => e.CartId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure one-to-many relationship with Order
-            entity.HasOne(e => e.Order)
+            entity.HasOne(e => e.Orders)
                 .WithMany(o => o.OrderLineItems)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -598,7 +661,9 @@ public  class OrderManagementContext : DbContext
         {
             entity.ToTable("order_types");
 
-            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+               .HasColumnType("char(36)")
+               .IsRequired();
 
             entity.Property(e => e.Name)
                 .HasMaxLength(128)
@@ -620,42 +685,85 @@ public  class OrderManagementContext : DbContext
                 .HasForeignKey(o => o.OrderTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+        
 
-        modelBuilder.Entity<PaymentTransaction>(entity =>
-        {
-            entity.ToTable("payment_transactions");
+         modelBuilder.Entity<PaymentTransaction>(entity =>
+          {
+              entity.ToTable("payment_transactions");
 
-            entity.HasKey(e => e.Id);
+              entity.Property(e => e.Id)
+                 .HasColumnType("char(36)")
+                 .IsRequired();
 
-            entity.Property(e => e.InvoiceNumber)
-                .HasMaxLength(64);
+              entity.Property(e => e.DisplayCode)
+                 .HasColumnType(" nvarchar(64)")
+                 .HasMaxLength(64);
+             
+              entity.Property(e => e.InvoiceNumber)
+                  .HasColumnType(" nvarchar(64)")
+                  .HasMaxLength(64);
 
-            entity.Property(e => e.PaymentStatus)
-                .IsRequired()
-                .HasDefaultValue(PaymentStatusTypes.UNKNOWN);
+              entity.Property(e => e.BankTransactionId)
+                 .HasColumnType("char(36)");
 
-            entity.Property(e => e.PaymentAmount)
-                .IsRequired()
-                .HasDefaultValue(0.0);
+              entity.Property(e => e.PaymentGatewayTransactionId)
+                 .HasColumnType("char(36)");
 
-            entity.Property(e => e.IsRefund)
-                .IsRequired()
-                .HasDefaultValue(false);
+              entity.Property(e => e.PaymentStatus)
+                  .HasColumnType(" nvarchar(64)")
+                  .IsRequired()
+                  .HasDefaultValue(PaymentStatusTypes.UNKNOWN);
 
-            entity.Property(e => e.CreatedAt)
-                .IsRequired()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+              entity.Property(e => e.PaymentMode)
+                 .HasColumnType("char(36)");
 
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime");
+              entity.Property(e => e.PaymentAmount)
+                  .IsRequired()
+                  .HasDefaultValue(0.0);
 
-            // Configure one-to-many relationship with Order
-            entity.HasOne(e => e.Order)
-                .WithMany(o => o.PaymentTransactions)
-                .HasForeignKey(e => e.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+              entity.Property(e => e.PaymentCurrency)
+            . HasColumnType("DECIMAL(18,2)");
 
+              entity.Property(e => e.InitiatedDate)
+                 .HasColumnType("datetime");
+
+              entity.Property(e => e.CompletedDate)
+                 .HasColumnType("datetime");
+
+              entity.Property(e => e.PaymentResponse)
+                .HasMaxLength(1024);
+
+              entity.Property(e => e.PaymentResponseCode)
+                 .HasColumnType("char(36)");
+
+              entity.Property(e => e.InitiatedBy)
+                 .HasColumnType("char(36)");
+
+              entity.Property(e => e.CustomerId)
+                 .HasColumnType("char(36)");
+
+              entity.Property(e => e.OrderId)
+                 .HasColumnType("char(36)");
+
+              entity.Property(e => e.IsRefund)
+                  .IsRequired()
+                  .HasDefaultValue(false);
+
+              entity.Property(e => e.CreatedAt)
+                  .IsRequired()
+                  .HasColumnType("datetime")
+                  .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+              entity.Property(e => e.UpdatedAt)
+                  .HasColumnType("datetime");
+
+              // Configure one-to-many relationship with Order
+              entity.HasOne(e => e.Order)
+                  .WithMany(o => o.PaymentTransactions)
+                  .HasForeignKey(e => e.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+          });
+          
 
         //OnModelCreatingPartial(modelBuilder);
     }

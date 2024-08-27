@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
@@ -13,6 +14,12 @@ namespace Order_Management.src.api.orderType
     public class Order_Type_Controller
     {
 
+        public Order_Type_Controller()
+        {
+
+        }
+
+        [ProducesResponseType(200, Type = typeof(IEnumerable<OrderType>))]
 
         public async Task<IResult> GetById(Guid id, HttpContext httpContext, IOrderTypeService service)
         {

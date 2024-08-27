@@ -7,10 +7,10 @@ namespace Order_Management.src.database.dto.cart
         [Required]
         public int? TotalItemsCount { get; set; }
 
-        public double? TotalTax { get; set; }
+        public float? TotalTax { get; set; }
 
-        public double? TotalDiscount { get; set; }
+        public float? TotalDiscount { get; set; }
 
-        public double? TotalAmount { get; set; }
+        public float? TotalAmount { get; set; }
     }
 }

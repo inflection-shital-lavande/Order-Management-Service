@@ -8,7 +8,7 @@ namespace Order_Management.src.database.dto.cart
         [Required(ErrorMessage = "Customer ID is required.")]
         public Guid? CustomerId { get; set; }
 
-        public string? AssociatedOrderId { get; set; }
+        public Guid? AssociatedOrderId { get; set; }
 
         public DateTime? CartToOrderTimestamp { get; set; }
 

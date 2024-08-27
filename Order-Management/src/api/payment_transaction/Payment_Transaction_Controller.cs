@@ -17,7 +17,7 @@ namespace Order_Management.src.api.payment_transaction;
 
         }
 
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PaymentTransaction>))]
 
         public async Task<IResult> GetAll(HttpContext httpContext, IPaymentTransactionService _paymentTransactionService)
         {

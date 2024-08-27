@@ -18,7 +18,7 @@ public class Order_History_Controller
 
     }
 
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrderHistory>))]
 
     public async Task<IResult> GetAll(HttpContext httpContext, IOrderHistoryService _orderHistoryService)
     {

@@ -41,6 +41,9 @@ namespace Order_Management.src.database.dto.merchant
         public string? GSTNumber { get; set; }
 
         [Display(Description = "Address Id of the merchant")]
+
+        public Dictionary<string, object>? Addressess { get; set; }
+        [Display(Description = "Billing address Id of the customer")]
         public Guid? AddressId { get; set; }
 
         [Display(Description = "Created at")]

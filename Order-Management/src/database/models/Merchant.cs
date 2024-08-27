@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
 
@@ -36,15 +37,16 @@ public class Merchant
     [StringLength(36)]
     public Guid? AddressId { get; set; }
 
-    [ForeignKey("AddressId")]
-    public virtual Address Address { get; set; }
+   
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? UpdatedAt { get; set; }
 
-
+    [ForeignKey("AddressId")]
+    [JsonIgnore]
+    public virtual Address Addressess { get; set; }
 
 }

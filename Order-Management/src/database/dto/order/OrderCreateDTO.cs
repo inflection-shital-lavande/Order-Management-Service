@@ -6,7 +6,7 @@ namespace order_management.src.database.dto;
 public class OrderCreateModel
 {
     [Description("Id of the order type")]
-    public Guid? OrderType { get; set; }
+    public Guid? OrderTypeId { get; set; }
 
     [Required(ErrorMessage = "Customer Id is required.")]
     [Description("Id of the customer")]

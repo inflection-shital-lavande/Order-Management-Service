@@ -6,6 +6,7 @@ using order_management.database;
 using order_management.database.dto;
 using order_management.database.models;
 using order_management.services.interfaces;
+using Order_Management.src.database.dto.cart;
 
 
 namespace order_management.services.implementetions;
@@ -84,12 +85,14 @@ public class CouponService : ICouponService
 
 
    
-    public async Task<CouponResponseModel> Update(Guid id, CouponUpdateModel couponUpdate)
+   
+
+    public async Task<CouponResponseModel> Update(Guid id, CouponUpdateModel update)
     {
         var existingCoupon = await _context.Coupons.FindAsync(id);
         if (existingCoupon == null) return null;
 
-        _mapper.Map(couponUpdate, existingCoupon);
+        _mapper.Map(update, existingCoupon);
         existingCoupon.UpdatedAt = DateTime.UtcNow;
 
         _context.Coupons.Update(existingCoupon);
@@ -97,6 +100,7 @@ public class CouponService : ICouponService
 
         return _mapper.Map<CouponResponseModel>(existingCoupon);
     }
+
 
     public async Task<bool> Delete(Guid id)
     {

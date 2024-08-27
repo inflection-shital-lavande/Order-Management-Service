@@ -8,7 +8,8 @@ namespace order_management.services.interfaces;
 public interface IAddressService
 {
     //Task<List<AddressResponseModel>> GetAll();
-    Task<IEnumerable<Address>> GetAll();
+    Task<List<AddressResponseModel>> GetAll();
+
     Task<AddressResponseModel> GetById(Guid id);
 
     Task<AddressResponseModel> Create(AddressCreateModel create);

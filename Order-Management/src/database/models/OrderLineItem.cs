@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
 
@@ -45,9 +46,11 @@ public class OrderLineItem
     public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UpdatedAt { get; set; }
-    public virtual Cart Cart { get; set; }
+    [JsonIgnore]
+    public virtual Cart? Carts { get; set; }
+    [JsonIgnore]
 
-    public virtual Order Order { get; set; }
+    public virtual Order? Orders { get; set; }
 
 
 

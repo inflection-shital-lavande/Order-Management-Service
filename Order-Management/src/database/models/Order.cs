@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml;
 using order_management.domain_types.enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
+
 
 public class Order
 {
@@ -12,14 +14,12 @@ public class Order
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [Required]
-    [MaxLength(36)]
-    public Guid? DisplayCode { get; set; }
+    [MaxLength(64)]
+    public string? DisplayCode { get; set; }
 
     [Required]
     public OrderStatusTypes OrderStatus { get; set; } = OrderStatusTypes.DRAFT;
 
-    [Required]
     [MaxLength(64)]
     public string? InvoiceNumber { get; set; }
 
@@ -53,29 +53,23 @@ public class Order
     public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UpdatedAt { get; set; }
-    
-    //Navigation properties
+
+    // Navigation properties
+    [JsonIgnore]
     public virtual Cart Cart { get; set; }
+    [JsonIgnore]
     public virtual Customer Customer { get; set; }
+    [JsonIgnore]
     public virtual Address ShippingAddress { get; set; }
+    [JsonIgnore]
     public virtual Address BillingAddress { get; set; }
+    [JsonIgnore]
     public virtual OrderType OrderType { get; set; }
-    //many to many 
-    public ICollection<OrderCoupon> OrderCoupons { get; set; }
-     
-    //one to many 
-    public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
-    public ICollection<OrderLineItem> OrderLineItems { get; set; }
-    //one to one 
+    [JsonIgnore]
+
     public virtual OrderHistory OrderHistory { get; set; }
 
-
-
-
-
-
-
-    //public virtual ICollection<Coupon> Coupons { get; set; }
-
-
+    public ICollection<OrderCoupon> OrderCoupons { get; set; }
+    public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+    public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
 }

@@ -24,19 +24,34 @@ public class OrderService :IOrderService
         _mapper = mapper;
     }
 
-    public async Task<List<OrderResponseModel>> GetAll() =>
+    public async Task<List<OrderResponseModel>> GetAll()
+    {
+        var orders = await _context.Orders
+            .Include(o => o.Cart)
+            .Include(o => o.Customer)
+            .Include(o => o.ShippingAddress)
+            .Include(o => o.BillingAddress)
+            .Include(o => o.OrderType)
+            .Include(o => o.OrderHistory)
+            .ToListAsync();
 
-       _mapper.Map<List<OrderResponseModel>>(await _context.Orders.ToListAsync());
-
+        return _mapper.Map<List<OrderResponseModel>>(orders);
+    }
 
 
     public async Task<OrderResponseModel> GetById(Guid id)
     {
-        var address = await _context.Orders
+        var orders = await _context.Orders
             .AsNoTracking()
+            .Include(c => c.Cart)
+            .Include(c => c.Customer)
+            .Include(c => c.ShippingAddress)
+            .Include(c => c.BillingAddress)
+            .Include(c => c.OrderType)
+            .Include(c => c.OrderHistory)
             .FirstOrDefaultAsync(a => a.Id == id);
 
-        return address != null ? _mapper.Map<OrderResponseModel>(address) : null;
+        return orders != null ? _mapper.Map<OrderResponseModel>(orders) : null;
     }
 
 
@@ -51,44 +66,41 @@ public class OrderService :IOrderService
         //    query = query.Where(a => a.DisplayCode.Contains(filter.DisplayCode));
 
 
-        var addresses = await query.ToListAsync();
-        var results = _mapper.Map<List<OrderResponseModel>>(addresses);
+        var orders = await query.ToListAsync();
+        var results = _mapper.Map<List<OrderResponseModel>>(orders);
 
         return new OrderSearchResultsModel { Items = results };
     }
 
     public async Task<OrderResponseModel> Create(OrderCreateModel create)
     {
-        var address = _mapper.Map<Order>(create);
-        address.CreatedAt = DateTime.UtcNow;
-        address.UpdatedAt = DateTime.UtcNow;
-
-        _context.Orders.Add(address);
+        var order = _mapper.Map<Order>(create);
+        _context.Orders.Add(order);
         await _context.SaveChangesAsync();
+        return _mapper.Map<OrderResponseModel>(order);
 
-        return _mapper.Map<OrderResponseModel>(address);
     }
 
     public async Task<OrderResponseModel> Update(Guid id, OrderUpdateModel update)
     {
-        var address = await _context.Orders.FindAsync(id);
-        if (address == null) return null;
+        var orders = await _context.Orders.FindAsync(id);
+        if (orders == null) return null;
 
-        _mapper.Map(update, address);
-        address.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(update, orders);
+        orders.UpdatedAt = DateTime.UtcNow;
 
-        _context.Orders.Update(address);
+        _context.Orders.Update(orders);
         await _context.SaveChangesAsync();
 
-        return _mapper.Map<OrderResponseModel>(address);
+        return _mapper.Map<OrderResponseModel>(orders);
     }
 
     public async Task<bool> Delete(Guid id)
     {
-        var address = await _context.Orders.FindAsync(id);
-        if (address == null) return false;
+        var orders = await _context.Orders.FindAsync(id);
+        if (orders == null) return false;
 
-        _context.Orders.Remove(address);
+        _context.Orders.Remove(orders);
         await _context.SaveChangesAsync();
 
         return true;

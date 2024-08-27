@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using order_management.domain_types.enums;
+using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
 
@@ -12,7 +13,7 @@ public class PaymentTransaction
 
     [MaxLength(36)]
     
-    public Guid? DisplayCode { get; set; }
+    public string? DisplayCode { get; set; }
 
     [MaxLength(64)]       
     public string? InvoiceNumber { get; set; }
@@ -32,8 +33,7 @@ public class PaymentTransaction
     [Required]
     public double? PaymentAmount { get; set; } = 0.0;
 
-    [MaxLength(36)]
-    public Guid? PaymentCurrency { get; set; }
+    public decimal? PaymentCurrency { get; set; }
 
     public DateTime? InitiatedDate { get; set; }
 
@@ -63,8 +63,9 @@ public class PaymentTransaction
     public DateTime? UpdatedAt { get; set; }
 
     //navigation properties 
-
+    [JsonIgnore]
     public virtual Order Order { get; set; }
+    public virtual Customer Customer { get; set; }
 
 }
 

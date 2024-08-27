@@ -18,7 +18,7 @@ namespace Order_Management.src.api.order_line_item;
 
         }
 
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<OrderLineItem>))]
 
         public async Task<IResult> GetAll(HttpContext httpContext, IOrderLineItem _orderLineItemService)
         {

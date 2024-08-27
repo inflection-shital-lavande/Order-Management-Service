@@ -84,12 +84,7 @@ public class MappingProfile : Profile
         CreateMap<OrderType, OrderTypeResponseModel>().ReverseMap();
         CreateMap<OrderType, OrderTypeSearchResults>().ReverseMap();
 
-        //OrderType
-        CreateMap<OrderType, OrderTypeCreateModel>().ReverseMap();
-        CreateMap<OrderType, OrderTypeUpdateModel>().ReverseMap();
-        CreateMap<OrderType, OrderTypeSearchFilter>().ReverseMap();
-        CreateMap<OrderType, OrderTypeResponseModel>().ReverseMap();
-        CreateMap<OrderType, OrderTypeSearchResults>().ReverseMap();
+    
         //PaymentTransaction
         CreateMap<PaymentTransaction, PaymentTransactionCreateModel>().ReverseMap();
         CreateMap<PaymentTransaction, PaymentTransactionResponseModel>().ReverseMap();
