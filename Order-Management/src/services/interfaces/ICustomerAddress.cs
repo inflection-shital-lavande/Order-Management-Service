@@ -5,7 +5,7 @@ namespace Order_Management.src.services.interfaces;
 
 public interface ICustomerAddress
 {
-    Task<IEnumerable<CustomerAddress>> GetAllCustomerAddressesAsync();
+    Task<List<CustomerAddress>> GetAllCustomerAddresses();
     
-    Task<CustomerAddress> CreateCustomerAddressAsync(CustomerAddressCreateDTO customerAddressDto);
+    Task<CustomerAddress> Create(CustomerAddressCreateDTO customerAddressDto);
 }

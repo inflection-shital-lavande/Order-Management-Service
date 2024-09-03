@@ -47,8 +47,9 @@ public partial class Address
 
     //one to many Address and order
     [NotMapped]
-    public ICollection<Order> Orders { get; set; }
-     public ICollection<Merchant> Merchants { get; set; }
+    public ICollection<Order> ShippingOrders { get; set; } = new List<Order>();
+    public ICollection<Order> BillingOrders { get; set; } = new List<Order>();
+    public ICollection<Merchant> Merchants { get; set; }
 
 
     public Address()

@@ -38,7 +38,7 @@ public class OrderCoupon
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Order Order { get; set; }
+    public virtual Order Orders { get; set; }
 
 
 

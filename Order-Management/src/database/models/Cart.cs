@@ -41,8 +41,7 @@ public class Cart
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
 
 
-    //public ICollection<OrderLineItem> OrderLineItems { get; set; }
-    //public Order Order { get; set; }
+    
     public Cart()
     {
         Id = Guid.NewGuid();

@@ -91,8 +91,7 @@ public class MappingProfile : Profile
         CreateMap<PaymentTransaction, PaymentTransactionSearchFilter>().ReverseMap();
         CreateMap<PaymentTransaction, PaymentTransactionSearchResults>().ReverseMap();
 
-        CreateMap<CustomerAddressCreateDTO, CustomerAddress>().ReverseMap();
-
+        CreateMap<CustomerAddressCreateDTO, CustomerAddress>();
 
         //authentication
         CreateMap<RegisterDTO, User>();

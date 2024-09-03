@@ -21,22 +21,30 @@ public class CustomerAddressService: ICustomerAddress
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CustomerAddress>> GetAllCustomerAddressesAsync()
-        {
-            return await _context.CustomerAddresses.ToListAsync();
-        }
 
-       
+    public async Task<List<CustomerAddress>> GetAllCustomerAddresses()
+    {
+        var customers = await _context.CustomerAddresses
+            .Include(c => c.Customers)
+            .Include(c => c.Addresses)
+            .ToListAsync();
 
-        public async Task<CustomerAddress> CreateCustomerAddressAsync(CustomerAddressCreateDTO customerAddressDto)
-        {
-            var customerAddress = _mapper.Map<CustomerAddress>(customerAddressDto);
-            _context.CustomerAddresses.Add(customerAddress);
-            await _context.SaveChangesAsync();
-            return customerAddress;
-        }
-
-       
+        return _mapper.Map<List<CustomerAddress>>(customers);
     }
+
+
+    
+    public async Task<CustomerAddress> Create(CustomerAddressCreateDTO customerAddressDto)
+    {
+        var customerAddress = _mapper.Map<CustomerAddress>(customerAddressDto);
+        _context.CustomerAddresses.Add(customerAddress);
+        await _context.SaveChangesAsync();
+        return customerAddress;
+    }
+
+
+
+
+}
 
 

@@ -13,7 +13,7 @@ public class OrderHistoryResponseModel
     [Required]
     [MaxLength(36)]
     public Guid? OrderId { get; set; }
-    public Dictionary<string, object>? Order { get; set; }
+    public Dictionary<string, object>? Orders { get; set; }
 
     //[Required]
     public OrderStatusTypes PreviousStatus { get; set; } = OrderStatusTypes.DRAFT;

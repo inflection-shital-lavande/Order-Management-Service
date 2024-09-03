@@ -77,7 +77,7 @@ builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();    
+builder.Services.AddScoped<ICustomerAddress, CustomerAddressService>();    
 
 builder.Services.AddTransient<AddressRoutes>();
 
@@ -94,7 +94,7 @@ builder.Services.AddTransient<Payment_Transaction_Routes>();
 builder.Services.AddTransient<FileUploadRoutes>();
 builder.Services.AddTransient<CustomerAddressRoutes>();
 
-//builder.Services.AddTransient<AddressController>();
+builder.Services.AddTransient<AddressController>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -271,6 +271,7 @@ app.Run();
 
 
 
+
 /*
 using Microsoft.EntityFrameworkCore;
 
@@ -307,7 +308,7 @@ builder.Services.AddDbContext<OrderManagementContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //add services
-builder.Services.AddTransient<IAddressService, AddressService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 
@@ -421,7 +422,7 @@ using (var scope = app.Services.CreateScope())
 {
     var addressRoutes = scope.ServiceProvider.GetRequiredService<AddressRoutes>();
     addressRoutes.MapRoutes(app);
-}*
+}
 
 var addressRoutes = app.Services.GetRequiredService<AddressRoutes>();
 addressRoutes.MapRoutes(app);

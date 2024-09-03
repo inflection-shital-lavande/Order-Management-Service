@@ -13,6 +13,8 @@ public class OrderHistory
 
     [Required]
     [MaxLength(36)]
+    [ForeignKey("OrderId")]
+
     public Guid? OrderId { get; set; }
 
    // [Required]
@@ -28,7 +30,7 @@ public class OrderHistory
     public DateTime? Timestamp { get; set; } 
     // one to one 
     [JsonIgnore]
-    public virtual Order Order { get; set; }
+    public virtual Order Orders { get; set; }
 
 
 }

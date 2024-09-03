@@ -12,20 +12,22 @@ public class CustomerAddress
     public Guid Id { get; set; }
 
     [StringLength(36)]
+    [ForeignKey("CustomerId")]
+
     public Guid? CustomerId { get; set; }
 
     [StringLength(36)]
+    [ForeignKey("AddressId")]
+
     public Guid? AddressId { get; set; }
 
     public AddressTypes AddressType { get; set; } = AddressTypes.SHIPPING;
 
     public bool? IsFavorite { get; set; } = false;
 
-    [ForeignKey("CustomerId")]
-    public virtual Customer Customer { get; set; }
+    public virtual Customer Customers { get; set; }
 
-    [ForeignKey("AddressId")]
-   public virtual Address Address { get; set; }
+   public virtual Address Addresses { get; set; }
 
    
 }

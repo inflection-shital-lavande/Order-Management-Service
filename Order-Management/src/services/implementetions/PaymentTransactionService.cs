@@ -47,23 +47,23 @@ namespace Order_Management.src.services.implementetions
         //    return address != null ? _mapper.Map<PaymentTransactionResponseModel>(address) : null;
         //}
 
+       
+
         public async Task<List<PaymentTransactionResponseModel>> GetAll()
         {
             var paymentTransactions = await _context.PaymentTransactions
-                //.Include(pt => pt.Order) // Include related Order
-                .Include(pt => pt.Customer) // Include related Customer
-                .ToListAsync();
+                 .Include(pt => pt.Orders) // Include related Order
+                .Include(pt => pt.Customers) // Include related Customer
 
+                .ToListAsync();
             // Map to response model
             return _mapper.Map<List<PaymentTransactionResponseModel>>(paymentTransactions);
         }
-
-
         public async Task<PaymentTransactionResponseModel> GetById(Guid id)
         {
             var transaction = await _context.PaymentTransactions
-                .Include(pt => pt.Order)          // Eagerly load the related Order
-                .Include(pt => pt.Customer)       // Eagerly load the related Customer
+                .Include(pt => pt.Orders)          // Eagerly load the related Order
+                .Include(pt => pt.Customers)       // Eagerly load the related Customer
                 .AsNoTracking()
                 .FirstOrDefaultAsync(pt => pt.Id == id);
 

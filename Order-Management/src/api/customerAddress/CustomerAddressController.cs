@@ -16,11 +16,12 @@ namespace Order_Management.src.api.customerAddress
         }
 
 
-        public async Task<IResult> GetAll(HttpContext httpContext, [FromServices] ICustomerAddress _customerAddressService)
+        
+        public async Task<IResult> GetAll(HttpContext httpContext, ICustomerAddress _customerAddressService)
         {
             try
             {
-                var addresses = await _customerAddressService.GetAllCustomerAddressesAsync();
+                var addresses = await _customerAddressService.GetAllCustomerAddresses();
                 return ApiResponse.Success("Success", "Addresses retrieved successfully", addresses);
             }
             catch (Exception ex)
@@ -28,8 +29,7 @@ namespace Order_Management.src.api.customerAddress
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving addresses");
             }
         }
-
-        public async Task<IResult> Create(CustomerAddressCreateDTO addr, HttpContext httpContext, [FromServices] ICustomerAddress _customerAddressService)
+        public async Task<IResult> Create(CustomerAddressCreateDTO addr, HttpContext httpContext, ICustomerAddress _customerAddressService)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace Order_Management.src.api.customerAddress
                 }
 
                 
-                var createdAddress = await _customerAddressService.CreateCustomerAddressAsync(addr);
+                var createdAddress = await _customerAddressService.Create(addr);
                 return ApiResponse.Success("Success", "customeraddresses created successfully", createdAddress);
             }
             catch (Exception ex)

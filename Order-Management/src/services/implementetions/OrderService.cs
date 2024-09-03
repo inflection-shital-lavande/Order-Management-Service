@@ -27,28 +27,35 @@ public class OrderService :IOrderService
     public async Task<List<OrderResponseModel>> GetAll()
     {
         var orders = await _context.Orders
-            .Include(o => o.Cart)
-            .Include(o => o.Customer)
+            .Include(o => o.Carts)
+            .Include(o => o.Customers)
             .Include(o => o.ShippingAddress)
             .Include(o => o.BillingAddress)
-            .Include(o => o.OrderType)
-            .Include(o => o.OrderHistory)
+            .Include(o => o.OrderTypes)
+            .Include(o => o.OrderHistorys)
             .ToListAsync();
 
         return _mapper.Map<List<OrderResponseModel>>(orders);
     }
-
+    
+    //public async Task<List<OrderResponseModel>> GetAll()
+    //{
+    //    return await _context.Orders
+            
+    //        .Select(a => _mapper.Map<OrderResponseModel>(a))
+    //        .ToListAsync();
+    //}
 
     public async Task<OrderResponseModel> GetById(Guid id)
     {
         var orders = await _context.Orders
             .AsNoTracking()
-            .Include(c => c.Cart)
-            .Include(c => c.Customer)
+            .Include(c => c.Carts)
+            .Include(c => c.Customers)
             .Include(c => c.ShippingAddress)
             .Include(c => c.BillingAddress)
-            .Include(c => c.OrderType)
-            .Include(c => c.OrderHistory)
+            .Include(c => c.OrderTypes)
+            .Include(c => c.OrderHistorys)
             .FirstOrDefaultAsync(a => a.Id == id);
 
         return orders != null ? _mapper.Map<OrderResponseModel>(orders) : null;

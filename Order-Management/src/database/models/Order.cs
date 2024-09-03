@@ -22,7 +22,7 @@ public class Order
 
     [MaxLength(64)]
     public string? InvoiceNumber { get; set; }
-
+    [ForeignKey("AssociatedCartId")]
     public Guid? AssociatedCartId { get; set; }
 
     public int? TotalItemsCount { get; set; } = 0;
@@ -42,12 +42,16 @@ public class Order
     [MaxLength(1024)]
     public string? Notes { get; set; }
 
+    [ForeignKey("CustomerId")]
     public Guid? CustomerId { get; set; }
 
+    [ForeignKey("ShippingAddressId")]
     public Guid? ShippingAddressId { get; set; }
 
+    [ForeignKey("BillingAddressId")]
     public Guid? BillingAddressId { get; set; }
 
+    [ForeignKey("OrderTypeId")]
     public Guid? OrderTypeId { get; set; }
 
     public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
@@ -56,18 +60,18 @@ public class Order
 
     // Navigation properties
     [JsonIgnore]
-    public virtual Cart Cart { get; set; }
+    public virtual Cart Carts { get; set; }
     [JsonIgnore]
-    public virtual Customer Customer { get; set; }
+    public virtual Customer Customers { get; set; }
     [JsonIgnore]
     public virtual Address ShippingAddress { get; set; }
     [JsonIgnore]
     public virtual Address BillingAddress { get; set; }
     [JsonIgnore]
-    public virtual OrderType OrderType { get; set; }
+    public virtual OrderType OrderTypes { get; set; }
     [JsonIgnore]
 
-    public virtual OrderHistory OrderHistory { get; set; }
+    public virtual OrderHistory OrderHistorys { get; set; }
 
     public ICollection<OrderCoupon> OrderCoupons { get; set; }
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }

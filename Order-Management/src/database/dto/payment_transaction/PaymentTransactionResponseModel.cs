@@ -10,18 +10,23 @@ namespace Order_Management.src.database.dto.payment_transaction
         public Guid? BankTransactionId { get; set; }
         public Guid PaymentGatewayTransactionId { get; set; }
         public PaymentStatusTypes PaymentStatus { get; set; } = PaymentStatusTypes.UNKNOWN;
-        public Guid? PaymentMode { get; set; }
+        public string? PaymentMode { get; set; }
         public double? PaymentAmount { get; set; } = 0.0;
         public decimal? PaymentCurrency { get; set; }
         public DateTime? InitiatedDate { get; set; } = DateTime.Now;
         public DateTime? CompletedDate { get; set; }
         public string? PaymentResponse { get; set; }
-        public Guid? PaymentResponseCode { get; set; }
-        public Guid? InitiatedBy { get; set; }
+        public string? PaymentResponseCode { get; set; }
+        public string? InitiatedBy { get; set; }
         public Guid? CustomerId { get; set; }
+        public Dictionary<string, object>? Customers { get; set; }
         public Guid? OrderId { get; set; }
+        public Dictionary<string, object>? Orders { get; set; }
+
         public bool? IsRefund { get; set; } = false;
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+       
+
     }
 }

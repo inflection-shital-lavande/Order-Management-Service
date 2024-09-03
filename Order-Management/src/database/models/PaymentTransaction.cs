@@ -28,7 +28,7 @@ public class PaymentTransaction
     public PaymentStatusTypes PaymentStatus { get; set; } = PaymentStatusTypes.UNKNOWN;
 
     [MaxLength(36)]
-    public Guid? PaymentMode { get; set; }
+    public string? PaymentMode { get; set; }
 
     [Required]
     public double? PaymentAmount { get; set; } = 0.0;
@@ -43,10 +43,10 @@ public class PaymentTransaction
     public string? PaymentResponse { get; set; }
 
     [MaxLength(36)]
-    public Guid? PaymentResponseCode { get; set; }
+    public string? PaymentResponseCode { get; set; }
 
     [MaxLength(36)]
-    public Guid? InitiatedBy { get; set; }
+    public string? InitiatedBy { get; set; }
 
     [ForeignKey("CustomerId")]
     public Guid? CustomerId { get; set; }
@@ -64,8 +64,10 @@ public class PaymentTransaction
 
     //navigation properties 
     [JsonIgnore]
-    public virtual Order Order { get; set; }
-    public virtual Customer Customer { get; set; }
+    public virtual Order Orders { get; set; }
+    [JsonIgnore]
+
+    public virtual Customer Customers { get; set; }
 
 }
 

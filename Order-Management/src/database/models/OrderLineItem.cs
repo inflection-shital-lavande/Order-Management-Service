@@ -37,9 +37,13 @@ public class OrderLineItem
 
     [Required]
     [MaxLength(36)]
+    [ForeignKey("OrderId")]
+
     public Guid? OrderId { get; set; }
 
     [MaxLength(36)]
+    [ForeignKey("CartId")]
+
     public Guid? CartId { get; set; }
 
     [Required]
@@ -47,10 +51,10 @@ public class OrderLineItem
 
     public DateTime? UpdatedAt { get; set; }
     [JsonIgnore]
-    public virtual Cart? Carts { get; set; }
+    public virtual Cart Carts { get; set; }
     [JsonIgnore]
 
-    public virtual Order? Orders { get; set; }
+    public virtual Order Orders { get; set; }
 
 
 

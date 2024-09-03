@@ -135,7 +135,7 @@ public  class OrderManagementContext : DbContext
 
             // One-to-many relationship with Order
             entity.HasMany(e => e.Orders)
-                .WithOne(e => e.Cart)
+                .WithOne(e => e.Carts)
                 .HasForeignKey(e => e.AssociatedCartId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -272,28 +272,36 @@ public  class OrderManagementContext : DbContext
         {
             entity.ToTable("customer_addresses");
 
-            entity.HasKey(e => new { e.CustomerId, e.AddressId });
+            entity.HasKey(e => e.Id);
 
             entity.Property(e => e.Id)
-                .HasColumnType("char(36)")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.CustomerId)
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.AddressId)
+                .HasColumnType("char(36)");
 
             entity.Property(e => e.AddressType)
                 .IsRequired()
                 .HasMaxLength(50)
-                .HasConversion<string>();
+                .HasDefaultValue(AddressTypes.SHIPPING);
 
-            entity.Property(e => e.IsFavorite);
+            entity.Property(e => e.IsFavorite)
+                .HasColumnType("bit");
 
-            entity.HasOne(e => e.Customer)
-                .WithMany(e => e.CustomerAddresses)
-                .HasForeignKey(e => e.CustomerId);
+            entity.HasOne(e => e.Customers)
+                .WithMany(c => c.CustomerAddresses)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(e => e.Address)
-                .WithMany(e => e.CustomerAddresses)
-                .HasForeignKey(e => e.AddressId);
+            entity.HasOne(e => e.Addresses)
+                .WithMany(a => a.CustomerAddresses)
+                .HasForeignKey(e => e.AddressId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
-
         modelBuilder.Entity<Merchant>(entity =>
         {
             entity.ToTable("merchants");
@@ -369,71 +377,68 @@ public  class OrderManagementContext : DbContext
         });
 
 
-       
 
 
 
-    
+
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.ToTable("orders");
 
+            entity.HasKey(e => e.Id);
+
             entity.Property(e => e.Id)
-                .HasColumnType("char(36)")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnType("char(36)");
 
             entity.Property(e => e.DisplayCode)
-                .HasColumnType("nvarchar")
                 .HasMaxLength(64)
-                //.IsRequired()
-                ;
+                .HasColumnType("nvarchar(64)");
 
             entity.Property(e => e.OrderStatus)
+                .IsRequired()
                 .HasDefaultValue(OrderStatusTypes.DRAFT)
-                .HasColumnType("nvarchar")
-                .HasMaxLength(64)
-                .IsRequired();
+                .HasColumnType("nvarchar(64)");
 
             entity.Property(e => e.InvoiceNumber)
-            .HasColumnType("nvarchar")
-                .HasMaxLength(64)              
-                .IsRequired();
+                .HasMaxLength(64)
+                .HasColumnType("nvarchar(64)");
 
             entity.Property(e => e.AssociatedCartId)
                 .HasColumnType("char(36)");
 
             entity.Property(e => e.TotalItemsCount)
-                .HasColumnType("int")
-                .HasDefaultValue(0);
+                .HasDefaultValue(0)
+                .HasColumnType("int");
 
             entity.Property(e => e.OrderDiscount)
-            .HasColumnType("float")
-                .HasDefaultValue(0.0);
+                .HasDefaultValue(0.0)
+                .HasColumnType("float(53)");
 
             entity.Property(e => e.TipApplicable)
-            .HasColumnType("bit")
-                .HasDefaultValue(false);
+                .HasDefaultValue(false)
+                .HasColumnType("bit");
 
             entity.Property(e => e.TipAmount)
-            .HasColumnType("float")
-                .HasDefaultValue(0.0);
+                .HasDefaultValue(0.0)
+                .HasColumnType("float(53)");
 
             entity.Property(e => e.TotalTax)
-            .HasColumnType("float")
-                .HasDefaultValue(0.0);
+                .HasDefaultValue(0.0)
+                .HasColumnType("float(53)");
 
             entity.Property(e => e.TotalDiscount)
-            .HasColumnType("float")
-                .HasDefaultValue(0.0);
+                .HasDefaultValue(0.0)
+                .HasColumnType("float(53)");
 
             entity.Property(e => e.TotalAmount)
-            .HasColumnType("float")
-                .HasDefaultValue(0.0);
+                .HasDefaultValue(0.0)
+                .HasColumnType("float(53)");
 
             entity.Property(e => e.Notes)
-                        .HasColumnType("nvarchar")
-
-                .HasMaxLength(1024);
+                .HasMaxLength(1024)
+                .HasColumnType("nvarchar(1024)");
 
             entity.Property(e => e.CustomerId)
                 .HasColumnType("char(36)");
@@ -448,56 +453,44 @@ public  class OrderManagementContext : DbContext
                 .HasColumnType("char(36)");
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .HasColumnType("datetime");
 
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime");
 
-            // Relationships
-
-            // One Cart to Many Orders
-            entity.HasOne(e => e.Cart)
+            // Foreign key relationships
+            entity.HasOne(e => e.Carts)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(e => e.AssociatedCartId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // One Customer to Many Orders
-            entity.HasOne(e => e.Customer)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            entity.HasOne(e => e.Customers)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(e => e.CustomerId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // One Order to One OrderHistory
-            entity.HasOne(e => e.OrderHistory)
-                .WithOne(h => h.Order)
-                .HasForeignKey<OrderHistory>(h => h.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.ShippingAddress)
+                .WithMany(c => c.ShippingOrders)
+                .HasForeignKey(e => e.ShippingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Many Orders to One OrderType
-            entity.HasOne(e => e.OrderType)
-                .WithMany(t => t.Orders)
+            entity.HasOne(e => e.BillingAddress)
+                .WithMany(c => c.BillingOrders)
+                .HasForeignKey(e => e.BillingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.OrderTypes)
+                .WithMany(c => c.Orders)
                 .HasForeignKey(e => e.OrderTypeId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // One Order to Many OrderLineItems
-            entity.HasMany(e => e.OrderLineItems)
-                .WithOne(i => i.Orders)
-                .HasForeignKey(i => i.OrderId)
+            // Configure one-to-one relationship with OrderHistory
+            entity.HasOne(e => e.OrderHistorys)
+                .WithOne(oh => oh.Orders)
+                .HasForeignKey<OrderHistory>(oh => oh.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-
-            // One Order to Many PaymentTransactions
-            entity.HasMany(e => e.PaymentTransactions)
-                .WithOne(p => p.Order)
-                .HasForeignKey(p => p.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Configure relationships with OrderCoupon
-            entity.HasMany(e => e.OrderCoupons)
-                .WithOne(oc => oc.Order)
-                .HasForeignKey(oc => oc.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<OrderCoupon>(entity =>
@@ -681,89 +674,106 @@ public  class OrderManagementContext : DbContext
 
             // Configure one-to-many relationship with Order
             entity.HasMany(e => e.Orders)
-                .WithOne(o => o.OrderType)
+                .WithOne(o => o.OrderTypes)
                 .HasForeignKey(o => o.OrderTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-        
 
-         modelBuilder.Entity<PaymentTransaction>(entity =>
-          {
-              entity.ToTable("payment_transactions");
 
-              entity.Property(e => e.Id)
-                 .HasColumnType("char(36)")
-                 .IsRequired();
+        modelBuilder.Entity<PaymentTransaction>(entity =>
+        {
+            entity.ToTable("payment_transactions");
 
-              entity.Property(e => e.DisplayCode)
-                 .HasColumnType(" nvarchar(64)")
-                 .HasMaxLength(64);
-             
-              entity.Property(e => e.InvoiceNumber)
-                  .HasColumnType(" nvarchar(64)")
-                  .HasMaxLength(64);
+            entity.HasKey(e => e.Id);
 
-              entity.Property(e => e.BankTransactionId)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.Id)
+                .HasColumnName("Id")
+                .HasColumnType("CHAR(36)");
 
-              entity.Property(e => e.PaymentGatewayTransactionId)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.DisplayCode)
+                .HasColumnName("DisplayCode")
+                .HasMaxLength(64)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.PaymentStatus)
-                  .HasColumnType(" nvarchar(64)")
-                  .IsRequired()
-                  .HasDefaultValue(PaymentStatusTypes.UNKNOWN);
+            entity.Property(e => e.InvoiceNumber)
+                .HasColumnName("InvoiceNumber")
+                .HasMaxLength(64)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.PaymentMode)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.BankTransactionId)
+                .HasColumnName("BankTransactionId")
+                .HasColumnType("CHAR(36)");
 
-              entity.Property(e => e.PaymentAmount)
-                  .IsRequired()
-                  .HasDefaultValue(0.0);
+            entity.Property(e => e.PaymentGatewayTransactionId)
+                .HasColumnName("PaymentGatewayTransactionId")
+                .HasColumnType("CHAR(36)");
 
-              entity.Property(e => e.PaymentCurrency)
-            . HasColumnType("DECIMAL(18,2)");
+            entity.Property(e => e.PaymentStatus)
+                .HasColumnName("PaymentStatus")
+                .HasMaxLength(64)
+                .HasColumnType("NVARCHAR")
+                .HasDefaultValue(PaymentStatusTypes.UNKNOWN);
 
-              entity.Property(e => e.InitiatedDate)
-                 .HasColumnType("datetime");
+            entity.Property(e => e.PaymentMode)
+                .HasColumnName("PaymentMode")
+                .HasMaxLength(36)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.CompletedDate)
-                 .HasColumnType("datetime");
+            entity.Property(e => e.PaymentAmount)
+                .HasColumnName("PaymentAmount")
+                .HasColumnType("FLOAT")
+                .HasDefaultValue(0.0);
 
-              entity.Property(e => e.PaymentResponse)
-                .HasMaxLength(1024);
+            entity.Property(e => e.PaymentCurrency)
+                .HasColumnName("PaymentCurrency")
+                .HasColumnType("DECIMAL(18, 2)");
 
-              entity.Property(e => e.PaymentResponseCode)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.InitiatedDate)
+                .HasColumnName("InitiatedDate")
+                .HasColumnType("DATETIME");
 
-              entity.Property(e => e.InitiatedBy)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.CompletedDate)
+                .HasColumnName("CompletedDate")
+                .HasColumnType("DATETIME");
 
-              entity.Property(e => e.CustomerId)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.PaymentResponse)
+                .HasColumnName("PaymentResponse")
+                .HasMaxLength(1024)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.OrderId)
-                 .HasColumnType("char(36)");
+            entity.Property(e => e.PaymentResponseCode)
+                .HasColumnName("PaymentResponseCode")
+                .HasMaxLength(36)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.IsRefund)
-                  .IsRequired()
-                  .HasDefaultValue(false);
+            entity.Property(e => e.InitiatedBy)
+                .HasColumnName("InitiatedBy")
+                .HasMaxLength(36)
+                .HasColumnType("NVARCHAR");
 
-              entity.Property(e => e.CreatedAt)
-                  .IsRequired()
-                  .HasColumnType("datetime")
-                  .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.IsRefund)
+                .HasColumnName("IsRefund")
+                .HasColumnType("BIT");
 
-              entity.Property(e => e.UpdatedAt)
-                  .HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("CreatedAt")
+                .HasColumnType("DATETIME");
 
-              // Configure one-to-many relationship with Order
-              entity.HasOne(e => e.Order)
-                  .WithMany(o => o.PaymentTransactions)
-                  .HasForeignKey(e => e.OrderId)
-                  .OnDelete(DeleteBehavior.Cascade);
-          });
-          
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnName("UpdatedAt")
+                .HasColumnType("DATETIME");
+
+            // Relationships
+            entity.HasOne(e => e.Customers)
+                .WithMany(c => c.PaymentTransactions)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Orders)
+                .WithMany(o => o.PaymentTransactions)
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
         //OnModelCreatingPartial(modelBuilder);
     }
