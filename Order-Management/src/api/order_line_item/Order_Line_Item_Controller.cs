@@ -106,15 +106,29 @@ namespace Order_Management.src.api.order_line_item;
             }
         }
 
-        public async Task<IResult> Search(string? Name,
-                                                  
-                                                  HttpContext httpContext, IOrderLineItem _orderLineItemService)
+        public async Task<IResult> Search([FromQuery] string? name,
+                                          [FromQuery] Guid? catalogId,
+                                          [FromQuery] Guid? discountSchemeId,
+                                          [FromQuery] double? itemSubTotal,
+                                          [FromQuery] Guid? orderId,
+                                          [FromQuery] Guid? cartId,
+                                          [FromQuery] DateTime? createdBefore,
+                                          [FromQuery] DateTime? createdAfter,
+
+                                          HttpContext httpContext, IOrderLineItem _orderLineItemService)
         {
             try
             {
                 var filter = new OrderLineItemSearchFilter
                 {
-                    Name=Name,  
+                    Name = name,
+                    CatalogId = catalogId,
+                    DiscountSchemeId = discountSchemeId,
+                    ItemSubTotal = itemSubTotal,
+                    OrderId = orderId,
+                    CartId = cartId,
+                    CreatedBefore = createdBefore,
+                    CreatedAfter = createdAfter
                 };
 
                 var orderLineItem = await _orderLineItemService.Search(filter);

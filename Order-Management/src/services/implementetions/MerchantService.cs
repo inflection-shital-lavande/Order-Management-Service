@@ -20,9 +20,7 @@ namespace Order_Management.src.services.implementetions
             _mapper = mapper;
         }
 
-        //public async Task<List<MerchantResponseModel>> GetAll() =>
-
-        //   _mapper.Map<List<MerchantResponseModel>>(await _context.Merchants.ToListAsync());
+        
 
 
         public async Task<List<MerchantResponseModel>> GetAll()
@@ -52,8 +50,30 @@ namespace Order_Management.src.services.implementetions
 
             var query = _context.Merchants.AsQueryable();
 
+            // Apply filters to the query
             if (!string.IsNullOrEmpty(filter.Name))
-                query = query.Where(a => a.Name.Contains(filter.Name));
+                query = query.Where(m => m.Name.Contains(filter.Name));
+
+            if (!string.IsNullOrEmpty(filter.Email))
+                query = query.Where(m => m.Email.Contains(filter.Email));
+
+            if (!string.IsNullOrEmpty(filter.Phone))
+                query = query.Where(m => m.Phone.Contains(filter.Phone));
+
+            if (!string.IsNullOrEmpty(filter.TaxNumber))
+                query = query.Where(m => m.TaxNumber.Contains(filter.TaxNumber));
+
+            //if (filter.CreatedBefore.HasValue)
+            //    query = query.Where(m => m.CreatedDate < filter.CreatedBefore.Value);
+
+            //if (filter.CreatedAfter.HasValue)
+            //    query = query.Where(m => m.CreatedDate > filter.CreatedAfter.Value);
+
+            //if (filter.PastMonths.HasValue)
+            //{
+            //    var pastDate = DateTime.Now.AddMonths(-filter.PastMonths.Value);
+            //    query = query.Where(m => m.CreatedDate >= pastDate);
+            //}
 
 
             var merchants = await query.ToListAsync();

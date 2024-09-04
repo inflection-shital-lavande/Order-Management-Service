@@ -5,6 +5,7 @@ using order_management.auth;
 using order_management.database;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.cart;
 
@@ -48,14 +49,33 @@ public class CouponService : ICouponService
         
         var query = _context.Coupons.AsQueryable();
 
-        
+
+        // Apply filters to the query
         if (!string.IsNullOrEmpty(filter.Name))
-            query = query.Where(a => a.Name.Contains(filter.Name));
+            query = query.Where(c => c.Name.Contains(filter.Name));
 
         if (!string.IsNullOrEmpty(filter.CouponCode))
-            query = query.Where(a => a.CouponCode.Contains(filter.CouponCode));
+            query = query.Where(c => c.CouponCode.Contains(filter.CouponCode));
 
-        
+        //if (filter.StartDate.HasValue)
+        //    query = query.Where(c => c.StartDate.Date == filter.StartDate.Value.Date);
+
+        if (filter.Discount.HasValue && filter.Discount.Value > 0)
+            query = query.Where(c => c.Discount == filter.Discount.Value);
+
+        if (filter.DiscountType != DiscountTypes.FLAT)
+            query = query.Where(c => c.DiscountType == filter.DiscountType);
+
+        if (filter.DiscountPercentage.HasValue && filter.DiscountPercentage.Value > 0)
+            query = query.Where(c => c.DiscountPercentage == filter.DiscountPercentage.Value);
+
+        if (filter.MinOrderAmount.HasValue && filter.MinOrderAmount.Value > 0)
+            query = query.Where(c => c.MinOrderAmount >= filter.MinOrderAmount.Value);
+
+        if (filter.IsActive.HasValue)
+            query = query.Where(c => c.IsActive == filter.IsActive.Value);
+
+
         var coupons = await query.ToListAsync();
 
        

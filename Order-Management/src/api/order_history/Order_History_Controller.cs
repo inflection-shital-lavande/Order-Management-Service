@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using order_management.src.database.dto;
 using order_management.src.database.dto.orderHistory;
@@ -106,15 +107,23 @@ public class Order_History_Controller
         }
     }
 
-    public async Task<IResult> Search(//string? OrderId,
+    public async Task<IResult> Search([FromQuery] Guid? orderId,
+                                      [FromQuery] OrderStatusTypes? previousStatus,
+                                      [FromQuery] OrderStatusTypes? status,
+                                      [FromQuery] Guid? updatedByUserId,
+                                      [FromQuery] DateTime? timestamp,
 
-                                              HttpContext httpContext, IOrderHistoryService _orderHistoryService)
+                                       HttpContext httpContext, IOrderHistoryService _orderHistoryService)
     {
         try
         {
             var filter = new OrderHistorySearchFilterModel
             {
-                //OrderId= OrderId
+                OrderId = orderId,
+                PreviousStatus = previousStatus ?? OrderStatusTypes.DRAFT,
+                Status = status ?? OrderStatusTypes.DRAFT,
+                UpdatedByUserId = updatedByUserId,
+                Timestamp = timestamp
             };
 
             var orderHistory = await _orderHistoryService.Search(filter);

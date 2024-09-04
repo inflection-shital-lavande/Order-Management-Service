@@ -110,14 +110,26 @@ public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, HttpCon
             }
         }
 
-        public async Task<IResult> Search(string? Name,
-                                                  HttpContext httpContext, IMerchantService _merchantService)
+        public async Task<IResult> Search([FromQuery] string? name,
+                                          [FromQuery] string? email,
+                                          [FromQuery] string? phone,
+                                          [FromQuery] string? taxNumber,
+                                          [FromQuery] DateTime? createdBefore,
+                                          [FromQuery] DateTime? createdAfter,
+                                          [FromQuery] int? pastMonths,
+                                           HttpContext httpContext, IMerchantService _merchantService)
         {
             try
             {
                 var filter = new MerchantSearchFilter
                 {
-                    Name= Name
+                    Name = name,
+                    Email = email,
+                    Phone = phone,
+                    TaxNumber = taxNumber,
+                    CreatedBefore = createdBefore,
+                    CreatedAfter = createdAfter,
+                    PastMonths = pastMonths
                 };
 
                 var merchant = await _merchantService.Search(filter);

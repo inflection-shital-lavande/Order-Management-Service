@@ -61,6 +61,8 @@ public class Customer
 
     //one to many customer and order `
     public ICollection<Order> Orders { get; set; }
+    public ICollection<Cart> Carts { get; set; }
+
 
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
    

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using order_management.src.database.dto;
 using order_management.src.services.interfaces;
@@ -104,7 +105,22 @@ namespace Order_Management.src.api.order;
             }
         }
 
-        public async Task<IResult> Search(//string? AddressLine1,
+        public async Task<IResult> Search([FromQuery] Guid? customerId,
+                                          [FromQuery] Guid? associatedCartId,
+                                          [FromQuery] Guid? couponId,
+                                          [FromQuery] int? totalItemsCountGreaterThan,
+                                          [FromQuery] int? totalItemsCountLessThan,
+                                          [FromQuery] float? orderDiscountGreaterThan,
+                                          [FromQuery] float? orderDiscountLessThan,
+                                          [FromQuery] bool? tipApplicable,
+                                          [FromQuery] float? totalAmountGreaterThan,
+                                          [FromQuery] float? totalAmountLessThan,
+                                          [FromQuery] Guid? orderLineItemProductId,
+                                          [FromQuery] OrderStatusTypes orderStatus,
+                                          [FromQuery] Guid? orderTypeId,
+                                          [FromQuery] DateTime? createdBefore,
+                                          [FromQuery] DateTime? createdAfter,
+                                          [FromQuery] int? pastMonths,
 
                                                   HttpContext httpContext, IOrderService _orderService)
         {
@@ -112,7 +128,23 @@ namespace Order_Management.src.api.order;
             {
                 var filter = new OrderSearchFilterModel
                 {
-                    //AddressLine1 = AddressLine1,
+
+                    CustomerId = customerId,
+                    AssociatedCartId = associatedCartId,
+                    CouponId = couponId,
+                    TotalItemsCountGreaterThan = totalItemsCountGreaterThan,
+                    TotalItemsCountLessThan = totalItemsCountLessThan,
+                    TipApplicable = tipApplicable,
+                    OrderDiscountGreaterThan = orderDiscountGreaterThan,
+                    OrderDiscountLessThan = orderDiscountLessThan,
+                    TotalAmountGreaterThan = totalAmountGreaterThan,
+                    TotalAmountLessThan = totalAmountLessThan,
+                    OrderLineItemProductId = orderLineItemProductId,
+                    OrderStatus = orderStatus,
+                    OrderTypeId = orderTypeId,
+                    CreatedBefore = createdBefore,
+                    CreatedAfter = createdAfter,
+                    PastMonths = pastMonths,
 
                 };
 

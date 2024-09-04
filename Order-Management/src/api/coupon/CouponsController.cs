@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.cart;
 using Order_Management.src.services.interfaces;
@@ -123,7 +124,14 @@ public class CouponsController
 
     
 
-    public async Task<IResult> Search(ICouponService _couponService, string? name, string? couponCode)
+    public async Task<IResult> Search(ICouponService _couponService,[FromQuery] string? name,
+                                                                    [FromQuery] string? couponCode,
+                                                                    [FromQuery] DateTime? startDate,
+                                                                    [FromQuery] float? discount,
+                                                                    [FromQuery] DiscountTypes? discountType,
+                                                                    [FromQuery] float? discountPercentage,
+                                                                    [FromQuery] float? minOrderAmount,
+                                                                    [FromQuery] bool? isActive)
     {
         try
         {
@@ -131,7 +139,13 @@ public class CouponsController
             var filter = new CouponSearchFilterModel
             {
                 Name = name,
-                CouponCode = couponCode
+                CouponCode = couponCode,
+                StartDate = startDate,
+                Discount = discount,
+                DiscountType = discountType ?? DiscountTypes.FLAT,
+                DiscountPercentage = discountPercentage,
+                MinOrderAmount = minOrderAmount,
+                IsActive = isActive
             };
 
             var coupons = await _couponService.Search(filter);

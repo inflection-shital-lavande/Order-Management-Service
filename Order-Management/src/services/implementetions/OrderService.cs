@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using order_management.database.dto;
 using Order_Management.src.database.dto.merchant;
 using order_management.src.database.dto.orderHistory;
+using order_management.domain_types.enums;
 
 namespace order_management.src.services.implementetions;
 
@@ -69,8 +70,57 @@ public class OrderService :IOrderService
 
         var query = _context.Orders.AsQueryable();
 
-        //if (!string.IsNullOrEmpty(filter.DisplayCode))
-        //    query = query.Where(a => a.DisplayCode.Contains(filter.DisplayCode));
+        // Apply filters to the query
+        if (filter.CustomerId.HasValue)
+            query = query.Where(o => o.CustomerId == filter.CustomerId.Value);
+
+        if (filter.AssociatedCartId.HasValue)
+            query = query.Where(o => o.AssociatedCartId == filter.AssociatedCartId.Value);
+
+        //if (filter.CouponId.HasValue)
+        //    query = query.Where(o => o.CouponId == filter.CouponId.Value);
+
+        if (filter.TotalItemsCountGreaterThan.HasValue)
+            query = query.Where(o => o.TotalItemsCount > filter.TotalItemsCountGreaterThan.Value);
+
+        if (filter.TotalItemsCountLessThan.HasValue)
+            query = query.Where(o => o.TotalItemsCount < filter.TotalItemsCountLessThan.Value);
+
+        if (filter.OrderDiscountGreaterThan.HasValue)
+            query = query.Where(o => o.OrderDiscount > filter.OrderDiscountGreaterThan.Value);
+
+        if (filter.OrderDiscountLessThan.HasValue)
+            query = query.Where(o => o.OrderDiscount < filter.OrderDiscountLessThan.Value);
+
+        if (filter.TipApplicable.HasValue)
+            query = query.Where(o => o.TipApplicable == filter.TipApplicable.Value);
+
+        if (filter.TotalAmountGreaterThan.HasValue)
+            query = query.Where(o => o.TotalAmount > filter.TotalAmountGreaterThan.Value);
+
+        if (filter.TotalAmountLessThan.HasValue)
+            query = query.Where(o => o.TotalAmount < filter.TotalAmountLessThan.Value);
+
+        //if (filter.OrderLineItemProductId.HasValue)
+        //    query = query.Where(o => o.OrderLineItems.Any(oli => oli.ProductId == filter.OrderLineItemProductId.Value));
+
+        //if (filter.OrderStatus != OrderStatusTypes.None)  // Assuming OrderStatusTypes.None represents no filter
+        //    query = query.Where(o => o.OrderStatus == filter.OrderStatus);
+
+        if (filter.OrderTypeId.HasValue)
+            query = query.Where(o => o.OrderTypeId == filter.OrderTypeId.Value);
+
+        //if (filter.CreatedBefore.HasValue)
+        //    query = query.Where(o => o.CreatedDate < filter.CreatedBefore.Value);
+
+        //if (filter.CreatedAfter.HasValue)
+        //    query = query.Where(o => o.CreatedDate > filter.CreatedAfter.Value);
+
+        //if (filter.PastMonths.HasValue && filter.PastMonths > 0)
+        //{
+        //    var pastDate = DateTime.UtcNow.AddMonths(-filter.PastMonths.Value);
+        //    query = query.Where(o => o.CreatedDate >= pastDate);
+        //}
 
 
         var orders = await query.ToListAsync();

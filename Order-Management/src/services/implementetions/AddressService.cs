@@ -21,17 +21,13 @@ public class AddressService : IAddressService
         _mapper = mapper;
     }
 
-    /*public async Task<List<AddressResponseModel>> GetAll() =>
-
-       _mapper.Map<List<AddressResponseModel>>(await _context.Addresses.ToListAsync());
-    */
+    
 
 
     public async Task<List<AddressResponseModel>> GetAll()
     {
         return await _context.Addresses
-            //.Include(a => a.CustomerAddresses)
-            //.ThenInclude(ca => ca.Customer)
+            
             .Select(a => _mapper.Map<AddressResponseModel>(a))
             .ToListAsync();
     }

@@ -11,6 +11,8 @@ public class Cart
     public Guid Id { get; set; }
 
     [StringLength(36)]
+    [ForeignKey("CustomerId")]
+
     public Guid? CustomerId { get; set; }
 
     public int? TotalItemsCount { get; set; } = 0;
@@ -35,7 +37,10 @@ public class Cart
     public DateTime? DeletedAt { get; set; }
 
     //one to many  cart and order 
-    public ICollection<Order> Orders { get; set; }
+    public virtual Customer Customerss { get; set; }
+
+    //public ICollection<Order> Orders { get; set; }
+    public virtual Order Ordersss { get; set; }
 
     //one to many cart and orderlineitem
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();

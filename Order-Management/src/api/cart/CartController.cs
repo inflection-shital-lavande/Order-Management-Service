@@ -105,16 +105,28 @@ namespace Order_Management.src.api.cart;
             }
         }
 
-        public async Task<IResult> Search(Guid? CustomerId,
-
-
-                                                  HttpContext httpContext, ICartService _cartService)
+        public async Task<IResult> Search(  [FromQuery] Guid? customerId,
+                                            [FromQuery] Guid? productId,
+                                            [FromQuery] int? totalItemsCountGreaterThan,
+                                            [FromQuery] int? totalItemsCountLessThan,
+                                            [FromQuery] float? totalAmountGreaterThan,
+                                            [FromQuery] float? totalAmountLessThan,
+                                            [FromQuery] DateTime? createdBefore,
+                                            [FromQuery] DateTime? createdAfter,
+                                            HttpContext httpContext, ICartService _cartService)
         {
             try
             {
                 var filter = new CartSearchFilter
                 {
-                    CustomerId = CustomerId
+                    CustomerId = customerId,
+                    ProductId = productId,
+                    TotalItemsCountGreaterThan = totalItemsCountGreaterThan,
+                    TotalItemsCountLessThan = totalItemsCountLessThan,
+                    TotalAmountGreaterThan = totalAmountGreaterThan,
+                    TotalAmountLessThan = totalAmountLessThan,
+                    CreatedBefore = createdBefore,
+                    CreatedAfter = createdAfter
 
                 };
 
