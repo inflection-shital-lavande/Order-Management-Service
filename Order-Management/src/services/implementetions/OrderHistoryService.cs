@@ -25,7 +25,7 @@ public class OrderHistoryService :IOrderHistoryService
     public async Task<List<OrderHistoryResponseModel>> GetAll()
     {
         var OrderHistorys = await _context.OrderHistorys
-            .Include(c => c.Orders)
+            .Include(c => c.Order)
 
             .ToListAsync();
 
@@ -39,7 +39,7 @@ public class OrderHistoryService :IOrderHistoryService
     {
         var OrderHistorys = await _context.OrderHistorys
             .AsNoTracking()
-            .Include(c => c.Orders)
+            .Include(c => c.Order)
             .FirstOrDefaultAsync(a => a.Id == id);
 
         return OrderHistorys != null ? _mapper.Map<OrderHistoryResponseModel>(OrderHistorys) : null;

@@ -51,10 +51,10 @@ public class OrderLineItem
 
     public DateTime? UpdatedAt { get; set; }
     [JsonIgnore]
-    public virtual Cart Carts { get; set; }
+    public virtual Cart Cart { get; set; }
     [JsonIgnore]
 
-    public virtual Order Orders { get; set; }
+    public virtual Order Order { get; set; }
 
 
 

@@ -60,20 +60,22 @@ public class Order
 
     // Navigation properties
     [JsonIgnore]
-    public virtual Cart Carts { get; set; }
+    public virtual Cart Cart { get; set; }
     [JsonIgnore]
-    public virtual Customer Customers { get; set; }
+    public virtual Customer Customer { get; set; }
     [JsonIgnore]
     public virtual Address ShippingAddress { get; set; }
     [JsonIgnore]
     public virtual Address BillingAddress { get; set; }
     [JsonIgnore]
-    public virtual OrderType OrderTypes { get; set; }
+    public virtual OrderType OrderType { get; set; }
     [JsonIgnore]
 
-    public virtual OrderHistory OrderHistorys { get; set; }
+    public virtual OrderHistory OrderHistory { get; set; }
 
     public ICollection<OrderCoupon> OrderCoupons { get; set; }
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
+    public ICollection<OrderPayment> OrderPaymentTransection { get; set; }
+
 }

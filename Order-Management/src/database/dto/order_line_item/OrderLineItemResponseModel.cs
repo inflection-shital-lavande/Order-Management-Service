@@ -31,11 +31,11 @@ namespace Order_Management.src.database.dto.order_line_item
 
         [Required]
         public Guid? OrderId { get; set; }
-        public Dictionary<string, object>? Orders { get; set; }
+        public Dictionary<string, object>? Order { get; set; }
 
         [Required]
         public Guid? CartId { get; set; }
-        public Dictionary<string, object>? Carts { get; set; }
+        public Dictionary<string, object>? Cart { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;

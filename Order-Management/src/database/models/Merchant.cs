@@ -47,6 +47,6 @@ public class Merchant
 
     [ForeignKey("AddressId")]
     [JsonIgnore]
-    public virtual Address Addressess { get; set; }
+    public virtual Address Address { get; set; }
 
 }

@@ -38,7 +38,7 @@ namespace Order_Management.src.api.order_line_item;
             {
                 var orderLineItem = await _orderLineItemService.GetById(id);
                 return orderLineItem == null ? ApiResponse.NotFound("Failure", "orderLineItem not found")
-                                       : ApiResponse.Success("Success", "Address retrieved successfully", orderLineItem);
+                                       : ApiResponse.Success("Success", "orderLineItem retrieved successfully", orderLineItem);
             }
             catch (Exception ex)
             {

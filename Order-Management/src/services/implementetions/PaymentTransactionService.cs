@@ -29,8 +29,8 @@ namespace Order_Management.src.services.implementetions
         public async Task<List<PaymentTransactionResponseModel>> GetAll()
         {
             var paymentTransactions = await _context.PaymentTransactions
-                 .Include(pt => pt.Orders) // Include related Order
-                .Include(pt => pt.Customers) // Include related Customer
+                 .Include(pt => pt.Order) // Include related Order
+                .Include(pt => pt.Customer) // Include related Customer
 
                 .ToListAsync();
             // Map to response model
@@ -39,8 +39,8 @@ namespace Order_Management.src.services.implementetions
         public async Task<PaymentTransactionResponseModel> GetById(Guid id)
         {
             var transaction = await _context.PaymentTransactions
-                .Include(pt => pt.Orders)          // Eagerly load the related Order
-                .Include(pt => pt.Customers)       // Eagerly load the related Customer
+                .Include(pt => pt.Order)          // Eagerly load the related Order
+                .Include(pt => pt.Customer)       // Eagerly load the related Customer
                 .AsNoTracking()
                 .FirstOrDefaultAsync(pt => pt.Id == id);
 

@@ -31,7 +31,7 @@ namespace Order_Management.src.api.order;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving order");
             }
         }
-        public async Task<IResult> GetById(Guid id, HttpContext httpContext, IAddressService _orderService)
+        public async Task<IResult> GetById(Guid id, HttpContext httpContext, IOrderService _orderService)
         {
             try
             {

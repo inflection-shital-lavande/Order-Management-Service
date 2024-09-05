@@ -54,8 +54,8 @@ public class OrderLineItemService:IOrderLineItem
     {
         // Fetch all OrderLineItems including related Cart and Order entities
         var orderLineItems = await _context.OrderLineItems
-            .Include(oli => oli.Carts)  // Include related Cart entity
-            .Include(oli => oli.Orders) // Include related Order entity
+            .Include(oli => oli.Cart)  // Include related Cart entity
+            .Include(oli => oli.Order) // Include related Order entity
             .ToListAsync();            // Execute the query and get the result as a list
 
         // Map the fetched entities to the response models
@@ -66,8 +66,8 @@ public class OrderLineItemService:IOrderLineItem
     public async Task<OrderLineItemResponseModel> GetById(Guid id)
     {
         var orderLineItem = await _context.OrderLineItems
-             .Include(oli => oli.Carts) // Include the related Cart
-             .Include(oli => oli.Orders) // Include the related Order
+             .Include(oli => oli.Cart) // Include the related Cart
+             .Include(oli => oli.Order) // Include the related Order
             .FirstOrDefaultAsync(oli => oli.Id == id);
 
         return orderLineItem != null ? _mapper.Map<OrderLineItemResponseModel>(orderLineItem) : null;

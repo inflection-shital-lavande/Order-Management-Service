@@ -30,7 +30,7 @@ public class OrderHistory
     public DateTime? Timestamp { get; set; } 
     // one to one 
     [JsonIgnore]
-    public virtual Order Orders { get; set; }
+    public virtual Order Order { get; set; }
 
 
 }

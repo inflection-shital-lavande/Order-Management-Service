@@ -30,8 +30,8 @@ namespace Order_Management.src.services.implementetions
         public async Task<List<CartResponseModel>> GetAll()
         {
             var carts = await _context.Carts
-                .Include(c => c.Customerss)
-                .Include(c => c.Ordersss)
+                .Include(c => c.Customer)
+                .Include(c => c.Order)
 
                 .ToListAsync();
 
@@ -43,7 +43,8 @@ namespace Order_Management.src.services.implementetions
         {
             var cart = await _context.Carts
                 .AsNoTracking()
-                .Include(c => c.Customerss)
+                .Include(c => c.Customer)
+                .Include(c => c.Order)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             return cart != null ? _mapper.Map<CartResponseModel>(cart) : null;

@@ -14,9 +14,12 @@ public class OrderCoupon
     public string? Code { get; set; }
 
     [Required]
+    [ForeignKey("CouponId")]
     public Guid? CouponId { get; set; }
 
     [Required]
+    [ForeignKey("OrderId")]
+
     public Guid? OrderId { get; set; }
 
     [Required]
@@ -38,8 +41,9 @@ public class OrderCoupon
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Order Orders { get; set; }
+    public virtual Order Order { get; set; }
 
+    public virtual Coupon Coupon { get; set; }
 
 
 

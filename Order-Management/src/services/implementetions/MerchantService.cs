@@ -26,7 +26,7 @@ namespace Order_Management.src.services.implementetions
         public async Task<List<MerchantResponseModel>> GetAll()
         {
             var merchants = await _context.Merchants
-                .Include(c => c.Addressess)
+                .Include(c => c.Address)
                 
                 .ToListAsync();
 
@@ -36,7 +36,7 @@ namespace Order_Management.src.services.implementetions
         {
             var merchants = await _context.Merchants
                 .AsNoTracking()
-                .Include(c => c.Addressess)
+                .Include(c => c.Address)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             return merchants != null ? _mapper.Map<MerchantResponseModel>(merchants) : null;

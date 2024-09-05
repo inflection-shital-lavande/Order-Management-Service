@@ -52,18 +52,18 @@ namespace order_management.src.database.dto
         [Description("Notes added for the order for the delivery")]
         public string? Notes { get; set; }
 
-        public Dictionary<string, object>? Carts { get; set; }
+        public Dictionary<string, object>? Cart { get; set; }
 
-        public Dictionary<string, object>? Customers { get; set; }
+        public Dictionary<string, object>? Customer { get; set; }
 
         public Dictionary<string, object>? ShippingAddress { get; set; }
 
         public Dictionary<string, object>? BillingAddress { get; set; }
 
-        public Dictionary<string, object>? OrderTypes { get; set; }
+        public Dictionary<string, object>? OrderType { get; set; }
 
 
-        public Dictionary<string, object>? OrderHistorys { get; set; }
+        public Dictionary<string, object>? OrderHistory { get; set; }
 
 
         [Required(ErrorMessage = "Order status is required.")]

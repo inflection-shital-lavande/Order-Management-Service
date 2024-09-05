@@ -19,9 +19,9 @@ namespace Order_Management.src.database.dto.payment_transaction
         public string? PaymentResponseCode { get; set; }
         public string? InitiatedBy { get; set; }
         public Guid? CustomerId { get; set; }
-        public Dictionary<string, object>? Customers { get; set; }
+        public Dictionary<string, object>? Customer { get; set; }
         public Guid? OrderId { get; set; }
-        public Dictionary<string, object>? Orders { get; set; }
+        public Dictionary<string, object>? Order { get; set; }
 
         public bool? IsRefund { get; set; } = false;
         public DateTime? CreatedAt { get; set; }

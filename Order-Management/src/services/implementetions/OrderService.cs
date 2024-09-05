@@ -10,6 +10,7 @@ using order_management.database.dto;
 using Order_Management.src.database.dto.merchant;
 using order_management.src.database.dto.orderHistory;
 using order_management.domain_types.enums;
+using Order_Management.src.database.dto.orderType;
 
 namespace order_management.src.services.implementetions;
 
@@ -28,12 +29,12 @@ public class OrderService :IOrderService
     public async Task<List<OrderResponseModel>> GetAll()
     {
         var orders = await _context.Orders
-            .Include(o => o.Carts)
-            .Include(o => o.Customers)
+            .Include(o => o.Cart)
+            .Include(o => o.Customer)
             .Include(o => o.ShippingAddress)
             .Include(o => o.BillingAddress)
-            .Include(o => o.OrderTypes)
-            .Include(o => o.OrderHistorys)
+            .Include(o => o.OrderType)
+            .Include(o => o.OrderHistory)
             .ToListAsync();
 
         return _mapper.Map<List<OrderResponseModel>>(orders);
@@ -51,12 +52,12 @@ public class OrderService :IOrderService
     {
         var orders = await _context.Orders
             .AsNoTracking()
-            .Include(c => c.Carts)
-            .Include(c => c.Customers)
+            .Include(c => c.Cart)
+            .Include(c => c.Customer)
             .Include(c => c.ShippingAddress)
             .Include(c => c.BillingAddress)
-            .Include(c => c.OrderTypes)
-            .Include(c => c.OrderHistorys)
+            .Include(c => c.OrderType)
+            .Include(c => c.OrderHistory)
             .FirstOrDefaultAsync(a => a.Id == id);
 
         return orders != null ? _mapper.Map<OrderResponseModel>(orders) : null;
@@ -138,18 +139,20 @@ public class OrderService :IOrderService
 
     }
 
+    
     public async Task<OrderResponseModel> Update(Guid id, OrderUpdateModel update)
     {
-        var orders = await _context.Orders.FindAsync(id);
-        if (orders == null) return null;
+        var existingOrder = await _context.Orders.FindAsync(id);
+        if (existingOrder == null) return null;
 
-        _mapper.Map(update, orders);
-        orders.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(update, existingOrder);  // Map updates to existing order
 
-        _context.Orders.Update(orders);
-        await _context.SaveChangesAsync();
+        existingOrder.UpdatedAt = DateTime.UtcNow;  // Set updated timestamp
+        _context.Orders.Update(existingOrder);  // Update the order in the context
 
-        return _mapper.Map<OrderResponseModel>(orders);
+        await _context.SaveChangesAsync();  // Save changes to the database
+
+        return _mapper.Map<OrderResponseModel>(existingOrder);  // Map to response model
     }
 
     public async Task<bool> Delete(Guid id)

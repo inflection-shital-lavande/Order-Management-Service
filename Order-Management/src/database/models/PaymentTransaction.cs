@@ -64,10 +64,12 @@ public class PaymentTransaction
 
     //navigation properties 
     [JsonIgnore]
-    public virtual Order Orders { get; set; }
+    public virtual Order Order { get; set; }
     [JsonIgnore]
 
-    public virtual Customer Customers { get; set; }
+    public virtual Customer Customer { get; set; }
+    public ICollection<OrderPayment> OrderPaymentTransection { get; set; }
+
 
 }
 

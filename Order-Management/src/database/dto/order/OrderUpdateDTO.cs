@@ -6,7 +6,7 @@ namespace order_management.src.database.dto;
 public class OrderUpdateModel
 {
     [Description("Id of the order type")]
-    public Guid? OrderType { get; set; }
+    public Guid? OrderTypeId { get; set; }
 
     [Description("Id of the cart")]
     public Guid? AssociatedCartId { get; set; }

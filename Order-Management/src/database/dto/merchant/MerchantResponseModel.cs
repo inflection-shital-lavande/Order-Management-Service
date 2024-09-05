@@ -42,7 +42,7 @@ namespace Order_Management.src.database.dto.merchant
 
         [Display(Description = "Address Id of the merchant")]
 
-        public Dictionary<string, object>? Addressess { get; set; }
+        public Dictionary<string, object>? Address { get; set; }
         [Display(Description = "Billing address Id of the customer")]
         public Guid? AddressId { get; set; }
 

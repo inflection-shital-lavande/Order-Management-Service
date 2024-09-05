@@ -42,6 +42,8 @@ public class OrderManagementContext : DbContext
 
     public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<OrderPayment> OrderPayments { get; set; }
+
 
     public DbSet<FileMetadata> FileMetadatas { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -133,13 +135,13 @@ public class OrderManagementContext : DbContext
             entity.Property(e => e.DeletedAt)
                 .HasColumnType("datetime");
 
-            entity.HasOne(e => e.Customerss)
+            entity.HasOne(e => e.Customer)
                 .WithMany(c => c.Carts)
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            entity.HasOne(c => c.Ordersss)
-                  .WithOne(o => o.Carts)
+            entity.HasOne(c => c.Order)
+                  .WithOne(o => o.Cart)
                   .HasForeignKey<Order>(o => o.AssociatedCartId);
 
             /* // One-to-many relationship with Order
@@ -357,7 +359,7 @@ public class OrderManagementContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
 
-            entity.HasOne(e => e.Addressess)
+            entity.HasOne(e => e.Address)
                 .WithMany(c => c.Merchants)
                 .HasForeignKey(e => e.AddressId)
                 .OnDelete(DeleteBehavior.SetNull);
@@ -474,7 +476,7 @@ public class OrderManagementContext : DbContext
             //    .HasForeignKey(e => e.AssociatedCartId)
             //    .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(e => e.Customers)
+            entity.HasOne(e => e.Customer)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -489,14 +491,14 @@ public class OrderManagementContext : DbContext
                 .HasForeignKey(e => e.BillingAddressId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(e => e.OrderTypes)
+            entity.HasOne(e => e.OrderType)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(e => e.OrderTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure one-to-one relationship with OrderHistory
-            entity.HasOne(e => e.OrderHistorys)
-                .WithOne(oh => oh.Orders)
+            entity.HasOne(e => e.OrderHistory)
+                .WithOne(oh => oh.Order)
                 .HasForeignKey<OrderHistory>(oh => oh.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -585,8 +587,8 @@ public class OrderManagementContext : DbContext
                 ;
 
             // Configure one-to-one relationship with OrderHistory
-            entity.HasOne(e => e.Orders)
-                .WithOne(oh => oh.OrderHistorys)
+            entity.HasOne(e => e.Order)
+                .WithOne(oh => oh.OrderHistory)
                 .HasForeignKey<OrderHistory>(oh => oh.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -651,13 +653,13 @@ public class OrderManagementContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             // Configure one-to-many relationship with Cart
-            entity.HasOne(e => e.Carts)
+            entity.HasOne(e => e.Cart)
                 .WithMany(c => c.OrderLineItems)
                 .HasForeignKey(e => e.CartId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure one-to-many relationship with Order
-            entity.HasOne(e => e.Orders)
+            entity.HasOne(e => e.Order)
                 .WithMany(o => o.OrderLineItems)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -779,16 +781,60 @@ public class OrderManagementContext : DbContext
                 .HasColumnType("DATETIME");
 
             // Relationships
-            entity.HasOne(e => e.Customers)
+            entity.HasOne(e => e.Customer)
                 .WithMany(c => c.PaymentTransactions)
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(e => e.Orders)
+            entity.HasOne(e => e.Order)
                 .WithMany(o => o.PaymentTransactions)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+        // Configure OrderPayment entity
+        modelBuilder.Entity<OrderPayment>(entity =>
+        {
+            entity.ToTable("order_payments");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .IsRequired()
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.OrderId)
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.PaymentTransactionId)
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.RefundTransactionId)
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime");
+
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime");
+
+            entity.HasOne(e => e.Order)
+                .WithMany(c => c.OrderPaymentTransection)                                                                  
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.PaymentTransaction)
+                .WithMany(c=>c.OrderPaymentTransection) 
+                .HasForeignKey(e => e.PaymentTransactionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.RefundTransaction)
+                 .WithMany(c => c.OrderPaymentTransection)
+                .HasForeignKey(e => e.RefundTransactionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
 
         //OnModelCreatingPartial(modelBuilder);
     }

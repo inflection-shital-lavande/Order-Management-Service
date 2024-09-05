@@ -37,10 +37,10 @@ public class Cart
     public DateTime? DeletedAt { get; set; }
 
     //one to many  cart and order 
-    public virtual Customer Customerss { get; set; }
+    public virtual Customer Customer { get; set; }
 
     //public ICollection<Order> Orders { get; set; }
-    public virtual Order Ordersss { get; set; }
+    public virtual Order Order { get; set; }
 
     //one to many cart and orderlineitem
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();

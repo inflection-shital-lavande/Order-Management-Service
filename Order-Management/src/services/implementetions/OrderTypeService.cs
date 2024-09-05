@@ -77,6 +77,7 @@ public class OrderTypeService : IOrderTypeService
         return _mapper.Map<OrderTypeResponseModel>(orderType);
     }
 
+
     public async Task<bool> Delete(Guid id)
     {
         var orderType = await _context.OrderTypes.FindAsync(id);
