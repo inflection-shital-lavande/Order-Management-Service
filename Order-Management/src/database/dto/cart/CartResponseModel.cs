@@ -16,6 +16,8 @@ namespace Order_Management.src.database.dto.cart
         public DateTime? CartToOrderTimestamp { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public Dictionary<string, object>? Customers { get; set; }
+
     }
 }
 

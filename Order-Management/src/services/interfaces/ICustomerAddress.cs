@@ -7,5 +7,5 @@ public interface ICustomerAddress
 {
     Task<List<CustomerAddress>> GetAllCustomerAddresses();
     
-    Task<CustomerAddress> Create(CustomerAddressCreateDTO customerAddressDto);
+    Task<CustomerAddress> Create(CustomerAddressCreate customerAddressDto);
 }

@@ -55,6 +55,9 @@ public class OrderTypeService : IOrderTypeService
         if (!string.IsNullOrEmpty(filter.Name))
            query = query.Where(a => a.Name.Contains(filter.Name));
 
+        if (!string.IsNullOrEmpty(filter.Description))
+            query = query.Where(a => a.Description.Contains(filter.Description));
+
 
         var addresses = await query.ToListAsync();
         var results = _mapper.Map<List<OrderTypeResponseModel>>(addresses);

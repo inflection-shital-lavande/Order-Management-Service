@@ -6,6 +6,7 @@ using order_management.src.database.dto.orderHistory;
 using Microsoft.EntityFrameworkCore;
 using order_management.src.services.interfaces;
 using order_management.database.dto;
+using order_management.domain_types.enums;
 
 namespace order_management.src.services.implementetions;
 
@@ -20,22 +21,7 @@ public class OrderHistoryService :IOrderHistoryService
         _mapper = mapper;
     }
 
-    /*public async Task<List<OrderHistoryResponseModel>> GetAll() =>
-
-       _mapper.Map<List<OrderHistoryResponseModel>>(await _context.OrderHistorys.ToListAsync());
-
-
-
-    public async Task<OrderHistoryResponseModel> GetById(Guid id)
-    {
-        var address = await _context.OrderHistorys
-            .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Id == id);
-
-        return address != null ? _mapper.Map<OrderHistoryResponseModel>(address) : null;
-    }
-
-    */
+   
     public async Task<List<OrderHistoryResponseModel>> GetAll()
     {
         var OrderHistorys = await _context.OrderHistorys
@@ -46,22 +32,7 @@ public class OrderHistoryService :IOrderHistoryService
         return _mapper.Map<List<OrderHistoryResponseModel>>(OrderHistorys);
     }
 
-    //public async Task<List<OrderHistoryResponseModel>> GetAll()
-    //{
-    //    return await _context.OrderHistorys
-    //        .Include(o => o.Order)  // Include related Order entity
-    //        .Select(o => new OrderHistoryResponseModel
-    //        {
-    //            Id = o.Id,
-    //            OrderId = o.OrderId,  // Nullable field
-    //            PreviousStatus = o.PreviousStatus,
-    //            Status = o.Status,
-    //            UpdatedByUserId = o.UpdatedByUserId,  // Nullable field
-    //            Timestamp = o.Timestamp , // Nullable field
-                
-    //        })
-    //        .ToListAsync();
-    //}
+    
 
 
     public async Task<OrderHistoryResponseModel> GetById(Guid id)
@@ -84,8 +55,21 @@ public class OrderHistoryService :IOrderHistoryService
 
         var query = _context.OrderHistorys.AsQueryable();
 
-        //if (!string.IsNullOrEmpty(filter.OrderId))
-        //    query = query.Where(a => a.OrderId.Contains(filter.OrderId));
+        // Apply filters to the query
+        if (filter.OrderId.HasValue)
+            query = query.Where(oh => oh.OrderId == filter.OrderId.Value);
+
+        if (filter.PreviousStatus != OrderStatusTypes.DRAFT)
+            query = query.Where(oh => oh.PreviousStatus == filter.PreviousStatus);
+
+        if (filter.Status != OrderStatusTypes.DRAFT)
+            query = query.Where(oh => oh.Status == filter.Status);
+
+        if (filter.UpdatedByUserId.HasValue)
+            query = query.Where(oh => oh.UpdatedByUserId == filter.UpdatedByUserId.Value);
+
+        if (filter.Timestamp.HasValue)
+            query = query.Where(oh => oh.Timestamp == filter.Timestamp.Value);
 
 
         var addresses = await query.ToListAsync();

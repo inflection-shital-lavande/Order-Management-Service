@@ -22,30 +22,7 @@ namespace Order_Management.src.services.implementetions
             _mapper = mapper;
         }
 
-        //public async Task<List<PaymentTransactionResponseModel>> GetAll() =>
-
-        //   _mapper.Map<List<PaymentTransactionResponseModel>>(await _context.PaymentTransactions.ToListAsync());
-
-        //public async Task<List<PaymentTransactionResponseModel>> GetAll()
-        //{
-        //    var orderLineItems = await _context.PaymentTransactions
-        //        .Select(oli => new PaymentTransactionResponseModel
-        //        {
-
-        //        })
-        //        .ToListAsync();
-
-        //    return orderLineItems;
-        //}
-
-        //public async Task<PaymentTransactionResponseModel> GetById(Guid id)
-        //{
-        //    var address = await _context.PaymentTransactions
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(a => a.Id == id);
-
-        //    return address != null ? _mapper.Map<PaymentTransactionResponseModel>(address) : null;
-        //}
+        
 
        
 
@@ -86,8 +63,8 @@ namespace Order_Management.src.services.implementetions
             if (filter.BankTransactionId.HasValue)
                 query = query.Where(pt => pt.BankTransactionId == filter.BankTransactionId.Value);
 
-            //if (filter.InitiatedDate.HasValue)
-            //    query = query.Where(pt => pt.InitiatedDate.Date == filter.InitiatedDate.Value.Date);
+            if (filter.InitiatedDate.HasValue)
+                query = query.Where(x => x.InitiatedDate == filter.InitiatedDate.Value);
 
             if (filter.CustomerId.HasValue)
                 query = query.Where(pt => pt.CustomerId == filter.CustomerId.Value);
@@ -95,8 +72,8 @@ namespace Order_Management.src.services.implementetions
             if (filter.OrderId.HasValue)
                 query = query.Where(pt => pt.OrderId == filter.OrderId.Value);
 
-            //if (!string.IsNullOrEmpty(filter.PaymentMode))
-            //    query = query.Where(pt => pt.PaymentMode.Contains(filter.PaymentMode));
+            if (!string.IsNullOrEmpty(filter.PaymentMode))
+                query = query.Where(x => x.PaymentMode == filter.PaymentMode);
 
             if (filter.PaymentAmount.HasValue)
                 query = query.Where(pt => pt.PaymentAmount == filter.PaymentAmount.Value);
@@ -111,8 +88,8 @@ namespace Order_Management.src.services.implementetions
             return new PaymentTransactionSearchResults { Items = results };
 
         }
-
-        public async Task<PaymentTransactionResponseModel> Create(PaymentTransactionCreateModel create)
+       
+            public async Task<PaymentTransactionResponseModel> Create(PaymentTransactionCreateModel create)
         {
             var order = _mapper.Map<PaymentTransaction>(create);
             _context.PaymentTransactions.Add(order);

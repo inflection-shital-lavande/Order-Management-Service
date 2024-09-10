@@ -6,23 +6,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace order_management.database.dto
 {
-    public class CustomerAddressCreateDTO
+    public class CustomerAddressCreate
     {
         [StringLength(36)]
         [Display(Description = "Id of the customer")]
 
-        public Guid? CustomerId { get; set; }
+        public Guid? CustomerId { get; internal set; }
 
         [StringLength(36)]
         [Display(Description = "Id of the address")]
 
-        public Guid? AddressId { get; set; }
+        public Guid? AddressId { get; internal set; }
 
         [Display(Description = "Type of address")]
 
-        public AddressTypes AddressType { get; set; } = AddressTypes.SHIPPING;
+        public AddressTypes AddressType { get;internal set; } = AddressTypes.SHIPPING;
         [Display(Description = "Is this favorite address")]
 
-        public bool? IsFavorite { get; set; } = false;
+        public bool? IsFavorite { get;internal set; } = false;
     }
 }

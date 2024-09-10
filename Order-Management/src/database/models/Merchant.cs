@@ -44,6 +44,7 @@ public class Merchant
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? UpdatedAt { get; set; }
+    //one to one one merchant has one address
 
     [ForeignKey("AddressId")]
     [JsonIgnore]

@@ -49,9 +49,11 @@ using Order_Management.src.database.dto.payment_transaction;
 using Order_Management.src.api.customerAddress;
 using static Order_Management.src.api.customerAddress.CustomerAddressValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -59,10 +61,18 @@ builder.Services.AddDbContext<OrderManagementContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Add services to the container.
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+//builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddAntiforgery();  // Ensure this is added if anti-forgery is required
 
 //add services
+
+//builder.Services.AddTransient<AddressController>();
+//builder.Services.AddTransient<IAddressService, AddressService>();
+//builder.Services.AddTransient<AddressRoutes>();
+
+
+
+
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
@@ -77,14 +87,19 @@ builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
-builder.Services.AddScoped<ICustomerAddress, CustomerAddressService>();    
+//builder.Services.AddScoped<ICustomerAddress, CustomerAddressService>();
 
-builder.Services.AddTransient<AddressRoutes>();
+//address controller
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+
+//builder.Services.AddTransient<AddressRoutes>();
+//builder.Services.AddScoped<AddressRoutes>();
 
 builder.Services.AddTransient<AuthenticationRoutes>();
-builder.Services.AddTransient<CouponsRoutes>();
-builder.Services.AddTransient<CustomerRoutes>();
-builder.Services.AddTransient<CartRoutes>();
+//builder.Services.AddTransient<CouponsRoutes>();
+//builder.Services.AddTransient<CustomerRoutes>();
+//builder.Services.AddTransient<CartRoutes>();
 builder.Services.AddTransient<MerchantRoutes>();
 builder.Services.AddTransient<OrderRoutes>();
 builder.Services.AddTransient<Order_History_Routes>();
@@ -92,9 +107,11 @@ builder.Services.AddTransient<Order_Line_Item_Routes>();
 builder.Services.AddTransient<Order_Type_Routes>();
 builder.Services.AddTransient<Payment_Transaction_Routes>();
 builder.Services.AddTransient<FileUploadRoutes>();
-builder.Services.AddTransient<CustomerAddressRoutes>();
+//builder.Services.AddTransient<CustomerAddressRoutes>();
 
-builder.Services.AddTransient<AddressController>();
+//builder.Services.AddControllers();
+//builder.Services.AddTransient<AddressRoutes>();
+//services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -178,12 +195,19 @@ builder.Services.AddScoped<IValidator<OrderTypeCreateModel>, AddOrdeTypeDTOValid
 builder.Services.AddScoped<IValidator<OrderTypeUpdateModel>, UpdateOrderTypeDTOValidator>();
 
 builder.Services.AddScoped<IValidator<PaymentTransactionCreateModel>, AddPaymentTransactionDTOValidator>();
-builder.Services.AddScoped<IValidator<CustomerAddressCreateDTO>, AddCADTOValidator>();
+builder.Services.AddScoped<IValidator<CustomerAddressCreate>, AddCADTOValidator>();
 
 //Auth
 builder.Services.AddScoped<IValidator<RegisterDTO>, RegisterDTOValidator>();
 builder.Services.AddScoped<IValidator<LoginDTO>, LoginDTOValidator>();
 
+//Controller
+builder.Services.AddScoped<AddressController>();
+builder.Services.AddScoped<CartController>();
+builder.Services.AddScoped<CustomerController>();
+builder.Services.AddScoped<CouponsController>();
+//builder.Services.AddScoped<OrderController>();
+//builder.Services.AddScoped<OrderController>();
 
 
 
@@ -220,24 +244,40 @@ app.UseAuthorization();
 //correct code
 //var addressEndpoints = app.Services.GetRequiredService<AddressController>();
 //addressEndpoints.MapAddressRoutes(app);
+//app.MapControllers();
+//app.UseRouting();
 
+/*app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});*/
 
-var addressEndpoints = app.Services.GetRequiredService<AddressRoutes>();
-addressEndpoints.MapRoutes(app);
+var addressRoutes = new AddressRoutes();
+addressRoutes.MapAddressRoutes(app);
 
+/*var addressEndpoints = app.Services.GetRequiredService<AddressRoutes>();
+addressEndpoints.MapRoutes(app);*/
 
+var cartRoutes = new CartRoutes();
+cartRoutes.MapCartRoutes(app);
+
+var couponRoutes = new CouponsRoutes();
+couponRoutes.MapCouponsRoutes(app);
+
+var customerRoutes = new CustomerRoutes();
+customerRoutes.MapCustomerRoutes(app);
 
 var authEndpoints = app.Services.GetRequiredService<AuthenticationRoutes>();
 authEndpoints.MapAuthRoutes(app);
 
-var couponsEndpoints = app.Services.GetRequiredService<CouponsRoutes>();
-couponsEndpoints.MapCouponsRoutes(app);
+/*var couponsEndpoints = app.Services.GetRequiredService<CouponsRoutes>();
+couponsEndpoints.MapCouponsRoutes(app);*/
 
-var customerEndpoints = app.Services.GetRequiredService<CustomerRoutes>();
-customerEndpoints.MapCustomerRoutes(app);
+/*var customerEndpoints = app.Services.GetRequiredService<CustomerRoutes>();
+customerEndpoints.MapCustomerRoutes(app);*/
 
-var cartEndpoints = app.Services.GetRequiredService<CartRoutes>();
-cartEndpoints.MapCartRoutes(app);
+/*var cartEndpoints = app.Services.GetRequiredService<CartRoutes>();
+cartEndpoints.MapCartRoutes(app);*/
 
 var merchantEndpoints = app.Services.GetRequiredService<MerchantRoutes>();
 merchantEndpoints.MapMerchantRoutes(app);
@@ -260,8 +300,8 @@ paymentTransactionEndpoints.MapPaymentTransectionRoutes(app);
 var fileUploadEndpoints = app.Services.GetRequiredService < FileUploadRoutes>();
 fileUploadEndpoints.MapFileUploadRoutes(app);
 
-var customerAddress = app.Services.GetRequiredService<CustomerAddressRoutes>();
-customerAddress.MapCARoutes(app);
+/*var customerAddress = app.Services.GetRequiredService<CustomerAddressRoutes>();
+customerAddress.MapCARoutes(app);*/
 
 
 

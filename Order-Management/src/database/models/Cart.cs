@@ -10,6 +10,7 @@ public class Cart
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
+    [ForeignKey("CustomerId")]
     [StringLength(36)]
     public Guid? CustomerId { get; set; }
 
@@ -33,6 +34,10 @@ public class Cart
     public DateTime? UpdatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    //navigation property
+    //one to many one cart have many customer
+    public virtual Customer Customers { get; set; }
 
     //one to many  cart and order 
     public ICollection<Order> Orders { get; set; }

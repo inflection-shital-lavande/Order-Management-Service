@@ -59,8 +59,9 @@ public class Coupon
   //  [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? UpdatedAt { get; set; }
     //many to many 
-    public ICollection<OrderCoupon> OrderCoupons { get; set; }
-   
+    public ICollection<OrderCoupon> OrderCoupons { get; set; } = new HashSet<OrderCoupon>();
+
+
 }
 
 

@@ -26,14 +26,7 @@ namespace Order_Management.src.services.implementetions
             _mapper.Map<List<CartResponseModel>>(await _context.Carts.ToListAsync());
 
 
-        //public async Task<IEnumerable<Cart>> GetAll()
-        //{
-        //    return await _context.Carts
-        //        .Include(o => o.Orders)
-        //        .Include(ol => ol.OrderLineItems)
-        //        .Select(c => _mapper.Map<Cart>(c))
-        //        .ToListAsync();
-        //}
+       
         public async Task<CartResponseModel> GetById(Guid id)
         {
             var cart = await _context.Carts
@@ -51,9 +44,32 @@ namespace Order_Management.src.services.implementetions
 
             var query = _context.Carts.AsQueryable();
 
-            //if (!string.IsNullOrEmpty(filter.CustomerId))
-            //    query = query.Where(a => a.CustomerId.Contains(filter.CustomerId));
-          
+            // Apply filters to the query
+            if (filter.CustomerId.HasValue)
+                query = query.Where(c => c.CustomerId == filter.CustomerId.Value);
+
+            //if (filter.ProductId.HasValue)
+            //    query = query.Where(c => c.CartItems.Any(ci => ci.ProductId == filter.ProductId.Value));
+
+            if (filter.TotalItemsCountGreaterThan.HasValue)
+                query = query.Where(c => c.TotalItemsCount > filter.TotalItemsCountGreaterThan.Value);
+
+            if (filter.TotalItemsCountLessThan.HasValue)
+                query = query.Where(c => c.TotalItemsCount < filter.TotalItemsCountLessThan.Value);
+
+            if (filter.TotalAmountGreaterThan.HasValue)
+                query = query.Where(c => c.TotalAmount > filter.TotalAmountGreaterThan.Value);
+
+            if (filter.TotalAmountLessThan.HasValue)
+                query = query.Where(c => c.TotalAmount < filter.TotalAmountLessThan.Value);
+
+            if (filter.CreatedBefore.HasValue)
+                query = query.Where(c => c.CreatedAt < filter.CreatedBefore.Value);
+
+            if (filter.CreatedAfter.HasValue)
+                query = query.Where(c => c.CreatedAt > filter.CreatedAfter.Value);
+
+
 
             var cart = await query.ToListAsync();
             var results = _mapper.Map<List<CartResponseModel>>(cart);

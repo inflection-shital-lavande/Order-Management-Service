@@ -46,7 +46,7 @@ public class MappingProfile : Profile
         CreateMap<Customer, CustomerSearchFilterModel>().ReverseMap();
         CreateMap<Customer, CustomerSearchResultsModel>().ReverseMap();
 
-        CreateMap<CustomerAddress, CustomerAddressCreateDTO>().ReverseMap();
+        CreateMap<CustomerAddress, CustomerAddressCreate>().ReverseMap();
 
         //Merchant
         CreateMap<Merchant, MerchantCreateModel>().ReverseMap();
@@ -91,7 +91,7 @@ public class MappingProfile : Profile
         CreateMap<PaymentTransaction, PaymentTransactionSearchFilter>().ReverseMap();
         CreateMap<PaymentTransaction, PaymentTransactionSearchResults>().ReverseMap();
 
-        CreateMap<CustomerAddressCreateDTO, CustomerAddress>();
+        CreateMap<CustomerAddressCreate, CustomerAddress>();
 
         //authentication
         CreateMap<RegisterDTO, User>();

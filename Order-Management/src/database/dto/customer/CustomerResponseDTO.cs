@@ -43,6 +43,8 @@ public class CustomerResponseModel
     public Dictionary<string, object>? DefaultBillingAddress { get; set; }
     [Display(Description = "Created at")]
 
+  //  public Dictionary<string, object> Merchant{ get; set; }
+
     public DateTime? CreatedAt { get; set; }
     [Display(Description = "Updated at")]
 

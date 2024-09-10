@@ -7,6 +7,8 @@ using order_management.database;
 using order_management.database.dto;
 using order_management.database.models;
 using Order_Management.src.database.dto.merchant;
+using order_management.domain_types.enums;
+using Microsoft.IdentityModel.Tokens;
 
 namespace order_management.services.implementetions;
 
@@ -14,6 +16,9 @@ public class CustomerService : ICustomerService
 {
     private readonly OrderManagementContext _context;
     private readonly IMapper _mapper;
+    //private Guid? customerId;
+
+    //private Guid? customerId;
 
     public CustomerService(OrderManagementContext context, IMapper mapper)
     {
@@ -56,6 +61,7 @@ public class CustomerService : ICustomerService
              .Include(c => c.DefaultBillingAddress)
              .AsQueryable();
 
+        // Apply filters to the query
         if (!string.IsNullOrEmpty(filter.Name))
             query = query.Where(c => c.Name.Contains(filter.Name));
 
@@ -71,6 +77,19 @@ public class CustomerService : ICustomerService
         if (!string.IsNullOrEmpty(filter.TaxNumber))
             query = query.Where(c => c.TaxNumber.Contains(filter.TaxNumber));
 
+        //if (filter.CreatedBefore.HasValue)
+        //    query = query.Where(c => c.CreatedDate < filter.CreatedBefore.Value);
+
+        //if (filter.CreatedAfter.HasValue)
+        //    query = query.Where(c => c.CreatedDate > filter.CreatedAfter.Value);
+
+        //if (filter.PastMonths.HasValue)
+        //{
+        //    var pastDate = DateTime.Now.AddMonths(-filter.PastMonths.Value);
+        //    query = query.Where(c => c.CreatedDate >= pastDate);
+        //}
+
+
         var customers = await query.ToListAsync();
 
 
@@ -80,20 +99,78 @@ public class CustomerService : ICustomerService
         return new CustomerSearchResultsModel { Items = results };
     }
 
-    
+
 
 
     public async Task<CustomerResponseModel> Create(CustomerCreateModel Create)
     {
-        var customer = _mapper.Map<Customer>(Create);
-        customer.CreatedAt = DateTime.UtcNow;
-        customer.UpdatedAt = DateTime.UtcNow;
+            //Map the CustomerCreateModel to a Customer entity
+           var customer = _mapper.Map<Customer>(Create);
+           customer.CreatedAt = DateTime.UtcNow;
+           customer.UpdatedAt = DateTime.UtcNow;
 
-        _context.Customers.Add(customer);
-        await _context.SaveChangesAsync();
+           // Add the customer to the database and save changes
+           _context.Customers.Add(customer);
+           await _context.SaveChangesAsync();
+        /*  return _mapper.Map<CustomerResponseModel>(customer);*/
+
+        // Create a new customer from the model
+        /* var customer = new Customer
+         {
+             Email = Create.Email,
+             Phone = Create.Phone,
+             TaxNumber = Create.TaxNumber,
+             DefaultShippingAddressId = Create.DefaultShippingAddressId,
+             DefaultBillingAddressId = Create.DefaultBillingAddressId,
+             UpdatedAt = DateTime.UtcNow,
+             CreatedAt = DateTime.UtcNow
+         };
+
+         _context.Customers.Add(customer);
+         await _context.SaveChangesAsync();*/
+
+        // Add customer address if provided
+      /*  if (Create.DefaultShippingAddressId != Guid.Empty)
+            await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultShippingAddressId, AddressTypes.SHIPPING);
+
+        if (Create.DefaultBillingAddressId != Create.DefaultShippingAddressId)
+        {
+            await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.Billing);
+        }*/
+        
+        // Return the customer as a response model
 
         return _mapper.Map<CustomerResponseModel>(customer);
+        /* return new CustomerResponseModel
+         {
+             Id = customer.Id,
+             Email = customer.Email,
+             Phone = customer.Phone,
+             TaxNumber = customer.TaxNumber,
+             DefaultShippingAddressId = customer.DefaultShippingAddressId,
+             DefaultBillingAddressId = customer.DefaultBillingAddressId,
+             UpdatedAt = customer.UpdatedAt,
+             CreatedAt = customer.CreatedAt
+         };*/
     }
+
+    private async Task CustomerAddressCreate(Guid customerId, Guid addressId, AddressTypes addressType)
+
+    {
+        
+        var customerAddress = new CustomerAddress
+        {
+            CustomerId = customerId,
+            AddressId = addressId,
+            AddressType = addressType,//.ToString(), // Assuming AddressType is stored as a string in the database
+            IsFavorite = true
+        };
+
+        _context.CustomerAddresses.Add(customerAddress);
+        await _context.SaveChangesAsync();
+    }
+
+    
 
 
     public async Task<CustomerResponseModel> Update(Guid id, CustomerUpdateModel customerUpdate)

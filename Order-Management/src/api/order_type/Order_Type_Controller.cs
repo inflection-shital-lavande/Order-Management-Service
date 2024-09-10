@@ -108,7 +108,7 @@ namespace Order_Management.src.api.orderType
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while deleting the OrderType");
             }
         }
-        public async Task<IResult> Search(string? Name,
+        public async Task<IResult> Search(string? Name,string? Description,
 
                                              HttpContext httpContext, IOrderTypeService _orderTypeService)
         {
@@ -116,7 +116,8 @@ namespace Order_Management.src.api.orderType
             {
                 var filter = new OrderTypeSearchFilter
                 {
-                    Name= Name
+                    Name= Name,
+                    Description= Description
                 };
 
                 var orderType = await _orderTypeService.Search(filter);

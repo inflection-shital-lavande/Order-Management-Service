@@ -29,7 +29,7 @@ namespace Order_Management.src.api.customerAddress
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving addresses");
             }
         }
-        public async Task<IResult> Create(CustomerAddressCreateDTO addr, HttpContext httpContext, ICustomerAddress _customerAddressService)
+        public async Task<IResult> Create(CustomerAddressCreate addr, HttpContext httpContext, ICustomerAddress _customerAddressService)
         {
             try
             {

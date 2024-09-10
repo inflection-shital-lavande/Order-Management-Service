@@ -82,17 +82,26 @@ namespace Order_Management.src.api.payment_transaction;
             }
         }
 
-        public async Task<IResult> Search(string? InvoiceNumber,
-                                                 
+        public async Task<IResult> Search(string? InvoiceNumber, string? DisplayCode, Guid? BankTransactionId,
+                                  DateTime? InitiatedDate, Guid? CustomerId, Guid? OrderId, string? PaymentMode,
+                                  float? PaymentAmount, bool? IsRefund,
+
                                                   HttpContext httpContext, IPaymentTransactionService _paymentTransactionService)
         {
             try
             {
-                var filter = new PaymentTransactionSearchFilter
-                {
-                    InvoiceNumber = InvoiceNumber,
-                    
-                };
+            var filter = new PaymentTransactionSearchFilter
+            {
+                InvoiceNumber = InvoiceNumber,
+                DisplayCode = DisplayCode,
+                BankTransactionId = BankTransactionId,
+                InitiatedDate = InitiatedDate,
+                CustomerId = CustomerId,
+                OrderId = OrderId,
+                PaymentMode = PaymentMode,
+                PaymentAmount = PaymentAmount,
+                IsRefund = IsRefund
+            };
 
                 var paymentTransactions = await _paymentTransactionService.Search(filter);
                 return paymentTransactions.Items.Any()

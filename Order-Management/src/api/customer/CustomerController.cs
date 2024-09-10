@@ -14,14 +14,21 @@ using System.Reflection.Emit;
 namespace order_management.api;
 
 public  class CustomerController
-{
-    public CustomerController()
+{ 
+    private readonly ICustomerService _customerService;
+    private readonly IValidator<CustomerCreateModel> _createValidator;
+    private readonly IValidator<CustomerUpdateModel> _updateValidator;
+    public CustomerController(ICustomerService customerService,
+                            IValidator<CustomerCreateModel> createValidator,
+                            IValidator<CustomerUpdateModel> updateValidator)
     {
-
+        _customerService = customerService;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
     [ProducesResponseType(200, Type = typeof(IEnumerable<Customer>))]
 
-    public async Task<IResult> GetAll(HttpContext httpContext, ICustomerService _customerService)
+    public async Task<IResult> GetAll(HttpContext httpContext)//, ICustomerService _customerService)
     {
         try
         {
@@ -35,7 +42,7 @@ public  class CustomerController
         }
     }
 
-    public async Task<IResult> GetById(ICustomerService _customerService, Guid id, HttpContext httpContext)
+    public async Task<IResult> GetById(Guid id)//ICustomerService _customerService, HttpContext httpContext)
     {
         try
         {
@@ -51,7 +58,7 @@ public  class CustomerController
 
     
 
-    public async Task<IResult> Create(CustomerCreateModel Create, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
+    public async Task<IResult> Create(CustomerCreateModel Create)//, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
     {
         try
         {
@@ -77,11 +84,7 @@ public  class CustomerController
 
 
 
-
-    
-
-
-    public async Task<IResult> Update(Guid id, CustomerUpdateModel customerUpdate, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerUpdateModel> _updateValidator)
+    public async Task<IResult> Update(Guid id, CustomerUpdateModel customerUpdate)//, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerUpdateModel> _updateValidator)
     {
         try
         {
@@ -106,7 +109,7 @@ public  class CustomerController
         }
     }
 
-    public async Task<IResult> Delete(ICustomerService _customerService, Guid id, HttpContext httpContext)
+    public async Task<IResult> Delete( Guid id)//ICustomerService _customerService, HttpContext httpContext)
     {
         try
         {
@@ -120,7 +123,7 @@ public  class CustomerController
         }
     }
 
-    public async Task<IResult> Search(ICustomerService _customerService, [FromQuery] string? name,
+    public async Task<IResult> Search( [FromQuery] string? name,
                                                    [FromQuery] string? email,
                                                    [FromQuery] string? phoneCode,
                                                    [FromQuery] string? phone,

@@ -14,16 +14,16 @@ public class CustomerAddress
     [StringLength(36)]
     [ForeignKey("CustomerId")]
 
-    public Guid? CustomerId { get; set; }
+    public Guid? CustomerId { get; internal set; }
 
     [StringLength(36)]
     [ForeignKey("AddressId")]
 
-    public Guid? AddressId { get; set; }
+    public Guid? AddressId { get; internal set; }
 
-    public AddressTypes AddressType { get; set; } = AddressTypes.SHIPPING;
+    public AddressTypes AddressType { get;  internal set; }// = AddressTypes.SHIPPING;
 
-    public bool? IsFavorite { get; set; } = false;
+    public bool? IsFavorite { get; internal set; } = false;
 
     public virtual Customer Customers { get; set; }
 

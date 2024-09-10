@@ -4,6 +4,7 @@ using System.Xml;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Diagnostics.Metrics;
 using System.Reflection.Emit;
+using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
 
@@ -40,16 +41,19 @@ public partial class Address
 
     public DateTime? UpdatedAt { get; set; }
 
-    
 
-    //many to many 
+    //mant to  many 
+   // [JsonIgnore]
     public ICollection<CustomerAddress> CustomerAddresses { get; set; }
 
     //one to many Address and order
-    [NotMapped]
+   // [NotMapped]
+   // [JsonIgnore]
     public ICollection<Order> ShippingOrders { get; set; } = new List<Order>();
     public ICollection<Order> BillingOrders { get; set; } = new List<Order>();
-    public ICollection<Merchant> Merchants { get; set; }
+    //one to one one, merchant has onme address
+    public virtual Merchant Merchant { get; set; }
+    //public ICollection<Merchant> Merchants { get; set; }
 
 
     public Address()

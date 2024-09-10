@@ -6,7 +6,7 @@ namespace Order_Management.src.api.customerAddress
 {
     public class CustomerAddressValidation
     {
-        public class AddCADTOValidator : AbstractValidator<CustomerAddressCreateDTO>
+        public class AddCADTOValidator : AbstractValidator<CustomerAddressCreate>
 
         {
             public AddCADTOValidator()

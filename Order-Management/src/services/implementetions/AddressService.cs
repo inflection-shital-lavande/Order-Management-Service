@@ -7,6 +7,7 @@ using order_management.database;
 using order_management.database.dto;
 using order_management.database.models;
 using order_management.services.interfaces;
+using Order_Management.src.database.dto.cart;
 
 namespace order_management.services.implementetions;
 
@@ -21,20 +22,19 @@ public class AddressService : IAddressService
         _mapper = mapper;
     }
 
-    /*public async Task<List<AddressResponseModel>> GetAll() =>
-
-       _mapper.Map<List<AddressResponseModel>>(await _context.Addresses.ToListAsync());
-    */
 
 
-    public async Task<List<AddressResponseModel>> GetAll()
-    {
-        return await _context.Addresses
-            //.Include(a => a.CustomerAddresses)
-            //.ThenInclude(ca => ca.Customer)
-            .Select(a => _mapper.Map<AddressResponseModel>(a))
-            .ToListAsync();
-    }
+
+    public async Task<List<AddressResponseModel>> GetAll() =>
+    
+
+        _mapper.Map<List<AddressResponseModel>>(await _context.Addresses.ToListAsync());
+    
+       /* return await _context.Addresses
+            
+            .Select(a => _mapper.Map<Address>(a))
+            .ToListAsync();*/
+    
     public async Task<AddressResponseModel> GetById(Guid id)
     {
         var address = await _context.Addresses

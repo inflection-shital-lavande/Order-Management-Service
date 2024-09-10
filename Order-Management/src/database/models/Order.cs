@@ -73,7 +73,7 @@ public class Order
 
     public virtual OrderHistory OrderHistorys { get; set; }
 
-    public ICollection<OrderCoupon> OrderCoupons { get; set; }
+    public ICollection<OrderCoupon> OrderCoupons { get; set; } = new HashSet<OrderCoupon>();
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
 }

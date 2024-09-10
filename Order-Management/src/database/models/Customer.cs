@@ -52,15 +52,17 @@ public class Customer
     public DateTime? UpdatedAt { get; set; }
 
     //navigation properties
-    public virtual Address DefaultShippingAddress { get; set; }
+    public virtual Address? DefaultShippingAddress { get; set; }
 
-    public virtual Address DefaultBillingAddress { get; set; }
+    public virtual Address? DefaultBillingAddress { get; set; }
 
     //many to many
-    public ICollection<CustomerAddress> CustomerAddresses { get; set; }
+    public ICollection<CustomerAddress>? CustomerAddresses { get; set; }
 
     //one to many customer and order `
     public ICollection<Order> Orders { get; set; }
+    //one to many customer and cart
+    public ICollection<Cart> carts { get; set; }
 
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
    

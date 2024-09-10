@@ -34,7 +34,7 @@ public class CustomerAddressService: ICustomerAddress
 
 
     
-    public async Task<CustomerAddress> Create(CustomerAddressCreateDTO customerAddressDto)
+    public async Task<CustomerAddress> Create(CustomerAddressCreate customerAddressDto)
     {
         var customerAddress = _mapper.Map<CustomerAddress>(customerAddressDto);
         _context.CustomerAddresses.Add(customerAddress);

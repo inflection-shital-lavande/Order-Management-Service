@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.cart;
 using Order_Management.src.services.interfaces;
@@ -15,13 +16,21 @@ public class CouponsController
 {
 
 
-    public CouponsController()
+    private readonly ICouponService _couponService;
+    private readonly IValidator<CouponCreateModel> _createValidator;
+    private readonly IValidator<CouponUpdateModel> _updateValidator;
+    public CouponsController(ICouponService couponService,
+                            IValidator<CouponCreateModel> createValidator,
+                            IValidator<CouponUpdateModel> updateValidator)
     {
-
+        _couponService = couponService;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
+
     [ProducesResponseType(200, Type = typeof(IEnumerable<Coupon>))]
 
-    public async Task<IResult> GetAll(HttpContext httpContext, ICouponService _couponService)
+    public async Task<IResult> GetAll(HttpContext httpContext)//, ICouponService _couponService)
     {
         try
         {
@@ -37,7 +46,7 @@ public class CouponsController
 
 
 
-    public  async Task<IResult> GetById(ICouponService _couponService, Guid id, HttpContext httpContext)
+    public  async Task<IResult> GetById( Guid id)// ICouponService _couponService  httpContext)
     {
         try
         {
@@ -51,7 +60,7 @@ public class CouponsController
         }
     }
 
-    public async Task<IResult> Create(CouponCreateModel couponCreate, HttpContext httpContext, ICouponService _couponService, IValidator<CouponCreateModel> _createValidator)
+    public async Task<IResult> Create(CouponCreateModel couponCreate)//, HttpContext httpContext)//, ICouponService _couponService, IValidator<CouponCreateModel> _createValidator)
     {
         try
         {
@@ -77,7 +86,7 @@ public class CouponsController
 
     
 
-    public async Task<IResult> Update(Guid id, CouponUpdateModel couponUpdate, HttpContext httpContext, ICouponService _couponService, IValidator<CouponUpdateModel> _updateValidator)
+    public async Task<IResult> Update(Guid id, CouponUpdateModel couponUpdate)//, HttpContext httpContext, ICouponService _couponService, IValidator<CouponUpdateModel> _updateValidator)
     {
         try
         {
@@ -104,7 +113,7 @@ public class CouponsController
 
 
 
-    public  async Task<IResult> Delete(ICouponService _couponService, Guid id, HttpContext httpContext)
+    public  async Task<IResult> Delete( Guid id ) // ICouponService _couponService,  HttpContext httpContext)
     {
         try
         {
@@ -123,7 +132,14 @@ public class CouponsController
 
     
 
-    public async Task<IResult> Search(ICouponService _couponService, string? name, string? couponCode)
+    public async Task<IResult> Search( [FromQuery] string? name,
+                                        [FromQuery] string? couponCode,
+                                        [FromQuery] DateTime? startDate,
+                                         [FromQuery] float? discount,
+                                          [FromQuery] DiscountTypes? discountType,
+                                          [FromQuery] float? discountPercentage,
+                                          [FromQuery] float? minOrderAmount,
+                                          [FromQuery] bool? isActive)//ICouponService _couponService,
     {
         try
         {
@@ -131,7 +147,13 @@ public class CouponsController
             var filter = new CouponSearchFilterModel
             {
                 Name = name,
-                CouponCode = couponCode
+                CouponCode = couponCode,
+                StartDate = startDate,
+                Discount = discount,
+                DiscountType = discountType ?? DiscountTypes.FLAT,
+                DiscountPercentage = discountPercentage,
+                MinOrderAmount = minOrderAmount,
+                IsActive = isActive
             };
 
             var coupons = await _couponService.Search(filter);
