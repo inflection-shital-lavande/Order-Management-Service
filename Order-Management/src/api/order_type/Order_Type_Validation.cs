@@ -13,12 +13,13 @@ public class Order_Type_Validation
         {
 
 
-            /* RuleFor(x => x.AddressLine1)
-                    .NotEmpty()
-                    .MaximumLength(512)
-                    .WithMessage("AddressLine1 cannot be longer than 512 characters");*/
+            RuleFor(item => item.Name).NotEmpty().NotNull()
+               .NotNull().WithMessage("Tax is required.")
+              .WithMessage("Tax cannot be empty.");
 
-
+            RuleFor(item => item.Description).NotEmpty().NotNull()
+               .NotNull().WithMessage("Tax is required.")
+               .WithMessage("Tax cannot be empty.");
 
         }
     }

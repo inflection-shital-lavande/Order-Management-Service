@@ -11,16 +11,16 @@ public class OrderHistoryUpdateModel
     [MaxLength(36)]
     public Guid? OrderId { get; set; }
 
-    //[Required]
+    [Required(ErrorMessage = "PreviousStatus is required.")]
     public OrderStatusTypes PreviousStatus { get; set; } = OrderStatusTypes.DRAFT;
 
-    //[Required]
+    [Required(ErrorMessage = "Status is required.")]
     public OrderStatusTypes Status { get; set; } = OrderStatusTypes.DRAFT;
 
     [MaxLength(36)]
     public Guid? UpdatedByUserId { get; set; }
 
-    //[Required]
+    [Required]
     public DateTime? Timestamp { get; set; }
 }
 

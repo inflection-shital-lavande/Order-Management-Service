@@ -84,10 +84,10 @@ public class OrderManagementContext : DbContext
                 .HasMaxLength(64);
             //one to one relatinship
 
-            entity.HasOne(e => e.Merchant)
+          /*  entity.HasOne(e => e.Merchant)
                 .WithOne(oh => oh.Addressess)
                 .HasForeignKey<Merchant>(oh => oh.AddressId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);*/
 
             /* //One-to-many relationship with Merchant
              entity.HasMany(e => e.Merchants)
@@ -143,6 +143,7 @@ public class OrderManagementContext : DbContext
                 .WithMany(c => c.carts)
                 .HasForeignKey(e => e.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
 
             /* // One-to-many relationship with Order
              entity.HasMany(e => e.Orders)
@@ -299,7 +300,7 @@ public class OrderManagementContext : DbContext
                  .IsRequired()
                  .HasColumnType("char(36)");
 
-            entity.HasKey(ca => new { ca.CustomerId, ca.AddressId });
+           /* entity.HasKey(ca => new { ca.CustomerId, ca.AddressId });
 
             entity.HasOne(e => e.Customers)
                .WithMany(c => c.CustomerAddresses)
@@ -309,8 +310,8 @@ public class OrderManagementContext : DbContext
             entity.HasOne(e => e.Addresses)
                 .WithMany(a => a.CustomerAddresses)
                 .HasForeignKey(e => e.AddressId)
-                .OnDelete(DeleteBehavior.Restrict);
-            /* entity.HasKey(e => e.Id);
+                .OnDelete(DeleteBehavior.Restrict);*/
+             entity.HasKey(e => e.Id);
 
              entity.Property(e => e.Id)
                  .IsRequired()
@@ -320,12 +321,12 @@ public class OrderManagementContext : DbContext
                  .HasColumnType("char(36)");
 
              entity.Property(e => e.AddressId)
-                 .HasColumnType("char(36)");*/
+                 .HasColumnType("char(36)");
 
             entity.Property(e => e.AddressType)
                 .IsRequired()
-                .HasMaxLength(50);
-               // .HasDefaultValue(AddressTypes.SHIPPING);
+                .HasMaxLength(50)
+                .HasDefaultValue(AddressTypes.SHIPPING);
 
             entity.Property(e => e.IsFavorite)
                 .HasColumnType("bit")
@@ -533,11 +534,11 @@ public class OrderManagementContext : DbContext
 
         modelBuilder.Entity<OrderCoupon>(entity =>
         {
-           // base.OnModelCreating(modelBuilder);
+            // base.OnModelCreating(modelBuilder);
 
             // Configure the many-to-many relationship using OrderCoupon as the join entity
 
-           
+
             //entity.ToTable("order_Coupons");
 
             // Configure the properties in OrderCoupon
@@ -549,53 +550,47 @@ public class OrderManagementContext : DbContext
             .HasKey(oc => oc.Id);*/
 
 
-          /*  entity.Property(e => e.Id)
-                  .HasColumnType("char(36)")
-                  .IsRequired();
-            // Code is not required, and has a max length of 64
+            entity.ToTable("order_coupons");
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.DiscountValue)
-                .HasDefaultValue(0.0); // Default discount value is 0.0
+            entity.Property(e => e.Id)
+               .HasColumnType("char(36)")
+               .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.DiscountPercentage)
-                .HasDefaultValue(0.0); // Default discount percentage is 0.0
+            entity.Property(oc => oc.Code)
+                .HasMaxLength(64)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.DiscountMaxAmount)
-                .HasDefaultValue(0.0); // Default maximum discount amount is 0.0
+            entity.Property(oc => oc.CouponId)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.Applied)
-                .HasDefaultValue(true); // Default applied value is true
+            entity.Property(oc => oc.OrderId)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.AppliedAt)
-                .HasDefaultValueSql("NULL"); // Default applied at is null (can be nullable)
+            entity.Property(oc => oc.DiscountValue)
+                .HasDefaultValue(0.0)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()"); // Set default value to the current UTC time
+            entity.Property(oc => oc.DiscountPercentage)
+                .HasDefaultValue(0.0)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .Property(oc => oc.UpdatedAt)
-                .ValueGeneratedOnUpdate(); // Update timestamp on record update
+            entity.Property(oc => oc.DiscountMaxAmount)
+                .HasDefaultValue(0.0)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-             .HasKey(oc => new { oc.OrderId, oc.CouponId });
+            entity.Property(oc => oc.Applied)
+                .HasDefaultValue(true)
+                .IsRequired();
 
-            modelBuilder.Entity<OrderCoupon>()
-                .HasOne(oc => oc.Order)
-                .WithMany(o => o.OrderCoupons)
-                .HasForeignKey(oc => oc.OrderId);
+            entity.Property(oc => oc.AppliedAt);
 
-            modelBuilder.Entity<OrderCoupon>()
-                .HasOne(oc => oc.Coupon)
-                .WithMany(c => c.OrderCoupons)
-                .HasForeignKey(oc => oc.CouponId);*/
+            entity.Property(oc => oc.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .IsRequired();
 
-              entity.ToTable("order_coupons");
+            entity.Property(oc => oc.UpdatedAt);
+
+            /*  entity.ToTable("order_coupons");
 
               entity.Property(e => e.Id)
                  .HasColumnType("char(36)")
@@ -605,11 +600,11 @@ public class OrderManagementContext : DbContext
                   .HasMaxLength(64)
                   .IsRequired();
 
-           /*   entity.Property(oc => oc.CouponId)
+             // entity.Property(oc => oc.CouponId)
                   .IsRequired();
 
-              entity.Property(oc => oc.OrderId)
-                  .IsRequired();*/
+             // entity.Property(oc => oc.OrderId)
+                  .IsRequired();
 
               entity.Property(oc => oc.DiscountValue)
                   .HasDefaultValue(0.0)
@@ -633,9 +628,9 @@ public class OrderManagementContext : DbContext
                   .HasDefaultValueSql("GETUTCDATE()")
                   .IsRequired();
 
-           /* modelBuilder.Entity<OrderCoupon>()
+           // modelBuilder.Entity<OrderCoupon>()
                 .Property(oc => oc.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");*/
+              //  .HasDefaultValueSql("GETUTCDATE()");
 
             entity.Property(oc => oc.UpdatedAt);
 

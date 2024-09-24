@@ -5,7 +5,7 @@ namespace order_management.database.models;
 
 public class OrderCoupon
 {
-    /* [Key]
+     [Key]
      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
      public Guid Id { get; set; }
 
@@ -38,9 +38,9 @@ public class OrderCoupon
 
      public DateTime? UpdatedAt { get; set; }
 
-     public virtual Order Orders { get; set; }*/
+     public virtual Order Orders { get; set; }
 
-    [Key]
+   /* [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }// = Guid.NewGuid();
 
@@ -73,7 +73,7 @@ public class OrderCoupon
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }*/
 
 
 

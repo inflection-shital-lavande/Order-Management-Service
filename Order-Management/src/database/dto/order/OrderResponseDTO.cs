@@ -10,7 +10,7 @@ namespace order_management.src.database.dto
         [Description("Id of the order")]
         public Guid Id { get; set; }
 
-        [StringLength(64, MinimumLength = 4, ErrorMessage = "Display code must be between 4 and 64 characters.")]
+        [StringLength(64)]
         [Description("Display code for the order")]
         public string? DisplayCode { get; set; }
 
@@ -20,11 +20,11 @@ namespace order_management.src.database.dto
         [Description("Cart Id for the order")]
         public Guid? AssociatedCartId { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Total items count must be between 0 and 100.")]
+        [Range(0, 100)]
         [Description("Total items in the order")]
         public int? TotalItemsCount { get; set; } = 0;
 
-        [Range(0.0, double.MaxValue, ErrorMessage = "Order discount must be a non-negative value.")]
+        [Range(0.0,0)]
         [Description("Discount applied to the order")]
         public double? OrderDiscount { get; set; } = 0.0;
 
@@ -32,23 +32,17 @@ namespace order_management.src.database.dto
         [Description("Is tip applicable for the order")]
         public bool? TipApplicable { get; set; } = false;
 
-        [Range(0.0, double.MaxValue, ErrorMessage = "Tip amount must be a non-negative value.")]
         [Description("Tip amount for the order")]
         public double? TipAmount { get; set; } = 0.0;
 
-        [Range(0.0, double.MaxValue, ErrorMessage = "Total tax must be a non-negative value.")]
-        [Description("Total tax for the order")]
         public double? TotalTax { get; set; } = 0.0;
 
-        [Range(0.0, double.MaxValue, ErrorMessage = "Total discount must be a non-negative value.")]
-        [Description("Total discount for the order")]
         public double? TotalDiscount { get; set; } = 0.0;
 
-        [Range(0.0, double.MaxValue, ErrorMessage = "Total amount must be a non-negative value.")]
-        [Description("Total amount for the order")]
+         [Description("Total amount for the order")]
         public double? TotalAmount { get; set; } = 0.0;
 
-        [StringLength(1024, MinimumLength = 5, ErrorMessage = "Notes must be between 5 and 1024 characters.")]
+        [StringLength(1024)]
         [Description("Notes added for the order for the delivery")]
         public string? Notes { get; set; }
 
@@ -70,7 +64,7 @@ namespace order_management.src.database.dto
         [Description("Order status")]
         public OrderStatusTypes OrderStatus { get; set; } = OrderStatusTypes.DRAFT;
 
-        [StringLength(64, MinimumLength = 2, ErrorMessage = "Order type must be between 2 and 64 characters.")]
+        [StringLength(64)] 
         [Description("Order type")]
         public Guid? OrderTypeId { get; set; }
 

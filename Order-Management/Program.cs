@@ -46,8 +46,8 @@ using static Order_Management.src.api.orderType.Order_Type_Validation;
 using Order_Management.src.database.dto.orderType;
 using static Order_Management.src.api.payment_transaction.Payment_Transection_Validation;
 using Order_Management.src.database.dto.payment_transaction;
-using Order_Management.src.api.customerAddress;
-using static Order_Management.src.api.customerAddress.CustomerAddressValidation;
+//using Order_Management.src.api.customerAddress;
+//using static Order_Management.src.api.customerAddress.CustomerAddressValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -65,11 +65,6 @@ builder.Services.AddDbContext<OrderManagementContext>(options =>
 builder.Services.AddAntiforgery();  // Ensure this is added if anti-forgery is required
 
 //add services
-
-//builder.Services.AddTransient<AddressController>();
-//builder.Services.AddTransient<IAddressService, AddressService>();
-//builder.Services.AddTransient<AddressRoutes>();
-
 
 
 
@@ -195,7 +190,7 @@ builder.Services.AddScoped<IValidator<OrderTypeCreateModel>, AddOrdeTypeDTOValid
 builder.Services.AddScoped<IValidator<OrderTypeUpdateModel>, UpdateOrderTypeDTOValidator>();
 
 builder.Services.AddScoped<IValidator<PaymentTransactionCreateModel>, AddPaymentTransactionDTOValidator>();
-builder.Services.AddScoped<IValidator<CustomerAddressCreate>, AddCADTOValidator>();
+//builder.Services.AddScoped<IValidator<CustomerAddressCreate>, AddCADTOValidator>();
 
 //Auth
 builder.Services.AddScoped<IValidator<RegisterDTO>, RegisterDTOValidator>();
@@ -279,7 +274,7 @@ customerEndpoints.MapCustomerRoutes(app);*/
 /*var cartEndpoints = app.Services.GetRequiredService<CartRoutes>();
 cartEndpoints.MapCartRoutes(app);*/
 
-var merchantEndpoints = app.Services.GetRequiredService<MerchantRoutes>();
+var merchantEndpoints = new MerchantRoutes();//app.Services.GetRequiredService<
 merchantEndpoints.MapMerchantRoutes(app);
 
 var orderEndpoints = app.Services.GetRequiredService<OrderRoutes>();

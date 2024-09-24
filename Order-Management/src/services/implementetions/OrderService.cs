@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Stateless;
 using order_management.database.models;
 using order_management.database;
 using order_management.src.database.dto;
@@ -10,10 +11,12 @@ using order_management.database.dto;
 using Order_Management.src.database.dto.merchant;
 using order_management.src.database.dto.orderHistory;
 using order_management.domain_types.enums;
+using Order_Management.src.database.models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace order_management.src.services.implementetions;
 
-public class OrderService :IOrderService
+public class OrderService : IOrderService
 
 {
     private readonly OrderManagementContext _context;
@@ -38,11 +41,11 @@ public class OrderService :IOrderService
 
         return _mapper.Map<List<OrderResponseModel>>(orders);
     }
-    
+
     //public async Task<List<OrderResponseModel>> GetAll()
     //{
     //    return await _context.Orders
-            
+
     //        .Select(a => _mapper.Map<OrderResponseModel>(a))
     //        .ToListAsync();
     //}
@@ -163,6 +166,500 @@ public class OrderService :IOrderService
         return true;
     }
 
+    public async Task<OrderResponseModel> UpdateOrderStatus(Guid orderId, OrderStatusTypes status)
+    {
+        // var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+        var order = _context.Set<Order>().FirstOrDefault(o => o.Id == orderId);
+        if (order == null)
+        {
+            throw new Exception($"Order with id {orderId} not found");
+        }
+
+        var previousState = order.OrderStatus;//.ToString();
+        var updatedState = status;//.ToString();
+
+        // Check if the state transition is valid
+        if (CheckValidTransition(previousState, updatedState))
+        {
+            order.OrderStatus = status;
+            _context.Update(order);
+            _context.SaveChanges();
+            _context.Entry(order).Reload();
+            return _mapper.Map<OrderResponseModel>(order);
+            //  return new OrderResponseModel(order); // Assuming OrderResponseModel constructor accepts an Order object
+        }
+        else
+        {
+            throw new InvalidOperationException("Invalid state transition");
+        }
+    }
+    public bool CheckValidTransition(OrderStatusTypes previousState, OrderStatusTypes updatedState)
+    {
+        var orderStatus = new OrderStatusMachine();
+
+        if (previousState == OrderStatusTypes.DRAFT && updatedState == OrderStatusTypes.INVENTORY_CHECKED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CreateOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.INVENTORY_CHECKED && updatedState == OrderStatusTypes.CONFIRMED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.ConfirmOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.CONFIRMED && updatedState == OrderStatusTypes.PAYMENT_INITIATED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.InitiatePayment();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.PAYMENT_INITIATED && updatedState == OrderStatusTypes.PAYMENT_COMPLETED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CompletePayment();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.PAYMENT_INITIATED && updatedState == OrderStatusTypes.PAYMENT_FAILED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.RetryPayment();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.PAYMENT_COMPLETED && updatedState == OrderStatusTypes.PLACED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.PlaceOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.PLACED && updatedState == OrderStatusTypes.SHIPPED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.ShipOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.SHIPPED && updatedState == OrderStatusTypes.DELIVERED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.DeliverOrder();
+            return true;
+        }
+        else if (new[] { OrderStatusTypes.DELIVERED, OrderStatusTypes.EXCHANGED, OrderStatusTypes.REFUNDED }.Contains(previousState) && updatedState == OrderStatusTypes.CLOSED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CloseOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.CLOSED && updatedState == OrderStatusTypes.REOPENED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.ReopenOrder();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.REOPENED && updatedState == OrderStatusTypes.RETURN_INITIATED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.InitiateReturn();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.RETURN_INITIATED && updatedState == OrderStatusTypes.RETURNED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CompleteReturn();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.RETURNED && updatedState == OrderStatusTypes.REFUND_INITIATED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.InitiateRefund();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.REFUND_INITIATED && updatedState == OrderStatusTypes.REFUNDED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CompleteRefund();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.REOPENED && updatedState == OrderStatusTypes.EXCHANGE_INITIATED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.InitiateExchange();
+            return true;
+        }
+        else if (previousState == OrderStatusTypes.EXCHANGE_INITIATED && updatedState == OrderStatusTypes.EXCHANGED)
+        {
+            orderStatus.State = previousState;
+            orderStatus.CompleteExchange();
+            return true;
+        }
+
+        return false;
+    }
 }
+   /*  public OrderResponseModel UpdateOrderStatus(Guid orderId, OrderStatusTypes status)
+      {
+          var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+          if (order == null)
+          {
+              throw new Exception($"Order with id {orderId} not found");
+          }
+
+          var previousState = order.OrderStatus;
+          var updatedState = status;
+
+          if (CheckValidTransition(previousState, updatedState))
+          {
+              order.OrderStatus = updatedState;
+              order.UpdatedAt = DateTime.Now;
+
+              _context.Orders.Update(order);
+              _context.SaveChanges();
+
+              return _mapper.Map<OrderResponseModel>(order);
+              /* return new OrderResponseModel
+               {
+                   Id = order.Id,
+                 //  OrderStatus = order.OrderStatus//.ToString(),
+                   // Other fields you want to include in the response
+             //  };
+}
+        else
+        {
+            throw new InvalidOperationException("Invalid state transition");
+        }
+    }*/
+/* public bool CheckValidTransition(string previousState,string updatedState)
+ {
+     var orderStatus = new OrderStatusMachine();
+
+     if (previousState == "Draft" && updatedState == "Inventory Checked")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CreateOrder();
+         return true;
+     }
+     else if (previousState == "Inventory Checked" && updatedState == "Confirmed")
+     {
+         orderStatus.State = previousState;
+         orderStatus.ConfirmOrder();
+         return true;
+     }
+     else if (previousState == "Confirmed" && updatedState == "Payment Initiated")
+     {
+         orderStatus.State = previousState;
+         orderStatus.InitiatePayment();
+         return true;
+     }
+     else if (previousState == "Payment Initiated" && updatedState == "Payment Completed")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CompletePayment();
+         return true;
+     }
+     else if (previousState == "Payment Initiated" && updatedState == "Payment Failed")
+     {
+         orderStatus.State = previousState;
+         orderStatus.RetryPayment();
+         return true;
+     }
+     else if (previousState == "Payment Completed" && updatedState == "Placed")
+     {
+         orderStatus.State = previousState;
+         orderStatus.PlaceOrder();
+         return true;
+     }
+     else if (previousState == "Placed" && updatedState == "Shipped")
+     {
+         orderStatus.State = previousState;
+         orderStatus.ShipOrder();
+         return true;
+     }
+     else if (previousState == "Shipped" && updatedState == "Delivered")
+     {
+         orderStatus.State = previousState;
+         orderStatus.DeliverOrder();
+         return true;
+     }
+     else if (new[] { "Delivered", "Exchanged", "Refunded" }.Contains(previousState) && updatedState == "Closed")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CloseOrder();
+         return true;
+     }
+     else if (previousState == "Closed" && updatedState == "Reopened")
+     {
+         orderStatus.State = previousState;
+         orderStatus.ReopenOrder();
+         return true;
+     }
+     else if (previousState == "Reopened" && updatedState == "Return Initiated")
+     {
+         orderStatus.State = previousState;
+         orderStatus.InitiateReturn();
+         return true;
+     }
+     else if (previousState == "Return Initiated" && updatedState == "Returned")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CompleteReturn();
+         return true;
+     }
+     else if (previousState == "Returned" && updatedState == "Refund Initiated")
+     {
+         orderStatus.State = previousState;
+         orderStatus.InitiateRefund();
+         return true;
+     }
+     else if (previousState == "Refund Initiated" && updatedState == "Refunded")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CompleteRefund();
+         return true;
+     }
+     else if (previousState == "Reopened" && updatedState == "Exchange Initiated")
+     {
+         orderStatus.State = previousState;
+         orderStatus.InitiateExchange();
+         return true;
+     }
+     else if (previousState == "Exchange Initiated" && updatedState == "Exchanged")
+     {
+         orderStatus.State = previousState;
+         orderStatus.CompleteExchange();
+         return true;
+     }
+
+     return false;
+ }
+}*/
+
+
+
+
+//public class OrderStatus
+//  {
+//public bool CheckValidTransition(OrderStatusTypes previousState, OrderStatusTypes updatedState)
+/*public bool CheckValidTransition(OrderStatusTypes previousState, string updatedState)//, OrderStatusMachine orderStatus)
+     {
+         var orderStatus = new OrderStatusMachine();
+
+
+         switch (previousState)
+         {
+             case "Draft":
+                 if (updatedState == "Inventry Checked")
+                 {
+                 orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("CreateOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Inventry Checked":
+                 if (updatedState == "Confirmed")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("ConfirmOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Confirmed":
+                 if (updatedState == "Payment Initiated")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("InitiatePayment");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Payment Initiated":
+                 if (updatedState == "Payment Completed")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("CompletePayment");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 else if (updatedState == "Payment Failed")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("RetryPayment");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Payment Completed":
+                 if (updatedState == "Placed")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("PlacedOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Placed":
+                 if (updatedState == "Shipped")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("ShippedOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Shipped":
+                 if (updatedState == "Delivered")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("DeliveredOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Delivered":
+             case "Exchanged":
+             case "Refunded":
+                 if (updatedState == "Closed")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("ClosedOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Closed":
+                 if (updatedState == "Reopened")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("ReopenOrder");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Reopened":
+                 if (updatedState == "Return Initiated")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("InitiateReturn");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 else if (updatedState == "Exchange Initiated")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("InitiateExchange");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Return Initiated":
+                 if (updatedState == "Returned")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("CompleteReturn");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Returned":
+                 if (updatedState == "Refund Initiated")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("InitiateRefund");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Refund Initiated":
+                 if (updatedState == "Refunded")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("CompletedRefund");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             case "Exchange Initiated":
+                 if (updatedState == "Exchanged")
+                 {
+                     orderStatus.State = previousState;
+                     var transitionMethod = orderStatus.GetType().GetMethod("CompleteExchange");
+                     if (transitionMethod != null)
+                     {
+                         transitionMethod.Invoke(orderStatus, null);
+                         return true;
+                     }
+                 }
+                 break;
+
+             default:
+                 return false;
+         }
+
+         return false;
+     }
+
+ }*/
+
+
 
 

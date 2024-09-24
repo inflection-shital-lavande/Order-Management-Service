@@ -7,7 +7,9 @@ using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using order_management.src.database.dto;
 using order_management.src.database.dto.orderHistory;
+using order_management.src.services.implementetions;
 using order_management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.order_history;
 
@@ -61,8 +63,21 @@ public class Order_History_Controller
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-            var createdOrderHistory = await _orderHistoryService.Create(orderHistory);
-            return ApiResponse.Success("Success", "orderHistory created successfully", createdOrderHistory);
+         /*   var validationContext = new ValidationContext(orderHistory);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(orderHistory, validationContext, vResult, true);
+
+            if (isvalid)
+            {*/
+                var createdOrderHistory = await _orderHistoryService.Create(orderHistory);
+                return ApiResponse.Success("Success", "orderHistory created successfully", createdOrderHistory);
+          //  }
+          // return Results.BadRequest(vResult);
+
+
+            ////
+           
         }
         catch (Exception ex)
         {
@@ -84,9 +99,20 @@ public class Order_History_Controller
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-            var updatedOrderHistory = await _orderHistoryService.Update(id, orderHistory);
-            return updatedOrderHistory == null ? ApiResponse.NotFound("Failure", "orderHistory not found")
-                                          : ApiResponse.Success("Success", "orderHistory updated successfully", updatedOrderHistory);
+          /*  var validationContext = new ValidationContext(orderHistory);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(orderHistory, validationContext, vResult, true);
+
+            if (isvalid)
+            {*/
+                var updatedOrderHistory = await _orderHistoryService.Update(id, orderHistory);
+                return updatedOrderHistory == null ? ApiResponse.NotFound("Failure", "orderHistory not found")
+                                              : ApiResponse.Success("Success", "orderHistory updated successfully", updatedOrderHistory);
+            //}
+          //  return Results.BadRequest(vResult);
+
+           
         }
         catch (Exception ex)
         {

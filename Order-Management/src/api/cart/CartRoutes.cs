@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using order_management.api;
 using Order_Management.src.database.dto.cart;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.cart
 {
@@ -9,10 +11,25 @@ namespace Order_Management.src.api.cart
     {
         public void MapCartRoutes(WebApplication app)
         {
-            //  var CartController = new CartController();
-            var router = app.MapGroup("/api/cart").WithTags("CartController");
+              var CartController = new CartController();
 
-             router.MapGet("/", (HttpContext context,[FromServices] CartController cartController) => cartController.GetAll(context))
+
+            var router = app.MapGroup("/api/cart");//.WithTags("CartController");
+
+            
+
+             router.MapGet("/", CartController.GetAll).RequireAuthorization();
+             router.MapGet("/{id:guid}", CartController.GetById).RequireAuthorization();
+             router.MapPost("/", CartController.Create).RequireAuthorization();
+             router.MapPut("/{id:guid}", CartController.Update).RequireAuthorization();
+             router.MapDelete("/{id:guid}", CartController.Delete).RequireAuthorization();
+             router.MapGet("/search", CartController.Search).RequireAuthorization();
+        }
+    }
+}
+
+
+/* router.MapGet("/", (HttpContext context,[FromServices] CartController cartController) => cartController.GetAll(context))
                .RequireAuthorization();
 
             router.MapGet("/{id:guid}", ( [FromServices] CartController cartController, Guid id) => cartController.GetById( id))
@@ -27,8 +44,8 @@ namespace Order_Management.src.api.cart
             router.MapDelete("/{id:guid}", ( [FromServices] CartController cartController, Guid id) => cartController.Delete( id))
                 .RequireAuthorization();
 
-             /* router.MapGet("/search", (HttpContext context, [FromServices] CartController cartController) => cartController.Search(context))
-                  .RequireAuthorization();*/
+             // router.MapGet("/search", (HttpContext context, [FromServices] CartController cartController) => cartController.Search(context))
+               //   .RequireAuthorization();
 
 
              router.MapGet("/search", (HttpContext context,[FromServices] CartController cartController,
@@ -41,14 +58,4 @@ namespace Order_Management.src.api.cart
                                                                          [FromQuery] DateTime? createdBefore,
                                                                          [FromQuery] DateTime? createdAfter)
                      => cartController.Search(context,customerId, productId, totalItemsCountGreaterThan, totalItemsCountLessThan, totalAmountGreaterThan, totalAmountLessThan, createdBefore, createdAfter))
-                  .RequireAuthorization();
-
-            /* router.MapGet("/", CartController.GetAll).RequireAuthorization();
-             router.MapGet("/{id:guid}", CartController.GetById).RequireAuthorization();
-             router.MapPost("/", CartController.Create).RequireAuthorization();
-             router.MapPut("/{id:guid}", CartController.Update).RequireAuthorization();
-             router.MapDelete("/{id:guid}", CartController.Delete).RequireAuthorization();
-             router.MapGet("/search", CartController.Search).RequireAuthorization();*/
-        }
-    }
-}
+                  .RequireAuthorization();*/

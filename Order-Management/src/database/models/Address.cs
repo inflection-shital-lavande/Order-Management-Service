@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace order_management.database.models;
 
-public partial class Address
+public partial  class Address
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,7 +22,7 @@ public partial class Address
     public string? AddressLine2 { get; set; }
 
     [Required(ErrorMessage = "City is required")]
-    [MaxLength(5)]
+    [MaxLength(64)]
     public string? City { get; set; }
 
     [Required]

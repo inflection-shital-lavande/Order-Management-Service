@@ -52,9 +52,9 @@ public class Customer
     public DateTime? UpdatedAt { get; set; }
 
     //navigation properties
-    public virtual Address? DefaultShippingAddress { get; set; }
+    public virtual Address DefaultShippingAddress { get; set; }
 
-    public virtual Address? DefaultBillingAddress { get; set; }
+    public virtual Address DefaultBillingAddress { get; set; }
 
     //many to many
     public ICollection<CustomerAddress>? CustomerAddresses { get; set; }

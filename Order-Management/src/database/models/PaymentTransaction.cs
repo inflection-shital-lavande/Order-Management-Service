@@ -68,6 +68,8 @@ public class PaymentTransaction
     [JsonIgnore]
 
     public virtual Customer Customers { get; set; }
+   // [JsonIgnore]
+  //  public ICollection<OrderPayment> orderPayments { get; set; }
 
 }
 

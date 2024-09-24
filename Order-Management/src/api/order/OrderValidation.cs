@@ -13,11 +13,24 @@ public class OrderValidation
         {
 
 
-            /* RuleFor(x => x.AddressLine1)
-                    .NotEmpty()
-                    .MaximumLength(512)
-                    .WithMessage("AddressLine1 cannot be longer than 512 characters");*/
+            
 
+            RuleFor(order => order.CustomerId)
+                .NotEmpty()
+                 .NotNull().WithMessage("Customer Id is required.");
+
+            // Validate that AssociatedCartId is a valid GUID if provided
+            RuleFor(order => order.AssociatedCartId)
+                .NotEmpty()
+                .Must(cartId => cartId == null || cartId != Guid.Empty)
+                .WithMessage("Associated Cart Id must be a valid GUID.");
+
+            // Validate that Notes have a length between 5 and 1024 characters
+            RuleFor(order => order.Notes)
+              //  .NotEmpty()
+                .Length(5, 1024)
+                .WithMessage("Notes must be between 5 and 1024 characters.");
+            
 
         }
     }
@@ -27,6 +40,21 @@ public class OrderValidation
         {
 
           
+          
+            // Validate that OrderDiscount is a non-negative value
+            RuleFor(order => order.OrderDiscount)
+                .NotEmpty()
+                .GreaterThanOrEqualTo(0.0).WithMessage("Order discount must be a non-negative value.");
+
+            // Validate that TipAmount is a non-negative value
+            RuleFor(order => order.TipAmount)
+                .GreaterThanOrEqualTo(0.0).WithMessage("Tip amount must be a non-negative value.");
+
+            // Validate that Notes have a length between 5 and 1024 characters if provided
+            RuleFor(order => order.Notes)
+                // .NotEmpty()
+                .Length(5, 1024)
+                .WithMessage("Notes must be between 5 and 1024 characters.");
 
         }
     }

@@ -9,6 +9,9 @@ using order_management.database.models;
 using Order_Management.src.database.dto.merchant;
 using order_management.domain_types.enums;
 using Microsoft.IdentityModel.Tokens;
+using order_management.common;
+using System.Data;
+using Order_Management.src.common;
 
 namespace order_management.services.implementetions;
 
@@ -77,8 +80,8 @@ public class CustomerService : ICustomerService
         if (!string.IsNullOrEmpty(filter.TaxNumber))
             query = query.Where(c => c.TaxNumber.Contains(filter.TaxNumber));
 
-        //if (filter.CreatedBefore.HasValue)
-        //    query = query.Where(c => c.CreatedDate < filter.CreatedBefore.Value);
+          //if (filter.CreatedBefore.HasValue)
+          // query = query.Where(c => c.CreatedDate < filter.CreatedBefore.Value);
 
         //if (filter.CreatedAfter.HasValue)
         //    query = query.Where(c => c.CreatedDate > filter.CreatedAfter.Value);
@@ -104,57 +107,78 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerResponseModel> Create(CustomerCreateModel Create)
     {
-            //Map the CustomerCreateModel to a Customer entity
-           var customer = _mapper.Map<Customer>(Create);
+
+        if (!string.IsNullOrEmpty(Create.Email))
+        {
+            var existingCustomer = _context.Customers
+                .FirstOrDefault(c => c.Email.ToLower() == Create.Email.ToLower());
+            if (existingCustomer != null)
+            {
+                throw new ConflictException($"A Customer with this email {Create.Email} already exists.");
+                // return (CustomerResponseModel)ApiResponse.Conflict("Conflict", $"Customer with email {Create.Email} already exists!");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(Create.Phone))
+        {
+            var existingCustomer = _context.Customers
+                .FirstOrDefault(c => c.Phone == Create.Phone);
+            if (existingCustomer != null)
+            {
+               // throw new("A merchant with this Phone already exists.");
+
+                throw new ConflictException($"Customer with phone {Create.Phone} already exists!");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(Create.TaxNumber))
+        {
+            var existingCustomer = _context.Customers
+                .FirstOrDefault(c => c.TaxNumber.ToLower() == Create.TaxNumber.ToLower());
+            if (existingCustomer != null)
+            {
+                throw new ConflictException($"Customer with tax number {Create.TaxNumber} already exists!");
+               // return (CustomerResponseModel)ApiResponse.Conflict("Conflict", $"Customer with tax number {Create.TaxNumber} already exists!");
+            }
+        }
+        //Map the CustomerCreateModel to a Customer entity
+        var customer = _mapper.Map<Customer>(Create);
            customer.CreatedAt = DateTime.UtcNow;
            customer.UpdatedAt = DateTime.UtcNow;
 
            // Add the customer to the database and save changes
            _context.Customers.Add(customer);
            await _context.SaveChangesAsync();
-        /*  return _mapper.Map<CustomerResponseModel>(customer);*/
-
-        // Create a new customer from the model
-        /* var customer = new Customer
-         {
-             Email = Create.Email,
-             Phone = Create.Phone,
-             TaxNumber = Create.TaxNumber,
-             DefaultShippingAddressId = Create.DefaultShippingAddressId,
-             DefaultBillingAddressId = Create.DefaultBillingAddressId,
-             UpdatedAt = DateTime.UtcNow,
-             CreatedAt = DateTime.UtcNow
-         };
-
-         _context.Customers.Add(customer);
-         await _context.SaveChangesAsync();*/
+        //  return _mapper.Map<CustomerResponseModel>(customer);
 
         // Add customer address if provided
-      /*  if (Create.DefaultShippingAddressId != Guid.Empty)
+        if (!string.IsNullOrEmpty(Create.DefaultShippingAddressId?.ToString()))
+        {
             await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultShippingAddressId, AddressTypes.SHIPPING);
+        }
 
         if (Create.DefaultBillingAddressId != Create.DefaultShippingAddressId)
         {
             await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.Billing);
-        }*/
-        
+        }
+
+        /*  if (Create.DefaultShippingAddressId != Guid.Empty)
+              await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultShippingAddressId, AddressTypes.SHIPPING);
+
+          if (Create.DefaultBillingAddressId != Create.DefaultShippingAddressId)
+          {
+              await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.Billing);
+          }*/
+
         // Return the customer as a response model
 
         return _mapper.Map<CustomerResponseModel>(customer);
-        /* return new CustomerResponseModel
-         {
-             Id = customer.Id,
-             Email = customer.Email,
-             Phone = customer.Phone,
-             TaxNumber = customer.TaxNumber,
-             DefaultShippingAddressId = customer.DefaultShippingAddressId,
-             DefaultBillingAddressId = customer.DefaultBillingAddressId,
-             UpdatedAt = customer.UpdatedAt,
-             CreatedAt = customer.CreatedAt
-         };*/
+        
     }
 
-    private async Task CustomerAddressCreate(Guid customerId, Guid addressId, AddressTypes addressType)
+   
+
+    private async Task CustomerAddressCreate(Guid customerId, Guid addressId, AddressTypes addressType)//, defaultShippingAddressId)
 
     {
         
@@ -169,7 +193,7 @@ public class CustomerService : ICustomerService
         _context.CustomerAddresses.Add(customerAddress);
         await _context.SaveChangesAsync();
     }
-
+    
     
 
 

@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using AutoMapper.Configuration;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,9 @@ using order_management.database.dto;
 using order_management.database.models;
 using order_management.services.implementetions;
 using order_management.services.interfaces;
+using System.ComponentModel.DataAnnotations;
+//using ValidationContext = AutoMapper.Configuration.ValidationContext;
+//using System.ComponentModel.DataAnnotations;
 
 namespace order_management.api;
 
@@ -15,24 +19,24 @@ public class AddressController
 {
 
     //#region Constructor
-    private readonly IAddressService _addressService;
+  /*  private readonly IAddressService _addressService;
     private readonly IValidator<AddressCreateModel> _createValidator;
-    private readonly IValidator<AddressUpdateModel> _updateValidator;
+   // private readonly IValidator<AddressUpdateModel> _updateValidator;
     public AddressController(IAddressService addressService,
-                             IValidator<AddressCreateModel> createValidator,
-                             IValidator<AddressUpdateModel> updateValidator)
+                             IValidator<AddressCreateModel> createValidator)
+                          //   IValidator<AddressUpdateModel> updateValidator)
     {
         _addressService = addressService;
         _createValidator = createValidator;
-        _updateValidator = updateValidator;
-    }
+     //   _updateValidator = updateValidator;
+    }*/
     //  #endregion
     //  #region Public Methods
 
    // [ProducesResponseType(200, Type = typeof(IEnumerable<Cart>))]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
 
-    public async Task<IResult> GetAll(HttpContext httpContext)//)//, IAddressService _addressService)
+    public async Task<IResult> GetAll(HttpContext httpContext, IAddressService _addressService)
     {
 
            try
@@ -50,7 +54,7 @@ public class AddressController
 
 
 
-    public async Task<IResult> GetById(Guid id)//, HttpContext httpContext)//, IAddressService _addressService)
+    public async Task<IResult> GetById(Guid id, HttpContext httpContext, IAddressService _addressService)
     {
         try
         {
@@ -63,30 +67,39 @@ public class AddressController
             return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the address");
         }
     }
-    public async Task<IResult> Create([FromBody] AddressCreateModel addr)//, HttpContext httpContext)//, IAddressService _addressService, IValidator<AddressCreateModel> _createValidator)
+    public async Task<IResult> Create([FromBody] AddressCreateModel createaddr,  IAddressService _addressService, IValidator<AddressCreateModel> _createValidator)
     {
         try
         {
-            if (addr == null)
+            if (createaddr == null)
             {
                 return ApiResponse.BadRequest("Failure", "Invalid address data");
             }
 
-            var validationResult = _createValidator.Validate(addr);
+            var validationResult = _createValidator.Validate(createaddr);
             if (!validationResult.IsValid)
             {
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
+            var validationContext = new System.ComponentModel.DataAnnotations.ValidationContext(createaddr);
+            var vResult = new List<ValidationResult>();
 
-            var createdAddress = await _addressService.Create(addr);
-            return ApiResponse.Success("Success", "Address created successfully", createdAddress);
+            var isvalid = Validator.TryValidateObject(createaddr, validationContext, vResult, true);
+
+            if (isvalid)
+            { 
+
+                var createdAddress = await _addressService.Create(createaddr);
+             return ApiResponse.Success("Success", "Address created successfully", createdAddress);
+            }
+            return Results.BadRequest(vResult);
         }
         catch (Exception ex)
         {
             return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the address");
         }
     }
-    public async Task<IResult> Update(Guid id, [FromBody] AddressUpdateModel addr)//, HttpContext httpContext)//, IAddressService _addressService, IValidator<AddressUpdateModel> _updateValidator)
+    public async Task<IResult> Update(Guid id, AddressUpdateModel addr,  IAddressService _addressService, IValidator<AddressUpdateModel> _updateValidator)//,HttpContext httpContext)//HttpContext httpContext,
     {
         try
         {
@@ -100,17 +113,29 @@ public class AddressController
             {
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
+            var validationContext = new System.ComponentModel.DataAnnotations.ValidationContext(addr);
+            var vResult = new List<ValidationResult>();
 
-            var updatedAddress = await _addressService.Update(id, addr);
-            return updatedAddress == null ? ApiResponse.NotFound("Failure", "Address not found")
-                                          : ApiResponse.Success("Success", "Address updated successfully", updatedAddress);
+            var isvalid = Validator.TryValidateObject(addr, validationContext, vResult, true);
+
+            if (isvalid)
+            {
+                var customer = await _addressService.Update(id, addr);
+                return customer == null ? ApiResponse.NotFound("Failure", "Customer not found")
+                                             : ApiResponse.Success("Success", "Customer updated successfully");
+            }
+            return Results.BadRequest(vResult);
+
+            /*  var updatedAddress = await _addressService.Update(id, addr);
+              return updatedAddress == null ? ApiResponse.NotFound("Failure", "Address not found")
+                                            : ApiResponse.Success("Success", "Address updated successfully", updatedAddress);*/
         }
         catch (Exception ex)
         {
             return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the address");
         }
     }
-    public async Task<IResult> Delete(Guid id)//, HttpContext httpContext)//, IAddressService _addressService)
+    public async Task<IResult> Delete(Guid id, HttpContext httpContext, IAddressService _addressService)
     {
         try
         {
@@ -131,7 +156,7 @@ public class AddressController
                                               string? State,
                                               string? Country,
                                               string? ZipCode
-                                              )//, IAddressService _addressService)
+                                              , IAddressService _addressService)
     {
         try
         {

@@ -6,6 +6,9 @@ using Order_Management.src.database.dto.merchant;
 using Microsoft.EntityFrameworkCore;
 using Order_Management.src.services.interfaces;
 using order_management.database.dto;
+using System.Data;
+using order_management.common;
+using Order_Management.src.common;
 
 namespace Order_Management.src.services.implementetions
 {
@@ -82,9 +85,63 @@ namespace Order_Management.src.services.implementetions
             return new MerchantSearchResults { Items = results };
         }
 
+   
          public async Task<MerchantResponseModel> Create(MerchantCreateModel Create)
            {
-              var merchants = _mapper.Map<Merchant>(Create);
+            if (!string.IsNullOrEmpty(Create.Email))
+            {
+                var existingMerchant = await _context.Merchants
+                    .Where(m => m.Email.ToLower() == Create.Email.ToLower())
+                    .FirstOrDefaultAsync();
+
+                if (existingMerchant != null)
+                {
+                    throw new ConflictException( $"Merchant with email {Create.Email} already exists!");
+                }
+            }
+
+            // Check for existing phone
+            if (!string.IsNullOrEmpty(Create.Phone))
+            {
+                var existingMerchant = await _context.Merchants
+                    .Where(m => m.Phone == Create.Phone)
+                    .FirstOrDefaultAsync();
+
+                if (existingMerchant != null)
+                {
+                    throw new ConflictException( $"Merchant with phone {Create.Phone} already exists!");
+                }
+            }
+
+            // Check for existing tax number
+            if (!string.IsNullOrEmpty(Create.TaxNumber))
+            {
+                var existingMerchant = await _context.Merchants
+                    .Where(m => m.TaxNumber.ToLower() == Create.TaxNumber.ToLower())
+                    .FirstOrDefaultAsync();
+
+                if (existingMerchant != null)
+                {
+                    throw new ConflictException( $"Merchant with tax number {Create.TaxNumber} already exists!");
+                }
+            }
+
+            // Check for existing GST number
+            if (!string.IsNullOrEmpty(Create.GSTNumber))
+            {
+                var existingMerchant = await _context.Merchants
+                    .Where(m => m.GSTNumber.ToLower() == Create.GSTNumber.ToLower())
+                    .FirstOrDefaultAsync();
+
+                if (existingMerchant != null)
+                {
+                  
+                    throw new ConflictException( $"Merchant with GST number {Create.GSTNumber} already exists!");
+                }
+            }
+
+            //////
+            var merchants = _mapper.Map<Merchant>(Create);
               merchants.CreatedAt = DateTime.UtcNow;
               merchants.UpdatedAt = DateTime.UtcNow;
 
@@ -120,8 +177,7 @@ namespace Order_Management.src.services.implementetions
             return true;
         }
 
-    
-
+       
     }
 
 

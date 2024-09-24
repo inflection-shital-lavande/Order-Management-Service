@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.services.implementetions;
 using order_management.services.interfaces;
+using Order_Management.src.common;
 using Order_Management.src.database.dto.merchant;
 using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.merchant;
 
@@ -63,7 +66,11 @@ namespace Order_Management.src.api.merchant;
              var merchant = await _merchantService.Create(Create);
              return ApiResponse.Success("Success", "merchant created successfully", merchant);
          }
-         catch (Exception ex)
+         catch (ConflictException ex)
+              {
+                  return ApiResponse.Conflict("Conflict", ex.Message);
+             }
+        catch (Exception ex)
          {
              return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the merchant");
          }
@@ -86,10 +93,20 @@ public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, HttpCon
                 {
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
+            var validationContext = new ValidationContext(merchant);
+            var vResult = new List<ValidationResult>();
 
+            var isvalid = Validator.TryValidateObject(merchant, validationContext, vResult, true);
+
+            if (isvalid)
+            {
                 var updatedMerchant = await _merchantService.Update(id, merchant);
                 return updatedMerchant == null ? ApiResponse.NotFound("Failure", "merchant not found")
                                               : ApiResponse.Success("Success", "merchant updated successfully", updatedMerchant);
+            }
+            return Results.BadRequest(vResult);
+
+            
             }
             catch (Exception ex)
             {

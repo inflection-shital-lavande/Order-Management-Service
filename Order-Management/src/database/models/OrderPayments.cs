@@ -22,6 +22,7 @@ public class OrderPayment
     // Navigation properties
     [ForeignKey("OrderId")]
     public Order Order { get; set; }
+   // public virtual Order order { get; set; }
 
     [ForeignKey("PaymentTransactionId")]
     public PaymentTransaction PaymentTransaction { get; set; }
@@ -34,8 +35,8 @@ public class OrderPayment
 
     public DateTime? UpdatedAt { get; set; }
 
-    
- 
-   
+
+
+
 }
 

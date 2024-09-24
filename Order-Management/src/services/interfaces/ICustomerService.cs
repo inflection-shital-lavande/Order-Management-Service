@@ -17,10 +17,7 @@ public interface ICustomerService
     Task<CustomerResponseModel> Update(Guid id, CustomerUpdateModel customerUpdate);
     Task<bool> Delete(Guid id);
     Task<CustomerSearchResultsModel> Search(CustomerSearchFilterModel filter);
-
-
     
-
 }
 
 

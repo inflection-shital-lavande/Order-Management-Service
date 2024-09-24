@@ -12,38 +12,28 @@ namespace Order_Management.src.database.dto.merchant
         [Display(Description = "Reference Id of the merchant in the merchant service")]
         public Guid? ReferenceId { get; set; }
 
-        [Required, StringLength(512, MinimumLength = 5, ErrorMessage = "Name must be between 5 and 512 characters.")]
-        [Display(Description = "Name of the merchant")]
+       
         public string? Name { get; set; }
 
-        [StringLength(512, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 512 characters.")]
-        [Display(Description = "Email of the merchant")]
         public string? Email { get; set; }
 
-        [StringLength(12, MinimumLength = 2, ErrorMessage = "Phone must be between 2 and 12 characters.")]
-        [Display(Description = "Phone number of the merchant")]
         public string? Phone { get; set; }
 
-        [StringLength(512, MinimumLength = 5, ErrorMessage = "Logo URL must be between 5 and 512 characters.")]
-        [Display(Description = "Logo URL of the merchant")]
         public string? Logo { get; set; }
 
-        [StringLength(512, MinimumLength = 5, ErrorMessage = "Website URL must be between 5 and 512 characters.")]
-        [Display(Description = "Website URL of the merchant")]
+        
         public string? WebsiteUrl { get; set; }
 
-        [StringLength(64, MinimumLength = 2, ErrorMessage = "Tax number must be between 2 and 64 characters.")]
-        [Display(Description = "Tax number/code of the merchant")]
+        
         public string? TaxNumber { get; set; }
 
-        [StringLength(64, MinimumLength = 2, ErrorMessage = "GST number must be between 2 and 64 characters.")]
-        [Display(Description = "GST number/code of the merchant")]
+       
         public string? GSTNumber { get; set; }
 
         [Display(Description = "Address Id of the merchant")]
 
         public Dictionary<string, object>? Addressess { get; set; }
-        [Display(Description = "Billing address Id of the customer")]
+       
         public Guid? AddressId { get; set; }
 
         [Display(Description = "Created at")]

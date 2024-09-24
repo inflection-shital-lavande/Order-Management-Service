@@ -1,12 +1,15 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
 using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using order_management.src.database.dto;
+using order_management.src.services.implementetions;
 using order_management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.order;
 
@@ -59,8 +62,20 @@ namespace Order_Management.src.api.order;
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
+            var validationContext = new ValidationContext(order);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(order, validationContext, vResult, true);
+
+            if (isvalid)
+            {
                 var createdOrder = await _orderService.Create(order);
                 return ApiResponse.Success("Success", "Order created successfully", createdOrder);
+            }
+            return Results.BadRequest(vResult);
+
+
+            
             }
             catch (Exception ex)
             {
@@ -82,9 +97,20 @@ namespace Order_Management.src.api.order;
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
+              var validationContext = new ValidationContext(order);
+              var vResult = new List<ValidationResult>();
+
+              var isvalid = Validator.TryValidateObject(order, validationContext, vResult, true);
+
+              if (isvalid)
+              {
                 var updatedOrder = await _orderService.Update(id, order);
                 return updatedOrder == null ? ApiResponse.NotFound("Failure", "order not found")
                                               : ApiResponse.Success("Success", "order updated successfully", updatedOrder);
+              }
+              return Results.BadRequest(vResult);
+
+           
             }
             catch (Exception ex)
             {
@@ -105,7 +131,28 @@ namespace Order_Management.src.api.order;
             }
         }
 
-        public async Task<IResult> Search([FromQuery] Guid? customerId,
+    public async Task<IResult> UpdateOrderStatus(Guid id, [FromQuery] OrderStatusTypes status, IOrderService _orderService)
+    {
+        try
+        { 
+            if (status == null)
+            {
+                return ApiResponse.BadRequest("Failure", "Invalid order data");
+            }
+           
+                var order = await _orderService.UpdateOrderStatus(id, status);
+                       return order == null ? ApiResponse.NotFound("Failure", "order not found")
+                                            : ApiResponse.Success("Success", "order updated successfully", order);
+           
+            
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the order");
+        }
+    }
+
+    public async Task<IResult> Search([FromQuery] Guid? customerId,
                                           [FromQuery] Guid? associatedCartId,
                                           [FromQuery] Guid? couponId,
                                           [FromQuery] int? totalItemsCountGreaterThan,
@@ -157,5 +204,9 @@ namespace Order_Management.src.api.order;
             {
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while searching for order");
             }
+
+        
         }
-    }
+
+     }
+    

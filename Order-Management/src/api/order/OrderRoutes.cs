@@ -15,6 +15,7 @@ namespace Order_Management.src.api.order
             router.MapPut("/{id:guid}", orderController.Update).RequireAuthorization();
             router.MapDelete("/{id:guid}", orderController.Delete).RequireAuthorization();
             router.MapGet("/search", orderController.Search).RequireAuthorization();
+            router.MapPut("{id:guid}/status", orderController.UpdateOrderStatus);
         }
     }
 }

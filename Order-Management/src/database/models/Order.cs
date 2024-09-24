@@ -4,6 +4,7 @@ using System.Xml;
 using order_management.domain_types.enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace order_management.database.models;
 
@@ -76,4 +77,32 @@ public class Order
     public ICollection<OrderCoupon> OrderCoupons { get; set; } = new HashSet<OrderCoupon>();
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
+    // public ICollection<OrderPayment> orderPayments { get; set; }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
+    }
+
 }
+/*public enum OrderStatusTypes
+{
+    DRAFT,
+    INVENTORY_CHECKED,
+    CONFIRMED,
+    PAYMENT_INITIATED,
+    PAYMENT_COMPLETED,
+    PAYMENT_FAILED,
+    PLACED,
+    SHIPPED,
+    DELIVERED,
+    RETURN_INITIATED,
+    RETURNED,
+    REFUND_INITIATED,
+    REFUNDED,
+    EXCHANGE_INITIATED,
+    EXCHANGED,
+    CANCELLED,
+    CLOSED,
+    REOPENED
+}*/

@@ -3,17 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using order_management.common;
 using order_management.database.dto;
 using order_management.database.models;
+using order_management.services.implementetions;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.cart;
 using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.cart;
 
 
-    public class CartController
+    public class CartController: Controller
     {
-    private readonly ICartService _cartService;
+    /*private readonly ICartService _cartService;
     private readonly IValidator<CartCreateModel> _createValidator;
     private readonly IValidator<CartUpdateModel> _updateValidator;
     public CartController(ICartService cartService,
@@ -23,11 +25,11 @@ namespace Order_Management.src.api.cart;
         _cartService = cartService;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
-    }
+    }*/
 
     [ProducesResponseType(200, Type = typeof(IEnumerable<Cart>))]
 
-        public async Task<IResult> GetAll(HttpContext context)//HttpContext httpContext, ICartService _cartService)
+        public async Task<IResult> GetAll(HttpContext context, HttpContext httpContext, ICartService _cartService)
         {
             try
             {
@@ -39,7 +41,7 @@ namespace Order_Management.src.api.cart;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving carts");
             }
         }
-        public async Task<IResult> GetById(Guid id)//, HttpContext httpContext, ICartService _cartService)
+        public async Task<IResult> GetById(Guid id, HttpContext httpContext, ICartService _cartService)
         {
             try
             {
@@ -52,7 +54,7 @@ namespace Order_Management.src.api.cart;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the cart");
             }
         }
-        public async Task<IResult> Create(CartCreateModel cart)//, HttpContext httpContext, ICartService _cartService, IValidator<CartCreateModel> _createValidator)
+        public async Task<IResult> Create(CartCreateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartCreateModel> _createValidator)
         {
             try
             {
@@ -66,16 +68,28 @@ namespace Order_Management.src.api.cart;
                 {
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
+            var validationContext = new ValidationContext(cart);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(cart, validationContext, vResult, true);
+
+            if (isvalid)
+            {
 
                 var createdAddress = await _cartService.Create(cart);
-                return ApiResponse.Success("Success", "cart created successfully", createdAddress);
+                 return ApiResponse.Success("Success", "cart created successfully", createdAddress);
+            }
+            return Results.BadRequest(vResult);
+
+            //var createdAddress = await _cartService.Create(cart);
+              //  return ApiResponse.Success("Success", "cart created successfully", createdAddress);
             }
             catch (Exception ex)
             {
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the cart");
             }
         }
-        public async Task<IResult> Update(Guid id, CartUpdateModel cart)//, HttpContext httpContext, ICartService _cartService, IValidator<CartUpdateModel> _updateValidator)
+        public async Task<IResult> Update(Guid id, CartUpdateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartUpdateModel> _updateValidator)
         {
             try
             {
@@ -89,17 +103,26 @@ namespace Order_Management.src.api.cart;
                 {
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
+                var validationContext = new ValidationContext(cart); 
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(cart, validationContext, vResult, true);
+
+            if (isvalid)
+            {
 
                 var updatedCart = await _cartService.Update(id, cart);
                 return updatedCart == null ? ApiResponse.NotFound("Failure", "cart not found")
                                               : ApiResponse.Success("Success", "cart updated successfully", updatedCart);
             }
+            return Results.BadRequest(vResult);
+        }
             catch (Exception ex)
             {
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the cart");
             }
         }
-        public async Task<IResult> Delete(Guid id)//, HttpContext httpContext, ICartService _cartService)
+        public async Task<IResult> Delete(Guid id, HttpContext httpContext, ICartService _cartService)
         {
             try
             {
@@ -116,7 +139,7 @@ namespace Order_Management.src.api.cart;
 
 
 
-     public async Task<IResult> Search(HttpContext httpContext,
+     public async Task<IResult> Search(HttpContext httpContext, ICartService _cartService,
                                          [FromQuery] Guid? customerId,
                                          [FromQuery] Guid? productId,
                                          [FromQuery] int? totalItemsCountGreaterThan,

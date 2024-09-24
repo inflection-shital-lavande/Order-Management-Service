@@ -9,62 +9,102 @@ namespace order_management.database.dto;
 
 public class CouponCreateModel
 {
+    /*  [Required(ErrorMessage = "Name is required.")]
+      [MinLength(2, ErrorMessage = "Name must be at least 2 characters long.")]
+      [MaxLength(64, ErrorMessage = "Name cannot exceed 64 characters.")]
+      public string Name { get; set; }
 
-    [Required(ErrorMessage = "Coupon name is required.")]
-    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon name must be between 2 and 64 characters.")]
-    public string? Name { get; set; }
+      [Required(ErrorMessage = "Description is required.")]
+      [MinLength(2, ErrorMessage = "Description must be at least 2 characters long.")]
+      [MaxLength(1024, ErrorMessage = "Description cannot exceed 1024 characters.")]
+      public string Description { get; set; }
 
-    [Required(ErrorMessage = "Description is required.")]
-    [StringLength(1024, MinimumLength = 2, ErrorMessage = "Description must be between 2 and 1024 characters.")]
-    public string? Description { get; set; }
+      [Required(ErrorMessage = "CouponCode is required.")]
+      [MinLength(2, ErrorMessage = "CouponCode must be at least 2 characters long.")]
+      [MaxLength(64, ErrorMessage = "CouponCode cannot exceed 64 characters.")]
+      public string CouponCode { get; set; }
 
-    [Required(ErrorMessage = "Coupon code is required.")]
-    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon code must be between 2 and 64 characters.")]
-    public string? CouponCode { get; set; }
+      [Required(ErrorMessage = "CouponType is required.")]
+      [MinLength(2, ErrorMessage = "CouponType must be at least 2 characters long.")]
+      [MaxLength(64, ErrorMessage = "CouponType cannot exceed 64 characters.")]
+      public string CouponType { get; set; }
 
-    [Required(ErrorMessage = "Coupon type is required.")]
-    [StringLength(64, MinimumLength = 2, ErrorMessage = "Coupon type must be between 2 and 64 characters.")]
-    public string? CouponType { get; set; }
+      [Range(0.0, double.MaxValue, ErrorMessage = "Discount must be a positive number.")]
+      public float? Discount { get; set; } = 0.0f;
 
-    [Range(0.0, double.MaxValue, ErrorMessage = "Discount must be a non-negative value.")]
+      [Required(ErrorMessage = "DiscountType is required.")]
+      public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
 
-    public float? Discount { get; set; } = 0.00f;
+      [Range(0.0, 100.0, ErrorMessage = "DiscountPercentage must be between 0 and 100.")]
+      public float? DiscountPercentage { get; set; } = 0.0f;
 
-    [Required(ErrorMessage = "Discount type is required.")]
-    public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
+      [Range(0.0, double.MaxValue, ErrorMessage = "DiscountMaxAmount must be a positive number.")]
+      public float? DiscountMaxAmount { get; set; } = 0.0f;
 
-    [Range(0.0, 100.0, ErrorMessage = "Discount percentage must be between 0 and 100.")]
+      [Required(ErrorMessage = "StartDate is required.")]
+      public DateTime? StartDate { get; set; } = DateTime.Now;
 
-    public float? DiscountPercentage { get; set; } = 0.00f;
+      public DateTime? EndDate { get; set; }
 
-    [Range(0.0, double.MaxValue, ErrorMessage = "Discount max amount must be a non-negative value.")]
+      [Range(0, 10000, ErrorMessage = "MaxUsage must be between 0 and 10,000.")]
+      public int? MaxUsage { get; set; } = 1000;
 
-    public float? DiscountMaxAmount { get; set; } = 0.00f;
+      [Range(0, 10, ErrorMessage = "MaxUsagePerUser must be between 0 and 10.")]
+      public int? MaxUsagePerUser { get; set; } = 1;
 
-    [Required(ErrorMessage = "Start date is required.")]
+      [Range(0, 5, ErrorMessage = "MaxUsagePerOrder must be between 0 and 5.")]
+      public int? MaxUsagePerOrder { get; set; } = 1;
 
-    public DateTime? StartDate { get; set; }
+      [Range(0.0, double.MaxValue, ErrorMessage = "MinOrderAmount must be a positive number.")]
+      public float? MinOrderAmount { get; set; } = 100.0f;
 
-    public DateTime? EndDate { get; set; }
+      public bool? IsActive { get; set; } = true;
+      public bool? IsDeleted { get; set; } = false;
 
-    [Range(0, 10000, ErrorMessage = "Max usage must be between 0 and 10000.")]
-    public int? MaxUsage { get; set; } = 10000;
+      public Guid? CreatedBy { get; set; }*/
 
-    [Range(0, 10, ErrorMessage = "Max usage per user must be between 0 and 10.")]
-    public int? MaxUsagePerUser { get; set; } = 1;
+      [Required(ErrorMessage = "Name is required.")]
+      public string? Name { get; set; }
 
-    [Range(0, 5, ErrorMessage = "Max usage per order must be between 0 and 5.")]
-    public int? MaxUsagePerOrder { get; set; } = 1;
+      [Required(ErrorMessage = "Description is required.")]
+      public string? Description { get; set; }
 
-    [Range(0.0, double.MaxValue, ErrorMessage = "Minimum order amount must be a non-negative value.")]
-    public float? MinOrderAmount { get; set; } = 0.00f;
+      [Required(ErrorMessage = "Coupon code is required.")]
+      public string? CouponCode { get; set; }
 
-    public bool? IsActive { get; set; } = true;
+      [Required(ErrorMessage = "Coupon type is required.")]
+      public string? CouponType { get; set; }
+     
+      [Range(0.0, double.MaxValue, ErrorMessage = "Discount must be a positive number.")]
+      public float? Discount { get; set; } = 0.00f;
 
-    public bool? IsDeleted { get; set; } = false;
+      [Required(ErrorMessage = "Discount type is required.")]
+      public DiscountTypes DiscountType { get; set; } = DiscountTypes.FLAT;
 
-    [StringLength(36)]
-    public Guid? CreatedBy { get; set; }
+    
+      public float? DiscountPercentage { get; set; } = 0.00f;
+
+      [Range(0.0, double.MaxValue, ErrorMessage = "DiscountMaxAmount must be a positive number.")]
+      public float? DiscountMaxAmount { get; set; } = 0.00f;
+
+      [Required(ErrorMessage = "Start date is required.")]
+
+      public DateTime? StartDate { get; set; }
+
+      public DateTime? EndDate { get; set; }
+      public int? MaxUsage { get; set; } = 10000;
+     
+      public int? MaxUsagePerUser { get; set; } = 1;
+   
+      public int? MaxUsagePerOrder { get; set; } = 1;
+
+      public float? MinOrderAmount { get; set; } = 0.00f;
+
+      public bool? IsActive { get; set; } = true;
+
+      public bool? IsDeleted { get; set; } = false;
+      [StringLength(36)]
+      public Guid? CreatedBy { get; set; }
 
 }
 

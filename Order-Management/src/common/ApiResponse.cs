@@ -63,8 +63,21 @@ public record ApiResponse
                 Data = data
             });
         }
+
    
-   public static IResult Exception(Exception ex, string status, string message )
+
+    public static IResult Conflict(string status, string message, object? data = null)
+    {
+        return Results.Conflict(new
+        {
+            Status = status,
+            Message = message,
+            HttpCode = 409,
+            Data = data
+        });
+    }
+
+    public static IResult Exception(Exception ex, string status, string message )
    {
        return Results.Problem(new
             {
@@ -76,7 +89,10 @@ public record ApiResponse
         }
 
 
-   
+    
+
+
+
 
 }
 

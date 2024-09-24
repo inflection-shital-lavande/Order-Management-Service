@@ -13,11 +13,13 @@ namespace Order_Management.src.api.order_history
             {
 
 
-                /* RuleFor(x => x.AddressLine1)
-                        .NotEmpty()
-                        .MaximumLength(512)
-                        .WithMessage("AddressLine1 cannot be longer than 512 characters");*/
+                RuleFor(item => item.PreviousStatus)
+                    .NotEmpty()
+                    .WithMessage("PreviousStatus cannot be empty.");
 
+                RuleFor(item => item.Status)
+                    .NotEmpty()
+               .WithMessage("Status cannot be empty.");
 
             }
         }
@@ -26,7 +28,13 @@ namespace Order_Management.src.api.order_history
             public UpdateOrderHistoryDTOValidator()
             {
 
+                RuleFor(item => item.PreviousStatus)
+                    .NotEmpty()
+                    .WithMessage("PreviousStatus cannot be empty.");
 
+                RuleFor(item => item.Status)
+                .NotEmpty()
+               .WithMessage("Status cannot be empty.");
 
             }
         }
