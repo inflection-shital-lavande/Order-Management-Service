@@ -7,15 +7,20 @@ namespace Order_Management.src.api.cart;
 
 public class CartValidation
 {
-    public class AddCartDTOValidator : AbstractValidator<CartCreateModel>
+    public class CartCreateModelValidator : AbstractValidator<CartCreateModel>
 
     {
-        public AddCartDTOValidator()
+        public CartCreateModelValidator()
         {
+
+            RuleFor(cart => cart.CustomerId)
+           .NotNull().WithMessage("CustomerId is required")
+           .NotEmpty().WithMessage("CustomerId cannot be an empty GUID");
+         //  .Must(IsValidGuid).WithMessage("CustomerId must be a valid GUID");
 
             // Validate TotalItemsCount (Optional, must be a positive number or zero)
             RuleFor(x => x.TotalItemsCount)
-                .NotEmpty()
+               .NotEmpty()
               .GreaterThan(0).When(x => x.TotalItemsCount.HasValue)
               .WithMessage("TotalItemsCount cannot be negative.");
               
@@ -30,16 +35,21 @@ public class CartValidation
                 .Must(date => !date.HasValue || date.Value <= DateTime.Now)
                 .WithMessage("CartToOrderTimestamp must be in the past or present.");
 
-        }
+        
+                   }
+
+       
     }
-    public class UpdateCartDTOValidator : AbstractValidator<CartUpdateModel>
+    public class CartUpdateModelValidator : AbstractValidator<CartUpdateModel>
     {
-        public UpdateCartDTOValidator()
+        public CartUpdateModelValidator()
         {
 
             RuleFor(x => x.TotalItemsCount)
-              .NotNull().WithMessage("Total items count is required.")
-              .GreaterThan(0).WithMessage("Total items count must be greater than 0.");
+              .NotEmpty()
+              .WithMessage("Total items count is required.")
+              .GreaterThan(0)
+              .WithMessage("Total items count must be greater than 0.");
 
             RuleFor(x => x.TotalTax)
                 .GreaterThanOrEqualTo(0).When(x => x.TotalTax.HasValue)
@@ -50,8 +60,10 @@ public class CartValidation
                 .WithMessage("Total discount cannot be negative.");
 
             RuleFor(x => x.TotalAmount)
-                .NotNull().WithMessage("Total amount is not null.")
-                .GreaterThan(0).WithMessage("Total amount must be greater than 0.");
+                .NotEmpty()
+                .WithMessage("Total amount is not null.")
+                .GreaterThan(0)
+                .WithMessage("Total amount must be greater than 0.");
 
         }
     }

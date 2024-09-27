@@ -26,7 +26,7 @@ namespace Order_Management.src.database.models
                 Console.WriteLine("Order Confirmed");
             }
         }
-
+        //place
         public void InitiatePayment()
         {
             if (State == OrderStatusTypes.CONFIRMED)
@@ -63,7 +63,7 @@ namespace Order_Management.src.database.models
                 Console.WriteLine("Order placed successfully");
             }
         }
-
+        //payfail
         // Add remaining transitions similarly...
 
         public void CancelOrder()

@@ -92,9 +92,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //builder.Services.AddScoped<AddressRoutes>();
 
 builder.Services.AddTransient<AuthenticationRoutes>();
-//builder.Services.AddTransient<CouponsRoutes>();
-//builder.Services.AddTransient<CustomerRoutes>();
-//builder.Services.AddTransient<CartRoutes>();
+builder.Services.AddTransient<CouponsRoutes>();
+builder.Services.AddTransient<CustomerRoutes>();
+builder.Services.AddTransient<CartRoutes>();
 builder.Services.AddTransient<MerchantRoutes>();
 builder.Services.AddTransient<OrderRoutes>();
 builder.Services.AddTransient<Order_History_Routes>();
@@ -104,9 +104,7 @@ builder.Services.AddTransient<Payment_Transaction_Routes>();
 builder.Services.AddTransient<FileUploadRoutes>();
 //builder.Services.AddTransient<CustomerAddressRoutes>();
 
-//builder.Services.AddControllers();
-//builder.Services.AddTransient<AddressRoutes>();
-//services.AddControllers();
+
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -162,34 +160,34 @@ builder.Services.AddSwaggerGen(Swagger =>
 
 //FluentValidation
 //Address
-builder.Services.AddScoped<IValidator<AddressCreateModel>, AddAddressDTOValidator>();
-builder.Services.AddScoped<IValidator<AddressUpdateModel>, UpdateAddressDTOValidator>();
+builder.Services.AddScoped<IValidator<AddressCreateModel>, AddressCreateModelValidator>();
+builder.Services.AddScoped<IValidator<AddressUpdateModel>, AddressUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<CouponCreateModel>, AddCouponsDTOValidator>();
-builder.Services.AddScoped<IValidator<CouponUpdateModel>, UpdateCouponDTOValidator>();
+builder.Services.AddScoped<IValidator<CouponCreateModel>, CouponsCreateModelValidator>();
+builder.Services.AddScoped<IValidator<CouponUpdateModel>, CouponUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<CustomerCreateModel>, AddCustomerDTOValidator>();
-builder.Services.AddScoped<IValidator<CustomerUpdateModel>, UpdateCustomerDTOValidator>();
+builder.Services.AddScoped<IValidator<CustomerCreateModel>, CustomerCreateModelValidator>();
+builder.Services.AddScoped<IValidator<CustomerUpdateModel>, CustomerUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<CartCreateModel>, AddCartDTOValidator>();
-builder.Services.AddScoped<IValidator<CartUpdateModel>, UpdateCartDTOValidator>();
+builder.Services.AddScoped<IValidator<CartCreateModel>, CartCreateModelValidator>();
+builder.Services.AddScoped<IValidator<CartUpdateModel>, CartUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<MerchantCreateModel>, AddMerchantDTOValidator>();
-builder.Services.AddScoped<IValidator<MerchantUpdateModel>, UpdateMerchantDTOValidator>();
+builder.Services.AddScoped<IValidator<MerchantCreateModel>, MerchantCreateModelValidator>();
+builder.Services.AddScoped<IValidator<MerchantUpdateModel>, MerchantUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<OrderCreateModel>, AddOrderDTOValidator>();
-builder.Services.AddScoped<IValidator<OrderUpdateModel>, UpdateOrderDTOValidator>();
+builder.Services.AddScoped<IValidator<OrderCreateModel>, OrderCreateModelValidator>();
+builder.Services.AddScoped<IValidator<OrderUpdateModel>, OrderUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<OrderHistoryCreateModel>, AddOrderHistoryDTOValidator>();
-builder.Services.AddScoped<IValidator<OrderHistoryUpdateModel>, UpdateOrderHistoryDTOValidator>();
+builder.Services.AddScoped<IValidator<OrderHistoryCreateModel>, OrderHistoryCreateModelValidator>();
+builder.Services.AddScoped<IValidator<OrderHistoryUpdateModel>, OrderHistoryUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<OrderLineItemCreateModel>, AddOrderLineItemDTOValidator>();
-builder.Services.AddScoped<IValidator<OrderLineItemUpdateModel>, UpdateOrderLineItemDTOValidator>();
+builder.Services.AddScoped<IValidator<OrderLineItemCreateModel>, OrderLineItemCreateModelValidator>();
+builder.Services.AddScoped<IValidator<OrderLineItemUpdateModel>, OrderLineItemUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<OrderTypeCreateModel>, AddOrdeTypeDTOValidator>();
-builder.Services.AddScoped<IValidator<OrderTypeUpdateModel>, UpdateOrderTypeDTOValidator>();
+builder.Services.AddScoped<IValidator<OrderTypeCreateModel>, OrderTypeCreateModelValidator>();
+builder.Services.AddScoped<IValidator<OrderTypeUpdateModel>, OrderTypeUpdateModelValidator>();
 
-builder.Services.AddScoped<IValidator<PaymentTransactionCreateModel>, AddPaymentTransactionDTOValidator>();
+builder.Services.AddScoped<IValidator<PaymentTransactionCreateModel>, PaymentTransactionCreateModelValidator>();
 //builder.Services.AddScoped<IValidator<CustomerAddressCreate>, AddCADTOValidator>();
 
 //Auth
@@ -197,12 +195,12 @@ builder.Services.AddScoped<IValidator<RegisterDTO>, RegisterDTOValidator>();
 builder.Services.AddScoped<IValidator<LoginDTO>, LoginDTOValidator>();
 
 //Controller
-builder.Services.AddScoped<AddressController>();
-builder.Services.AddScoped<CartController>();
-builder.Services.AddScoped<CustomerController>();
-builder.Services.AddScoped<CouponsController>();
+//builder.Services.AddScoped<AddressController>();
+//builder.Services.AddScoped<CartController>();
+//builder.Services.AddScoped<CustomerController>();
+//builder.Services.AddScoped<CouponsController>();
 //builder.Services.AddScoped<OrderController>();
-//builder.Services.AddScoped<OrderController>();
+
 
 
 
@@ -235,17 +233,7 @@ app.Use(async (context, next) =>
 });
 app.UseAuthorization();
 
-// Use the AddressEndpoints to configure routes
-//correct code
-//var addressEndpoints = app.Services.GetRequiredService<AddressController>();
-//addressEndpoints.MapAddressRoutes(app);
-//app.MapControllers();
-//app.UseRouting();
 
-/*app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});*/
 
 var addressRoutes = new AddressRoutes();
 addressRoutes.MapAddressRoutes(app);
@@ -253,28 +241,20 @@ addressRoutes.MapAddressRoutes(app);
 /*var addressEndpoints = app.Services.GetRequiredService<AddressRoutes>();
 addressEndpoints.MapRoutes(app);*/
 
-var cartRoutes = new CartRoutes();
-cartRoutes.MapCartRoutes(app);
-
-var couponRoutes = new CouponsRoutes();
-couponRoutes.MapCouponsRoutes(app);
-
-var customerRoutes = new CustomerRoutes();
-customerRoutes.MapCustomerRoutes(app);
 
 var authEndpoints = app.Services.GetRequiredService<AuthenticationRoutes>();
 authEndpoints.MapAuthRoutes(app);
 
-/*var couponsEndpoints = app.Services.GetRequiredService<CouponsRoutes>();
-couponsEndpoints.MapCouponsRoutes(app);*/
+var couponsEndpoints = app.Services.GetRequiredService<CouponsRoutes>();
+couponsEndpoints.MapCouponsRoutes(app);
 
-/*var customerEndpoints = app.Services.GetRequiredService<CustomerRoutes>();
-customerEndpoints.MapCustomerRoutes(app);*/
+var customerEndpoints = app.Services.GetRequiredService<CustomerRoutes>();
+customerEndpoints.MapCustomerRoutes(app);
 
-/*var cartEndpoints = app.Services.GetRequiredService<CartRoutes>();
-cartEndpoints.MapCartRoutes(app);*/
+var cartEndpoints = app.Services.GetRequiredService<CartRoutes>();
+cartEndpoints.MapCartRoutes(app);
 
-var merchantEndpoints = new MerchantRoutes();//app.Services.GetRequiredService<
+var merchantEndpoints = app.Services.GetRequiredService<MerchantRoutes>();
 merchantEndpoints.MapMerchantRoutes(app);
 
 var orderEndpoints = app.Services.GetRequiredService<OrderRoutes>();
@@ -304,170 +284,6 @@ customerAddress.MapCARoutes(app);*/
 app.Run();
 
 
-
-
-
-/*
-using Microsoft.EntityFrameworkCore;
-
-using Microsoft.OpenApi.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using order_management.auth;
-using System.Text.Json;
-using order_management.database;
-using order_management.config;
-using order_management.services.interfaces;
-using order_management.services.implementetions;
-using order_management.src.api;
-using FluentValidation;
-using order_management.database.dto;
-using static order_management.src.api.address.AddressValidation;
-using static order_management.src.api.auth.AuthenticationValidation;
-using static order_management.src.api.coupons.CouponsValidation;
-using static order_management.src.api.customer.CustomerValidation;
-using order_management.common;
-using Microsoft.AspNetCore.Http.HttpResults;
-using order_management.api;
-
-
-var builder = WebApplication.CreateBuilder(args);
-
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<OrderManagementContext>(options =>
-    options.UseSqlServer(connectionString));
-
-// Add services to the container.
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-//add services
-builder.Services.AddScoped<IAddressService, AddressService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<ICouponService, CouponService>();
-
-
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAccountRepo, AccountRepo>();
-
-
-builder.Services.AddTransient<AddressRoutes>();
-builder.Services.AddTransient<AddressController>();
-
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddAuthorization();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
-
-builder.Services.AddSwaggerGen(Swagger =>
-{
-    Swagger.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "asp.net 8 web api ",
-       // Description = "authentication"
-    });
-    Swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header
-    });
-    Swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference =new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },Array.Empty<string>()
-        }
-
-});
-});
-
-
-//FluentValidation
-//Address
-builder.Services.AddScoped<IValidator<AddressCreateModel>, AddAddressDTOValidator>();
-builder.Services.AddScoped<IValidator<AddressUpdateModel>, UpdateAddressDTOValidator>();
-
-builder.Services.AddScoped<IValidator<CouponCreateModel>, AddCouponsDTOValidator>();
-builder.Services.AddScoped<IValidator<CouponUpdateModel>, UpdateCouponDTOValidator>();
-
-builder.Services.AddScoped<IValidator<CustomerCreateModel>, AddCustomerDTOValidator>();
-builder.Services.AddScoped<IValidator<CustomerUpdateModel>, UpdateCustomerDTOValidator>();
-
-
-//Auth
-builder.Services.AddScoped<IValidator<RegisterDTO>, RegisterDTOValidator>();
-builder.Services.AddScoped<IValidator<LoginDTO>, LoginDTOValidator>();
-
-
-
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.Use(async (context, next) =>
-{
-    await next.Invoke();
-    if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
-    {
-        context.Response.ContentType = "application/json";
-        var response = new { Status = "Error", Message = "Required Authentication.", HttpCode = 401, };
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-    }
-});
-app.UseAuthorization();
-
-
-/*
-using (var scope = app.Services.CreateScope())
-{
-    var addressRoutes = scope.ServiceProvider.GetRequiredService<AddressRoutes>();
-    addressRoutes.MapRoutes(app);
-}
-
-var addressRoutes = app.Services.GetRequiredService<AddressRoutes>();
-addressRoutes.MapRoutes(app);
-
-
-
-
-app.Run();
-
-*/
 
 
 

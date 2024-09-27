@@ -79,10 +79,7 @@ public class Order
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
     // public ICollection<OrderPayment> orderPayments { get; set; }
 
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
+   
 
 }
 /*public enum OrderStatusTypes

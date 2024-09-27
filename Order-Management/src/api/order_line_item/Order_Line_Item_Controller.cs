@@ -7,6 +7,7 @@ using order_management.services.implementetions;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.order_line_item;
 using Order_Management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.order_line_item;
 
@@ -60,8 +61,20 @@ namespace Order_Management.src.api.order_line_item;
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
+            var validationContext = new ValidationContext(orderLineItem);
+            var vResult = new List<ValidationResult>();
+
+            var isvalid = Validator.TryValidateObject(orderLineItem, validationContext, vResult, true);
+
+            if (isvalid)
+            {
                 var createdOrderLineItem = await _orderLineItemService.Create(orderLineItem);
                 return ApiResponse.Success("Success", "orderLineItem created successfully", createdOrderLineItem);
+            }
+            return Results.BadRequest(vResult);
+
+
+ 
             }
             catch (Exception ex)
             {
@@ -82,10 +95,20 @@ namespace Order_Management.src.api.order_line_item;
                 {
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
+            var validationContext = new ValidationContext(orderLineItem);
+            var vResult = new List<ValidationResult>();
 
+            var isvalid = Validator.TryValidateObject(orderLineItem, validationContext, vResult, true);
+
+            if (isvalid)
+            {
                 var updatedOrderLineItem = await _orderLineItemService.Update(id, orderLineItem);
                 return updatedOrderLineItem == null ? ApiResponse.NotFound("Failure", "orderLineItem not found")
                                               : ApiResponse.Success("Success", "orderLineItem updated successfully", updatedOrderLineItem);
+            }
+            return Results.BadRequest(vResult);
+
+           
             }
             catch (Exception ex)
             {

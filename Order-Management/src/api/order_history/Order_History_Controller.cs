@@ -48,7 +48,7 @@ public class Order_History_Controller
             return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the orderHistory");
         }
     }
-    public async Task<IResult> Create(OrderHistoryCreateModel orderHistory, HttpContext httpContext, IOrderHistoryService _orderHistoryService, IValidator<OrderHistoryCreateModel> _createValidator)
+    public async Task<IResult> Create([FromBody]OrderHistoryCreateModel orderHistory,  IOrderHistoryService _orderHistoryService, IValidator<OrderHistoryCreateModel> _createValidator)
     {
         try
         {
@@ -63,17 +63,17 @@ public class Order_History_Controller
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-         /*   var validationContext = new ValidationContext(orderHistory);
+            var validationContext = new ValidationContext(orderHistory);
             var vResult = new List<ValidationResult>();
 
             var isvalid = Validator.TryValidateObject(orderHistory, validationContext, vResult, true);
 
             if (isvalid)
-            {*/
+            {
                 var createdOrderHistory = await _orderHistoryService.Create(orderHistory);
                 return ApiResponse.Success("Success", "orderHistory created successfully", createdOrderHistory);
-          //  }
-          // return Results.BadRequest(vResult);
+            }
+           return Results.BadRequest(vResult);
 
 
             ////
@@ -99,18 +99,18 @@ public class Order_History_Controller
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
-          /*  var validationContext = new ValidationContext(orderHistory);
+            var validationContext = new ValidationContext(orderHistory);
             var vResult = new List<ValidationResult>();
 
             var isvalid = Validator.TryValidateObject(orderHistory, validationContext, vResult, true);
 
             if (isvalid)
-            {*/
+            {
                 var updatedOrderHistory = await _orderHistoryService.Update(id, orderHistory);
                 return updatedOrderHistory == null ? ApiResponse.NotFound("Failure", "orderHistory not found")
                                               : ApiResponse.Success("Success", "orderHistory updated successfully", updatedOrderHistory);
-            //}
-          //  return Results.BadRequest(vResult);
+            }
+            return Results.BadRequest(vResult);
 
            
         }

@@ -9,23 +9,14 @@ using Order_Management.src.database.dto.cart;
 using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
 using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Order_Management.src.api.cart;
 
 
     public class CartController: Controller
     {
-    /*private readonly ICartService _cartService;
-    private readonly IValidator<CartCreateModel> _createValidator;
-    private readonly IValidator<CartUpdateModel> _updateValidator;
-    public CartController(ICartService cartService,
-                             IValidator<CartCreateModel> createValidator,
-                             IValidator<CartUpdateModel> updateValidator)
-    {
-        _cartService = cartService;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
-    }*/
+    
 
     [ProducesResponseType(200, Type = typeof(IEnumerable<Cart>))]
 
@@ -54,42 +45,49 @@ namespace Order_Management.src.api.cart;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the cart");
             }
         }
-        public async Task<IResult> Create(CartCreateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartCreateModel> _createValidator)
+
+
+    public async Task<IResult> Create(CartCreateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartCreateModel> _createValidator)
+    {
+        try
         {
-            try
+            // Check if the cart data is null
+            if (cart == null)
             {
-                if (cart == null)
-                {
-                    return ApiResponse.BadRequest("Failure", "Invalid cart data");
-                }
+                return ApiResponse.BadRequest("Failure", "Invalid cart data");
+            }
 
-                var validationResult = _createValidator.Validate(cart);
-                if (!validationResult.IsValid)
-                {
-                    return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-                }
+                       // Validate using FluentValidation
+            var validationResult = _createValidator.Validate(cart);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+            }
+
+            // Optional: Additional data annotation validation
             var validationContext = new ValidationContext(cart);
-            var vResult = new List<ValidationResult>();
+            var validationResults = new List<ValidationResult>();
 
-            var isvalid = Validator.TryValidateObject(cart, validationContext, vResult, true);
-
-            if (isvalid)
+            // Validate object using data annotations
+            bool isValid = Validator.TryValidateObject(cart, validationContext, validationResults, true);
+            if (!isValid)
             {
+                return ApiResponse.BadRequest("Failure", validationResults.Select(v => v.ErrorMessage));
+            }
 
-                var createdAddress = await _cartService.Create(cart);
-                 return ApiResponse.Success("Success", "cart created successfully", createdAddress);
-            }
-            return Results.BadRequest(vResult);
-
-            //var createdAddress = await _cartService.Create(cart);
-              //  return ApiResponse.Success("Success", "cart created successfully", createdAddress);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the cart");
-            }
+            // Proceed with the creation of the cart
+            var createdCart = await _cartService.Create(cart);
+            return ApiResponse.Success("Success", "Cart created successfully", createdCart);
         }
-        public async Task<IResult> Update(Guid id, CartUpdateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartUpdateModel> _updateValidator)
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the cart");
+        }
+    }
+
+
+
+    public async Task<IResult> Update(Guid id, CartUpdateModel cart, HttpContext httpContext, ICartService _cartService, IValidator<CartUpdateModel> _updateValidator)
         {
             try
             {
@@ -182,32 +180,3 @@ namespace Order_Management.src.api.cart;
 
 
 
-/*public async Task<IResult> Search(HttpContext context)
-{
-    try
-    {
-        // Extract query parameters from HttpContext.Request
-        var query = context.Request.Query;
-
-        var filter = new CartSearchFilter
-        {
-            CustomerId = query.ContainsKey("customerId") ? Guid.Parse(query["customerId"]) : (Guid?)null,
-            ProductId = query.ContainsKey("productId") ? Guid.Parse(query["productId"]) : (Guid?)null,
-            TotalItemsCountGreaterThan = query.ContainsKey("totalItemsCountGreaterThan") ? int.Parse(query["totalItemsCountGreaterThan"]) : (int?)null,
-            TotalItemsCountLessThan = query.ContainsKey("totalItemsCountLessThan") ? int.Parse(query["totalItemsCountLessThan"]) : (int?)null,
-            TotalAmountGreaterThan = query.ContainsKey("totalAmountGreaterThan") ? float.Parse(query["totalAmountGreaterThan"]) : (float?)null,
-            TotalAmountLessThan = query.ContainsKey("totalAmountLessThan") ? float.Parse(query["totalAmountLessThan"]) : (float?)null,
-            CreatedBefore = query.ContainsKey("createdBefore") ? DateTime.Parse(query["createdBefore"]) : (DateTime?)null,
-            CreatedAfter = query.ContainsKey("createdAfter") ? DateTime.Parse(query["createdAfter"]) : (DateTime?)null
-        };
-
-        var carts = await _cartService.Search(filter);
-        return carts.Items.Any()
-            ? ApiResponse.Success("Success", "Carts retrieved successfully with filters", carts)
-            : ApiResponse.NotFound("Failure", "No carts found matching the filters");
-    }
-    catch (Exception ex)
-    {
-        return ApiResponse.Exception(ex, "Failure", "An error occurred while searching for carts");
-    }
-}*/

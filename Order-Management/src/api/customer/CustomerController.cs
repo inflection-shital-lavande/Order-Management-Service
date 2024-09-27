@@ -58,45 +58,39 @@ public  class CustomerController: Controller
             return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving customers");
         }
     }
-  
 
     public async Task<IResult> Create(CustomerCreateModel Create, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
-      {
-          try
-          {
-             if (Create == null)
-              {
-                  return ApiResponse.BadRequest("Failure", "Invalid customer data");
-              }
+    {
+        try
+        {
+            if (Create == null)
+            {
+                return ApiResponse.BadRequest("Failure", "Invalid customer data");
+            }
 
-              var validationResult = _createValidator.Validate(Create);
-              if (!validationResult.IsValid)
-              {
-                  return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-              }//
-             /* var validationContext = new ValidationContext(Create);
-              var vResult = new List<ValidationResult>();
+            var validationResult = _createValidator.Validate(Create);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+            }//
+            
+            var customer = await _customerService.Create(Create);
 
-              var isvalid = Validator.TryValidateObject(Create, validationContext, vResult, true);
+            return ApiResponse.Success("Success", "Customer created successfully", customer);
+            
+        }
+        catch (ConflictException ex)
+        {
+            return ApiResponse.Conflict("Conflict", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the customers");
+        }
+    }
 
-              if (isvalid)
-              {*/
-                  var customer = await _customerService.Create(Create);
-                
-                  return ApiResponse.Success("Success", "Customer created successfully", customer);
-             // }
-             // return Results.BadRequest(vResult);
-          }
-          catch (ConflictException ex)
-          {
-              return ApiResponse.Conflict("Conflict", ex.Message);
-          }
-          catch (Exception ex)
-          {
-              return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the customers");
-          }
-      }
-   
+
+
 
 
     public async Task<IResult> Delete( Guid id,ICustomerService _customerService, HttpContext httpContext)
@@ -191,76 +185,5 @@ public  class CustomerController: Controller
 
 
 
-/* public async Task<IResult> Update(Guid id, CustomerUpdateModel customerUpdate, HttpContext httpContext, ICustomerService _customerService, IValidator<CustomerUpdateModel> _updateValidator)
- {
-     try
-     {
-         if (customerUpdate == null)
-         {
-             return ApiResponse.BadRequest("Failure", "Invalid customer data");
-         }
 
-         var validationResult = _updateValidator.Validate(customerUpdate);
-         if (!validationResult.IsValid)
-         {
-             return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-         }
-
-         var updateCustomer = await _customerService.Update(id, customerUpdate);
-         return updateCustomer == null ? ApiResponse.NotFound("Failure", "Customer not found")
-                                       : ApiResponse.Success("Success", "Customer updated successfully", updateCustomer);
-     }
-     catch (Exception ex)
-     {
-         return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the customers");
-     }
- }*/
-
-
-/* public async Task<IResult> Create(CustomerCreateModel customerCreate, ICustomerService _customerService, IValidator<CustomerCreateModel> _createValidator)
-   {
-       try
-       {
-           // Check if the customer create model is null
-           if (customerCreate == null)
-           {
-               return ApiResponse.BadRequest("Failure", "Invalid customer data");
-           }
-
-           // Perform FluentValidation on the customer create model
-           var validationResult = _createValidator.Validate(customerCreate);
-           if (!validationResult.IsValid)
-           {
-               return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-           }
-
-           // Additionally, validate using DataAnnotations (if applicable)
-           var validationContext = new ValidationContext(customerCreate);
-           var validationResults = new List<ValidationResult>();
-           bool isValid = Validator.TryValidateObject(customerCreate, validationContext, validationResults, true);
-
-           // If validation is successful
-           if (isValid)
-           {
-               // Proceed to create the customer using the service
-               var customer = await _customerService.Create(customerCreate);
-
-               // Return success response along with created customer data
-               return ApiResponse.Success("Success", "Customer created successfully", customer);
-           }
-
-           // If DataAnnotations validation fails, return bad request with errors
-           return Results.BadRequest(validationResults.Select(vr => vr.ErrorMessage));
-       }
-       catch (ConflictException ex)
-       {
-           // Handle specific business logic conflicts, e.g., duplicate customer entry
-           return ApiResponse.Conflict("Conflict", ex.Message);
-       }
-       catch (Exception ex)
-       {
-           // Handle any other exceptions that may occur
-           return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the customer");
-       }
-   }*/
 

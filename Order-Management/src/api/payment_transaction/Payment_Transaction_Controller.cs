@@ -6,6 +6,7 @@ using order_management.database.models;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.payment_transaction;
 using Order_Management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.payment_transaction;
 
@@ -58,9 +59,19 @@ namespace Order_Management.src.api.payment_transaction;
                 {
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
+            var validationContext = new ValidationContext(paymentTransactions);
+            var vResult = new List<ValidationResult>();
 
+            var isvalid = Validator.TryValidateObject(paymentTransactions, validationContext, vResult, true);
+
+            if (isvalid)
+            {
                 var createdPaymentTransaction = await _paymentTransactionService.Create(paymentTransactions);
                 return ApiResponse.Success("Success", "paymentTransactions created successfully", createdPaymentTransaction);
+            }
+            return Results.BadRequest(vResult);
+
+            
             }
             catch (Exception ex)
             {

@@ -62,18 +62,10 @@ namespace Order_Management.src.api.order;
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
-            var validationContext = new ValidationContext(order);
-            var vResult = new List<ValidationResult>();
-
-            var isvalid = Validator.TryValidateObject(order, validationContext, vResult, true);
-
-            if (isvalid)
-            {
+          
                 var createdOrder = await _orderService.Create(order);
                 return ApiResponse.Success("Success", "Order created successfully", createdOrder);
-            }
-            return Results.BadRequest(vResult);
-
+          
 
             
             }

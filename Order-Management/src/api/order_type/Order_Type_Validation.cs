@@ -6,29 +6,45 @@ namespace Order_Management.src.api.orderType;
 
 public class Order_Type_Validation
 {
-    public class AddOrdeTypeDTOValidator : AbstractValidator<OrderTypeCreateModel>
+    public class OrderTypeCreateModelValidator : AbstractValidator<OrderTypeCreateModel>
 
     {
-        public AddOrdeTypeDTOValidator()
+        public OrderTypeCreateModelValidator()
         {
 
 
-            RuleFor(item => item.Name).NotEmpty().NotNull()
-               .NotNull().WithMessage("Tax is required.")
-              .WithMessage("Tax cannot be empty.");
+            RuleFor(item => item.Name)
+               .NotNull()
+               .WithMessage("Tax is required.")
+               .MaximumLength(128)
+               .WithMessage("name max charater is 128");
+               
+             
 
-            RuleFor(item => item.Description).NotEmpty().NotNull()
-               .NotNull().WithMessage("Tax is required.")
-               .WithMessage("Tax cannot be empty.");
+            RuleFor(item => item.Description)
+                .NotEmpty().NotNull()
+               .WithMessage("Tax is required.");
+              
 
         }
     }
-    public class UpdateOrderTypeDTOValidator : AbstractValidator<OrderTypeUpdateModel>
+    public class OrderTypeUpdateModelValidator : AbstractValidator<OrderTypeUpdateModel>
     {
-        public UpdateOrderTypeDTOValidator()
+        public OrderTypeUpdateModelValidator()
         {
 
 
+            RuleFor(item => item.Name)
+              .NotEmpty()
+              .WithMessage("Tax is required.")
+              .MaximumLength(128)
+              .WithMessage("name max charater is 128");
+
+
+
+            RuleFor(item => item.Description)
+                .NotEmpty()
+               .WithMessage("Tax is required.");
 
         }
     }

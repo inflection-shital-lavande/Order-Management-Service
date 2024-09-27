@@ -7,6 +7,7 @@ using order_management.database.models;
 using order_management.domain_types.enums;
 using order_management.services.interfaces;
 using Order_Management.src.database.dto.cart;
+using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,17 +17,7 @@ public class CouponsController
 {
 
 
-    /*   private readonly ICouponService _couponService;
-       private readonly IValidator<CouponCreateModel> _createValidator;
-       private readonly IValidator<CouponUpdateModel> _updateValidator;
-       public CouponsController(ICouponService couponService,
-                               IValidator<CouponCreateModel> createValidator,
-                               IValidator<CouponUpdateModel> updateValidator)
-       {
-           _couponService = couponService;
-           _createValidator = createValidator;
-           _updateValidator = updateValidator;
-       }*/
+    
 
     [ProducesResponseType(200, Type = typeof(IEnumerable<Coupon>))]
 
@@ -60,7 +51,7 @@ public class CouponsController
         }
     }
 
-    public async Task<IResult> Create([FromBody] CouponCreateModel couponCreate, ICouponService _couponService, IValidator<CouponCreateModel> _createValidator)
+    public async Task<IResult> Create( CouponCreateModel couponCreate, HttpContext httpContext, ICouponService _couponService, IValidator<CouponCreateModel> _createValidator)
     {
         try
         {
@@ -74,18 +65,11 @@ public class CouponsController
             {
                 return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
             }
-/*
-            var validationContext = new ValidationContext(couponCreate);
-            var vResult = new List<ValidationResult>();
 
-            var isvalid = Validator.TryValidateObject(couponCreate, validationContext, vResult, true);
-
-            if (isvalid)
-            {*/
+         
                 var createdAddress = await _couponService.Create(couponCreate);
                 return ApiResponse.Success("Success", "Coupon created successfully", createdAddress);
-          //  }
-           // return Results.BadRequest(vResult);
+         
 
            
         }

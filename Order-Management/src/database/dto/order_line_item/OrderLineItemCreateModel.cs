@@ -4,14 +4,14 @@ namespace Order_Management.src.database.dto.order_line_item
 {
     public class OrderLineItemCreateModel
     {
-        [Required(ErrorMessage = "Name is required.")]
+        [Required]
         public string? Name { get; set; }
 
         public Guid? CatalogId { get; set; }
-
+        [Required]
         public int? Quantity { get; set; }
 
-        [Required(ErrorMessage = "UnitPrice is required.")]
+        [Required]
         public double? UnitPrice { get; set; } = 0.0;
 
         public double? Discount { get; set; } = 0.0;

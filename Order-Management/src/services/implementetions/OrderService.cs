@@ -113,18 +113,7 @@ public class OrderService : IOrderService
         if (filter.OrderTypeId.HasValue)
             query = query.Where(o => o.OrderTypeId == filter.OrderTypeId.Value);
 
-        //if (filter.CreatedBefore.HasValue)
-        //    query = query.Where(o => o.CreatedDate < filter.CreatedBefore.Value);
-
-        //if (filter.CreatedAfter.HasValue)
-        //    query = query.Where(o => o.CreatedDate > filter.CreatedAfter.Value);
-
-        //if (filter.PastMonths.HasValue && filter.PastMonths > 0)
-        //{
-        //    var pastDate = DateTime.UtcNow.AddMonths(-filter.PastMonths.Value);
-        //    query = query.Where(o => o.CreatedDate >= pastDate);
-        //}
-
+        
 
         var orders = await query.ToListAsync();
         var results = _mapper.Map<List<OrderResponseModel>>(orders);
@@ -297,6 +286,9 @@ public class OrderService : IOrderService
         return false;
     }
 }
+
+
+
    /*  public OrderResponseModel UpdateOrderStatus(Guid orderId, OrderStatusTypes status)
       {
           var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);

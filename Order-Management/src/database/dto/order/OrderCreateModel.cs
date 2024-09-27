@@ -5,21 +5,19 @@ namespace order_management.src.database.dto;
 
 public class OrderCreateModel
 {
+    [StringLength(36)]
     [Required]
-    [Description("Id of the order type")]
     public Guid? OrderTypeId { get; set; }
 
-    
-    [Required(ErrorMessage = "Customer Id is required.")]
+    [Required]
     public Guid? CustomerId { get; set; }
-
-
-    [Required(ErrorMessage = "AssociatedCart Id is required.")]
+    [Required]
+   // [StringLength(36)]
     public Guid? AssociatedCartId { get; set; }
 
-    [Description("Tip applicable or not")]
+   
     public bool? TipApplicable { get; set; } = false;
-
+   // [StringLength(1024)]
     public string? Notes { get; set; }
 }
 

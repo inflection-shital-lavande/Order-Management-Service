@@ -6,57 +6,70 @@ namespace Order_Management.src.api.payment_transaction;
 
 public class Payment_Transection_Validation
 {
-    public class AddPaymentTransactionDTOValidator : AbstractValidator<PaymentTransactionCreateModel>
+    public class PaymentTransactionCreateModelValidator : AbstractValidator<PaymentTransactionCreateModel>
 
     {
-        public AddPaymentTransactionDTOValidator()
+        public PaymentTransactionCreateModelValidator()
         {
 
+            RuleFor(x => x.DisplayCode)
+                .MaximumLength(36)
+                .WithMessage("length 36");
+           //.NotEmpty()
+           //.WithMessage("Display code is required.");
 
-            // Validate InvoiceNumber
-            RuleFor(payment => payment.InvoiceNumber).NotNull()
-                .NotEmpty().WithMessage("InvoiceNumber is required.");
+            RuleFor(x => x.InvoiceNumber)
+                .MaximumLength(64)
+                .WithMessage("length 64");
+            //.NotEmpty()
+            //.WithMessage("Invoice number is required.");
 
-            // Validate BankTransactionId (if present)
-            RuleFor(payment => payment.BankTransactionId).NotEmpty()
-               // .Must(IsGuidValid).When(payment => payment.BankTransactionId.HasValue)
-                .WithMessage("BankTransactionId must be a valid GUID.");
+            RuleFor(x => x.PaymentAmount)
+                .NotEmpty()
+                .NotNull()
+                .GreaterThanOrEqualTo(0.0f)
+                .WithMessage("Payment amount must be a positive value.");
 
-            // Validate PaymentGatewayTransactionId (if present)
-            RuleFor(payment => payment.PaymentGatewayTransactionId).NotEmpty()
-               // .Must(IsGuidValid).When(payment => payment.PaymentGatewayTransactionId.HasValue)
-                .WithMessage("PaymentGatewayTransactionId must be a valid GUID.");
+            RuleFor(x => x.InitiatedBy)
+                .NotEmpty()
+                .WithMessage("Initiated by is required.");
 
-            // Validate PaymentMode (optional)
-            RuleFor(payment => payment.PaymentMode)
-                .MaximumLength(50).WithMessage("PaymentMode cannot exceed 50 characters.");
+            RuleFor(x => x.CustomerId)
+                .NotEmpty()
+                .NotNull()
+                .WithMessage("not null")
+                .WithMessage("Customer Id is required.");
 
-            RuleFor(payment => payment.PaymentStatus).NotEmpty()
-               // .GreaterThan(0).When(payment => payment.PaymentCurrency.HasValue)
-                .WithMessage("PaymentCurrency must be greater than zero.");
+            RuleFor(x => x.OrderId)
+                .NotEmpty()
+                .WithMessage("Order Id is required.");
 
-            // Validate PaymentAmount
-            RuleFor(payment => payment.PaymentAmount).NotNull().NotEmpty()
-                .GreaterThan(0).WithMessage("PaymentAmount cannot be negative.");
+            RuleFor(x => x.PaymentGatewayTransactionId)
+                .NotEmpty();
+               // .MaximumLength(512)
+                //.WithMessage("Payment Gateway Transaction Id cannot exceed 512 characters.");
 
-            // Validate PaymentCurrency (optional)
-            RuleFor(payment => payment.PaymentCurrency)
-                .GreaterThan(0).When(payment => payment.PaymentCurrency.HasValue)
-                .WithMessage("PaymentCurrency must be greater than zero.");
+            RuleFor(x => x.PaymentMode)
+                .NotEmpty()
+                .MaximumLength(256)
+                .WithMessage("Payment Mode cannot exceed 256 characters.");
 
-            RuleFor(payment => payment.PaymentResponse).NotNull().NotEmpty()
-               // .GreaterThan(0).When(payment => payment.PaymentCurrency.HasValue)
-                .WithMessage("PaymentCurrency must be greater than zero.");
+            RuleFor(x => x.PaymentCurrency)
+               .NotEmpty();
 
-            RuleFor(payment => payment.PaymentResponseCode).NotNull().NotEmpty()
-                //.GreaterThan(0).When(payment => payment.PaymentCurrency.HasValue)
-                .WithMessage("PaymentCurrency must be greater than zero.");
+            RuleFor(x => x.PaymentResponse)
+                .NotEmpty()
+                .NotNull()
+                .WithMessage("not null")
+                .MaximumLength(1024)
+                .WithMessage("Payment Response cannot exceed 1024 characters.");
 
-
-            // Validate InitiatedBy
-            RuleFor(payment => payment.InitiatedBy)
-                .NotEmpty().WithMessage("InitiatedBy is required.")
-                .MaximumLength(100).WithMessage("InitiatedBy cannot exceed 100 characters.");
+            RuleFor(x => x.PaymentResponseCode)
+                .NotEmpty()
+                .NotNull()
+                .WithMessage("not null")
+                .MaximumLength(256)
+                .WithMessage("Payment Response Code cannot exceed 256 characters.");
 
         }
     }

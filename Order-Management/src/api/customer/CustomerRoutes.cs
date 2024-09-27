@@ -10,8 +10,8 @@ public  class CustomerRoutes
     public  void MapCustomerRoutes( WebApplication app)
     {
          var customerController = new CustomerController();
-        var router = app.MapGroup("/api/customers");//.WithTags("CustomerController");
-        //router.MapGet("/", customerController.GetAll);
+        var router = app.MapGroup("/api/customers");
+
         router.MapGet("/",  customerController.GetAll).RequireAuthorization();
         router.MapGet("/{id:guid}",  customerController.GetById).RequireAuthorization();
         router.MapPost("/",  customerController.Create).RequireAuthorization();

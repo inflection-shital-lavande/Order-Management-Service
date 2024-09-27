@@ -6,26 +6,28 @@ namespace Order_Management.src.api.order_history
 {
     public class Order_History_Validation
     {
-        public class AddOrderHistoryDTOValidator : AbstractValidator<OrderHistoryCreateModel>
+        public class OrderHistoryCreateModelValidator : AbstractValidator<OrderHistoryCreateModel>
 
         {
-            public AddOrderHistoryDTOValidator()
+            public OrderHistoryCreateModelValidator()
             {
 
 
                 RuleFor(item => item.PreviousStatus)
                     .NotEmpty()
-                    .WithMessage("PreviousStatus cannot be empty.");
+                    .WithMessage("PreviousStatus not empty");
+                    
+                   
 
                 RuleFor(item => item.Status)
                     .NotEmpty()
-               .WithMessage("Status cannot be empty.");
+                    .WithMessage("Status cannot be empty.");
 
             }
         }
-        public class UpdateOrderHistoryDTOValidator : AbstractValidator<OrderHistoryUpdateModel>
+        public class OrderHistoryUpdateModelValidator : AbstractValidator<OrderHistoryUpdateModel>
         {
-            public UpdateOrderHistoryDTOValidator()
+            public OrderHistoryUpdateModelValidator()
             {
 
                 RuleFor(item => item.PreviousStatus)
@@ -33,8 +35,8 @@ namespace Order_Management.src.api.order_history
                     .WithMessage("PreviousStatus cannot be empty.");
 
                 RuleFor(item => item.Status)
-                .NotEmpty()
-               .WithMessage("Status cannot be empty.");
+                  .NotEmpty()
+                  .WithMessage("Status cannot be empty.");
 
             }
         }

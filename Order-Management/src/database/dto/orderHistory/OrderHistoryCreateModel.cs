@@ -7,17 +7,17 @@ namespace order_management.src.database.dto.orderHistory;
 
 public class OrderHistoryCreateModel
 {
-    
-   
-    [MaxLength(36)]
+
+    [Required]
     public Guid? OrderId { get; set; }
 
+    [Required]
     public OrderStatusTypes PreviousStatus { get; set; } = OrderStatusTypes.DRAFT;
 
     [Required]
     public OrderStatusTypes Status { get; set; } = OrderStatusTypes.DRAFT;
 
-    [MaxLength(36)]
+    [Required]
     public Guid? UpdatedByUserId { get; set; }
 
     [Required]

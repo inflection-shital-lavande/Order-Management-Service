@@ -10,30 +10,14 @@ using order_management.database.models;
 using order_management.services.implementetions;
 using order_management.services.interfaces;
 using System.ComponentModel.DataAnnotations;
-//using ValidationContext = AutoMapper.Configuration.ValidationContext;
-//using System.ComponentModel.DataAnnotations;
 
 namespace order_management.api;
 
 public class AddressController
 {
 
-    //#region Constructor
-  /*  private readonly IAddressService _addressService;
-    private readonly IValidator<AddressCreateModel> _createValidator;
-   // private readonly IValidator<AddressUpdateModel> _updateValidator;
-    public AddressController(IAddressService addressService,
-                             IValidator<AddressCreateModel> createValidator)
-                          //   IValidator<AddressUpdateModel> updateValidator)
-    {
-        _addressService = addressService;
-        _createValidator = createValidator;
-     //   _updateValidator = updateValidator;
-    }*/
-    //  #endregion
-    //  #region Public Methods
+   
 
-   // [ProducesResponseType(200, Type = typeof(IEnumerable<Cart>))]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Address>))]
 
     public async Task<IResult> GetAll(HttpContext httpContext, IAddressService _addressService)
@@ -99,7 +83,7 @@ public class AddressController
             return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the address");
         }
     }
-    public async Task<IResult> Update(Guid id, AddressUpdateModel addr,  IAddressService _addressService, IValidator<AddressUpdateModel> _updateValidator)//,HttpContext httpContext)//HttpContext httpContext,
+    public async Task<IResult> Update(Guid id, AddressUpdateModel addr,  IAddressService _addressService, IValidator<AddressUpdateModel> _updateValidator)
     {
         try
         {
@@ -120,15 +104,13 @@ public class AddressController
 
             if (isvalid)
             {
-                var customer = await _addressService.Update(id, addr);
-                return customer == null ? ApiResponse.NotFound("Failure", "Customer not found")
-                                             : ApiResponse.Success("Success", "Customer updated successfully");
+                var address = await _addressService.Update(id, addr);
+                return address == null ? ApiResponse.NotFound("Failure", "Address not found")
+                                             : ApiResponse.Success("Success", "Address updated successfully", address);
             }
             return Results.BadRequest(vResult);
 
-            /*  var updatedAddress = await _addressService.Update(id, addr);
-              return updatedAddress == null ? ApiResponse.NotFound("Failure", "Address not found")
-                                            : ApiResponse.Success("Success", "Address updated successfully", updatedAddress);*/
+            
         }
         catch (Exception ex)
         {
@@ -183,3 +165,22 @@ public class AddressController
 
 
 }
+
+
+
+
+
+
+
+//#region Constructor
+/*  private readonly IAddressService _addressService;
+  private readonly IValidator<AddressCreateModel> _createValidator;
+ // private readonly IValidator<AddressUpdateModel> _updateValidator;
+  public AddressController(IAddressService addressService,
+                           IValidator<AddressCreateModel> createValidator)
+                        //   IValidator<AddressUpdateModel> updateValidator)
+  {
+      _addressService = addressService;
+      _createValidator = createValidator;
+   //   _updateValidator = updateValidator;
+  }*/

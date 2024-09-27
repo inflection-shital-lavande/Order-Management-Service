@@ -6,19 +6,18 @@ namespace order_management.src.database.dto;
 public class OrderUpdateModel
 {
     [Required]
-    [Description("Id of the order type")]
-    public Guid? OrderTypeId { get; set; }//OrderTypeId
+    public Guid? OrderTypeId { get; set; }
 
-    [Required]
-    [Description("Id of the cart")]
     public Guid? AssociatedCartId { get; set; }
 
+    [Range(0, double.MaxValue)]
     public double? OrderDiscount { get; set; } = 0.0;
 
-    [Description("Tip applicable or not")]
     public bool? TipApplicable { get; set; }
 
+    [Range(0, double.MaxValue)]
     public double? TipAmount { get; set; } = 0.0;
-   
-     public string? Notes { get; set; }
+
+    [StringLength(1024)]
+    public string? Notes { get; set; }
 }

@@ -6,37 +6,36 @@ namespace Order_Management.src.api.order;
 
 public class OrderValidation
 {
-    public class AddOrderDTOValidator : AbstractValidator<OrderCreateModel>
+    public class OrderCreateModelValidator : AbstractValidator<OrderCreateModel>
 
     {
-        public AddOrderDTOValidator()
+        public OrderCreateModelValidator()
         {
 
 
             
 
             RuleFor(order => order.CustomerId)
-                .NotEmpty()
-                 .NotNull().WithMessage("Customer Id is required.");
+                     .NotNull()
+                     .WithMessage("Customer Id is required.");
 
             // Validate that AssociatedCartId is a valid GUID if provided
-            RuleFor(order => order.AssociatedCartId)
+           /* RuleFor(order => order.OrderTypeId)
                 .NotEmpty()
-                .Must(cartId => cartId == null || cartId != Guid.Empty)
-                .WithMessage("Associated Cart Id must be a valid GUID.");
+                .Must(Id => Id == null || Id != Guid.Empty)
+                .WithMessage("OrderTypeId Cart Id must be a valid GUID.");*/
 
             // Validate that Notes have a length between 5 and 1024 characters
             RuleFor(order => order.Notes)
-              //  .NotEmpty()
                 .Length(5, 1024)
                 .WithMessage("Notes must be between 5 and 1024 characters.");
             
 
         }
     }
-    public class UpdateOrderDTOValidator : AbstractValidator<OrderUpdateModel>
+    public class OrderUpdateModelValidator : AbstractValidator<OrderUpdateModel>
     {
-        public UpdateOrderDTOValidator()
+        public OrderUpdateModelValidator()
         {
 
           
@@ -44,15 +43,18 @@ public class OrderValidation
             // Validate that OrderDiscount is a non-negative value
             RuleFor(order => order.OrderDiscount)
                 .NotEmpty()
-                .GreaterThanOrEqualTo(0.0).WithMessage("Order discount must be a non-negative value.");
+                .GreaterThanOrEqualTo(0.0)
+                .WithMessage("Order discount must be a non-negative value.");
 
             // Validate that TipAmount is a non-negative value
             RuleFor(order => order.TipAmount)
-                .GreaterThanOrEqualTo(0.0).WithMessage("Tip amount must be a non-negative value.");
+                .NotEmpty()
+                .GreaterThanOrEqualTo(0.0)
+                .WithMessage("Tip amount must be a non-negative value.");
 
             // Validate that Notes have a length between 5 and 1024 characters if provided
             RuleFor(order => order.Notes)
-                // .NotEmpty()
+                 .NotEmpty()
                 .Length(5, 1024)
                 .WithMessage("Notes must be between 5 and 1024 characters.");
 

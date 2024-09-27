@@ -6,29 +6,19 @@ namespace order_management.database.dto;
 
 public class CustomerUpdateModel
 {
-    [Required]
-    [Description("Name of the customer")]
+    [StringLength(128)]
     public string? Name { get; set; }
 
-    
-    [Description("Email of the customer")]
-    [Required]
+    [StringLength(512)]
     public string? Email { get; set; }
 
-   
-    [Description("Phone code of the customer")]
-    [Required]
+    [StringLength(8)]
     public string? PhoneCode { get; set; }
-
-    [Required]
-    [Description("Phone number of the customer")]
+   
     public string? Phone { get; set; }
 
-    
-    [Description("Profile picture URL of the customer")]
     public string? ProfilePicture { get; set; }
- 
-    [Description("Tax number/code of the customer")]
+    [StringLength(64)]
     public string? TaxNumber { get; set; }
 }
 

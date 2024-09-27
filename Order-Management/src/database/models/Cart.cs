@@ -45,8 +45,11 @@ public class Cart
     //one to many cart and orderlineitem
     public ICollection<OrderLineItem> OrderLineItems { get; set; } = new List<OrderLineItem>();
 
+    public override string ToString()
+    {
+        return System.Text.Json.JsonSerializer.Serialize(this);
+    }
 
-    
     public Cart()
     {
         Id = Guid.NewGuid();

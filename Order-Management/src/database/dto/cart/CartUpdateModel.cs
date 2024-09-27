@@ -4,6 +4,7 @@ namespace Order_Management.src.database.dto.cart
 {
     public class CartUpdateModel
     {
+        
         [Required]
         public int? TotalItemsCount { get; set; }
         
@@ -11,7 +12,6 @@ namespace Order_Management.src.database.dto.cart
         
         public float? TotalDiscount { get; set; }
 
-        [Required]
         public float? TotalAmount { get; set; }
 
     }

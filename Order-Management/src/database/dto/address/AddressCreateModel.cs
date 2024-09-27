@@ -19,7 +19,7 @@ public class AddressCreateModel
     public string? Country { get; set; }
    
     public string? ZipCode { get; set; }
-    [Display(Description = "Zip code of the address.")]
+    
     public Guid? CreatedBy { get; set; }
 }
 

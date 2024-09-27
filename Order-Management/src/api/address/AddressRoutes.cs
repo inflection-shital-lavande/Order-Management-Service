@@ -16,7 +16,7 @@ namespace order_management.api
     {
 
 
-        public void MapAddressRoutes(WebApplication app)//, AddressController addressController)
+        public void MapAddressRoutes(WebApplication app)
         {
             var addressController = new AddressController();
             var router = app.MapGroup("/api/addresses");

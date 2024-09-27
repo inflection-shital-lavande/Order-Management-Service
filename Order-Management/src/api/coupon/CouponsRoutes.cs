@@ -22,7 +22,7 @@ public  class CouponsRoutes
          router.MapDelete("/{id:guid}",  couponsController.Delete).RequireAuthorization();
         router.MapGet("/search", couponsController.Search).RequireAuthorization();
 
-        //router.MapGet("/Search", ([FromServices] CouponsController couponsController) => couponsController.Search).RequireAuthorization();
+        
     }
 }
 

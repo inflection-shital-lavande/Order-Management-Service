@@ -48,7 +48,7 @@ namespace Order_Management.src.api.merchant;
                 return ApiResponse.Exception(ex, "Failure", "An error occurred while retrieving the merchant");
             }
         }
-     public async Task<IResult> Create(MerchantCreateModel Create, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantCreateModel> _createValidator)
+     public async Task<IResult> Create([FromBody] MerchantCreateModel Create,  IMerchantService _merchantService, IValidator<MerchantCreateModel> _createValidator)
      {
          try
          {
@@ -75,45 +75,56 @@ namespace Order_Management.src.api.merchant;
              return ApiResponse.Exception(ex, "Failure", "An error occurred while creating the merchant");
          }
      }
+
+
+
+
     
-
-  
-
-public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, HttpContext httpContext, IMerchantService _merchantService, IValidator<MerchantUpdateModel> _updateValidator)
+    public async Task<IResult> Update(Guid id, MerchantUpdateModel merchant, IMerchantService _merchantService, IValidator<MerchantUpdateModel> _updateValidator)
+    {
+        try
         {
-            try
+            if (merchant == null)
             {
-                if (merchant == null)
-                {
-                    return ApiResponse.BadRequest("Failure", "Invalid merchant data");
-                }
+                return ApiResponse.BadRequest("Failure", "Invalid merchant data");
+            }
 
-                var validationResult = _updateValidator.Validate(merchant);
-                if (!validationResult.IsValid)
-                {
-                    return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
-                }
+            // Fluent Validation
+            var validationResult = _updateValidator.Validate(merchant);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
+            }
+
+            // Data Annotation Validation
             var validationContext = new ValidationContext(merchant);
             var vResult = new List<ValidationResult>();
 
-            var isvalid = Validator.TryValidateObject(merchant, validationContext, vResult, true);
+            var isValid = Validator.TryValidateObject(merchant, validationContext, vResult, true);
 
-            if (isvalid)
+            if (isValid)
             {
+                // Call the service to update the merchant if validation succeeds
                 var updatedMerchant = await _merchantService.Update(id, merchant);
-                return updatedMerchant == null ? ApiResponse.NotFound("Failure", "merchant not found")
-                                              : ApiResponse.Success("Success", "merchant updated successfully", updatedMerchant);
-            }
-            return Results.BadRequest(vResult);
 
-            
+                return updatedMerchant == null
+                    ? ApiResponse.NotFound("Failure", "Merchant not found")
+                    : ApiResponse.Success("Success", "Merchant updated successfully", updatedMerchant);
             }
-            catch (Exception ex)
+            else
             {
-                return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the merchant");
+                // Collect and return the data annotation validation errors
+                var errorMessages = vResult.Select(vr => vr.ErrorMessage).ToList();
+                return ApiResponse.BadRequest("Failure", errorMessages);
             }
         }
-        public async Task<IResult> Delete(Guid id, HttpContext httpContext, IMerchantService _merchantService)
+        catch (Exception ex)
+        {
+            return ApiResponse.Exception(ex, "Failure", "An error occurred while updating the merchant");
+        }
+    }
+
+    public async Task<IResult> Delete(Guid id, HttpContext httpContext, IMerchantService _merchantService)
         {
             try
             {

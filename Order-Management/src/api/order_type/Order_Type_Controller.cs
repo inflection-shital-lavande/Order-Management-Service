@@ -7,7 +7,9 @@ using order_management.services.interfaces;
 using order_management.src.database.dto.orderHistory;
 using order_management.src.services.interfaces;
 using Order_Management.src.database.dto.orderType;
+using Order_Management.src.services.implementetions;
 using Order_Management.src.services.interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Order_Management.src.api.orderType
 {
@@ -63,8 +65,19 @@ namespace Order_Management.src.api.orderType
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
-                var createdOrderTypes = await service.Create(orderTypes);
-                return ApiResponse.Success("Success", "OrderTypes created successfully", createdOrderTypes);
+                var validationContext = new ValidationContext(orderTypes);
+                var vResult = new List<ValidationResult>();
+
+                var isvalid = Validator.TryValidateObject(orderTypes, validationContext, vResult, true);
+
+                if (isvalid)
+                {
+                    var createdOrderTypes = await service.Create(orderTypes);
+                    return ApiResponse.Success("Success", "OrderTypes created successfully", createdOrderTypes);
+                }
+                return Results.BadRequest(vResult);
+
+                
             }
             catch (Exception ex)
             {
@@ -86,9 +99,20 @@ namespace Order_Management.src.api.orderType
                     return ApiResponse.BadRequest("Failure", validationResult.Errors.Select(e => e.ErrorMessage));
                 }
 
-                var updatedOrderTypes = await service.Update(id, orderTypes);
-                return updatedOrderTypes == null ? ApiResponse.NotFound("Failure", "OrderTypes not found")
-                                              : ApiResponse.Success("Success", "OrderTypes updated successfully", updatedOrderTypes);
+                var validationContext = new ValidationContext(orderTypes);
+                var vResult = new List<ValidationResult>();
+
+                var isvalid = Validator.TryValidateObject(orderTypes, validationContext, vResult, true);
+
+                if (isvalid)
+                {
+                    var updatedOrderTypes = await service.Update(id, orderTypes);
+                    return updatedOrderTypes == null ? ApiResponse.NotFound("Failure", "OrderTypes not found")
+                                                  : ApiResponse.Success("Success", "OrderTypes updated successfully", updatedOrderTypes);
+                }
+                return Results.BadRequest(vResult);
+
+               
             }
             catch (Exception ex)
             {

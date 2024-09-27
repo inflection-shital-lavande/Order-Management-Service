@@ -82,7 +82,7 @@ public class AddressService : IAddressService
 
         return _mapper.Map<AddressResponseModel>(address);
     }
-    
+
     public async Task<AddressResponseModel> Update(Guid id, AddressUpdateModel update)
     {
         var address = await _context.Addresses.FindAsync(id);
@@ -95,6 +95,7 @@ public class AddressService : IAddressService
         await _context.SaveChangesAsync();
 
         return _mapper.Map<AddressResponseModel>(address);
+
     }
     
     public async Task<bool> Delete(Guid id)

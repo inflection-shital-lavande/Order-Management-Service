@@ -6,32 +6,22 @@ namespace Order_Management.src.database.dto.merchant
 {
     public class MerchantUpdateModel
     {
-        [Required]
-        [Display(Description = "Name of the merchant")]
-        public string? Name { get; set; }
 
-        [Required]
-        [Display(Description = "Email of the merchant")]
+        [StringLength(512)]
+         public string? Name { get; set; }
+        [StringLength(512)]
         public string? Email { get; set; }
-
-        [Required]
-        [Display(Description = "Phone number of the merchant")]
+        [StringLength(12)]
         public string? Phone { get; set; }
 
-       
-        [Display(Description = "Logo URL of the merchant")]
+        [StringLength(512)]
         public string? Logo { get; set; }
-
-       
-        [Display(Description = "Tax number/code of the merchant")]
+        [StringLength(64)]
         public string? TaxNumber { get; set; }
 
-       
-        [Display(Description = "GST number/code of the merchant")]
+        [StringLength(64)]
         public string? GSTNumber { get; set; }
 
-       
-        [Display(Description = "Address Id of the merchant")]
         public Guid? AddressId { get; set; }
     }
 }

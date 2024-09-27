@@ -17,16 +17,16 @@ public class OrderHistory
 
     public Guid? OrderId { get; set; }
 
-   // [Required]
+    [Required]
     public OrderStatusTypes PreviousStatus { get; set; } =OrderStatusTypes.DRAFT;
 
-   // [Required]
+    [Required]
     public OrderStatusTypes Status { get; set; } = OrderStatusTypes.DRAFT;
 
     [MaxLength(36)]
     public Guid? UpdatedByUserId { get; set; }
 
-   // [Required]
+    [Required]
     public DateTime? Timestamp { get; set; } 
     // one to one 
     [JsonIgnore]
