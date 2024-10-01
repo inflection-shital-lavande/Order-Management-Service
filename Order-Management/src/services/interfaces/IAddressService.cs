@@ -8,7 +8,7 @@ namespace order_management.services.interfaces;
 
 public interface IAddressService
 {
-    // Task<IEnumerable<Cart>> GetAll();
+    
     Task<List<AddressResponseModel>> GetAll();
 
     Task<AddressResponseModel> GetById(Guid id);

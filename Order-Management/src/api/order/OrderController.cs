@@ -123,11 +123,12 @@ namespace Order_Management.src.api.order;
             }
         }
 
-    public async Task<IResult> UpdateOrderStatus(Guid id, [FromQuery] OrderStatusTypes status, IOrderService _orderService)
+    public async Task<IResult> UpdateOrderStatus(Guid id, [FromBody] OrderStatusTypes status, IOrderService _orderService)// fromquery, [ModelBinder(BinderType = typeof(UppercaseEnumBinder<OrderStatusTypes>))])
     {
         try
-        { 
-            if (status == null)
+        {
+             if (status == null)
+           // if (!Enum.IsDefined(typeof(OrderStatusTypes), status))
             {
                 return ApiResponse.BadRequest("Failure", "Invalid order data");
             }

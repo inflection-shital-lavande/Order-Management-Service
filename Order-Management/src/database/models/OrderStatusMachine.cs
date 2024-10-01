@@ -68,7 +68,10 @@ namespace Order_Management.src.database.models
 
         public void CancelOrder()
         {
-            if (State != OrderStatusTypes.CANCELLED)
+            if (State == OrderStatusTypes.PAYMENT_FAILED || State == OrderStatusTypes.DRAFT
+                || State == OrderStatusTypes.CONFIRMED || State == OrderStatusTypes.PAYMENT_INITIATED
+                || State == OrderStatusTypes.PAYMENT_COMPLETED || State == OrderStatusTypes.PLACED
+                || State == OrderStatusTypes.SHIPPED)
             {
                 State = OrderStatusTypes.CANCELLED;
                 Console.WriteLine("Order is cancelled");
@@ -109,6 +112,7 @@ namespace Order_Management.src.database.models
                 State = OrderStatusTypes.REOPENED;
                 Console.WriteLine("Order reopened");
             }
+            else { }
         }
 
         public void InitiateReturn()

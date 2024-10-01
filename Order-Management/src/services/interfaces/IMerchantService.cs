@@ -6,7 +6,7 @@ namespace Order_Management.src.services.interfaces
 {
     public interface IMerchantService
     {
-       // Task<List<MerchantResponseModel>> GetAll();
+       
         Task<List<MerchantResponseModel>> GetAll();
 
         Task<MerchantResponseModel> GetById(Guid id);
@@ -16,7 +16,7 @@ namespace Order_Management.src.services.interfaces
         Task<bool> Delete(Guid id);
         Task<MerchantSearchResults> Search(MerchantSearchFilter filter);
 
-        //Task<bool> AddressExists(Guid addressId);
+        
 
     }
 }

@@ -19,9 +19,7 @@ public class CustomerService : ICustomerService
 {
     private readonly OrderManagementContext _context;
     private readonly IMapper _mapper;
-    //private Guid? customerId;
-
-    //private Guid? customerId;
+    
 
     public CustomerService(OrderManagementContext context, IMapper mapper)
     {
@@ -159,16 +157,10 @@ public class CustomerService : ICustomerService
 
         if (Create.DefaultBillingAddressId != Create.DefaultShippingAddressId)
         {
-            await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.Billing);
+            await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.BILLING);
         }
 
-        /*  if (Create.DefaultShippingAddressId != Guid.Empty)
-              await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultShippingAddressId, AddressTypes.SHIPPING);
-
-          if (Create.DefaultBillingAddressId != Create.DefaultShippingAddressId)
-          {
-              await CustomerAddressCreate(customer.Id, (Guid)Create.DefaultBillingAddressId, AddressTypes.Billing);
-          }*/
+        
 
         // Return the customer as a response model
 

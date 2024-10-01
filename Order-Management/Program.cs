@@ -50,9 +50,11 @@ using Order_Management.src.database.dto.payment_transaction;
 //using static Order_Management.src.api.customerAddress.CustomerAddressValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 
@@ -61,6 +63,12 @@ builder.Services.AddDbContext<OrderManagementContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Add services to the container.
+builder.Services.AddControllers()
+.AddJsonOptions(options =>
+{
+   options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, true));
+});
+
 //builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddAntiforgery();  // Ensure this is added if anti-forgery is required
 

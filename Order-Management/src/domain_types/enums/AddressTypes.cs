@@ -1,10 +1,13 @@
-﻿namespace order_management.domain_types.enums;
+﻿using System.Text.Json.Serialization;
 
+namespace order_management.domain_types.enums;
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AddressTypes
 {
-    Work,
-    Home,
+    WORK,
+    HOME, 
     SHIPPING,
-    Billing,
-    Unspecified
+    BILLING,
+    UNSPECIFIED
+   
 }

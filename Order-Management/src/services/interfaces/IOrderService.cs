@@ -19,7 +19,7 @@ public interface IOrderService
 
     Task<bool> Delete(Guid id);
     Task<OrderSearchResultsModel> Search(OrderSearchFilterModel filter);
-   Task <OrderResponseModel> UpdateOrderStatus(Guid orderId, OrderStatusTypes status);
+   Task<OrderResponseModel> UpdateOrderStatus(Guid orderId, OrderStatusTypes status);
 
 
 

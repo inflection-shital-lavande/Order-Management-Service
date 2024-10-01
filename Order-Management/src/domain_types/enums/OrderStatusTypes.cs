@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace order_management.domain_types.enums;
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OrderStatusTypes
 {
+  
 
-    DRAFT,
+    DRAFT ,
     INVENTORY_CHECKED,
-    PLACED,
     CONFIRMED,
     PAYMENT_INITIATED,
     PAYMENT_COMPLETED,
+    PLACED,
     PAYMENT_FAILED,
     CANCELLED,
     SHIPPED,
@@ -33,59 +35,6 @@ public enum OrderStatusTypes
 
 
 
-    /* [Description("Draft")]
-DRAFT ,
-
-[Description("Inventory Checked")]
-INVENTORY_CHECKED,
-
-[Description("Placed")]
-PLACED,
-
-[Description("Confirmed")]
-CONFIRMED,
-
-[Description("Payment Initiated")]
-PAYMENT_INITIATED,
-
-[Description("Payment Completed")]
-PAYMENT_COMPLETED,
-
-[Description("Payment Failed")]
-PAYMENT_FAILED,
-
-[Description("Cancelled")]
-CANCELLED,
-
-[Description("Shipped")]
-SHIPPED,
-
-[Description("Delivered")]
-DELIVERED,
-
-[Description("Closed")]
-CLOSED,
-
-[Description("Reopened")]
-REOPENED,
-
-[Description("Return Initiated")]
-RETURN_INITIATED,
-
-[Description("Returned")]
-RETURNED,
-
-[Description("Refund Initiated")]
-REFUND_INITIATED,
-
-[Description("Refunded")]
-REFUNDED,
-
-[Description("Exchange Initiated")]
-EXCHANGE_INITIATED,
-
-[Description("Exchanged")]
-EXCHANGED*/
 
 
 
@@ -94,33 +43,4 @@ EXCHANGED*/
 
 
 
-
-
-
-
-
-
-
-
-
-
-    /* DRAFT,
-     INVENTORY_CHECKED,
-   //  InventoryChecked,
-     Placed,
-     Confirmed,
-     PaymentInitiated,
-     PaymentCompleted,
-     PaymentFailed,
-     Cancelled,
-     Shipped,
-     Delivered,
-     Closed,
-     Reopened,
-     ReturnInitiated,
-     Returned,
-     RefundInitiated,
-     Refunded,
-     ExchangeInitiated,
-     Exchanged*/
 
